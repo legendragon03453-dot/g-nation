@@ -1,4 +1,4 @@
-import { Routes, Route, useParams } from "react-router-dom";
+import { Routes, Route, useParams, useLocation } from "react-router-dom";
 import RadarBackground from "./components/RadarBackground";
 import SoundToggle from "./components/SoundToggle";
 import Navbar from "./components/Navbar";
@@ -10,6 +10,7 @@ import OutrosProdutos from "./components/OutrosProdutos";
 import Footer from "./components/Footer";
 import ProductPage from "./components/ProductPage";
 import CollectionPage from "./components/CollectionPage";
+import LoginPage from "./components/LoginPage";
 
 // Home enxuta, na ordem exata do frame HOME do Figma (27:39):
 // NAVBAR (27:40) → HERO (27:57) → CATEGORIA (27:64, as fatias da Curtain)
@@ -51,16 +52,26 @@ function CollectionPageRoute() {
 
 // ProductPage e CollectionPage têm navbar/footer próprios (fiéis aos
 // nodes 27:400 e 27:670 do Figma) — ficam direto na rota.
+// O botão de som acompanha as páginas de conteúdo do site; numa tela de
+// entrada (login) ele só polui o canto. Único uso da rota aqui.
+function SiteSound() {
+  const { pathname } = useLocation();
+  return pathname.startsWith("/login") ? null : <SoundToggle />;
+}
+
 function App() {
   return (
     <>
       <RadarBackground />
-      <SoundToggle />
+      <SiteSound />
       <div className="app-content">
         <Routes>
           <Route path="/" element={<Home />} />
       <Route path="/produto/:slug" element={<ProductPageRoute />} />
           <Route path="/colecao/:slug" element={<CollectionPageRoute />} />
+          {/* Login (node 27:368): tela de entrada, sem navbar/footer —
+              o cartão é o conteúdo inteiro e ela tem o próprio "voltar". */}
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </div>
     </>

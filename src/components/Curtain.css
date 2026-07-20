@@ -236,10 +236,12 @@
   border: 1px solid rgba(255, 255, 255, 0.25);
   background: transparent;
   color: #fff;
-  font-family: var(--font-nav);
+  /* mesma voz de CTA do resto do site (ui 700, 0.04em) — a geometria
+     ghost desta posição (44px, raio 22) fica como estava. */
+  font-family: var(--font-ui);
   font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -315,7 +317,7 @@
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.94);
   color: #0a0a0a;
-  font-family: var(--font-nav);
+  font-family: var(--font-ui);
   font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.04em;

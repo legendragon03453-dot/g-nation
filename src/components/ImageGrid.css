@@ -35,11 +35,12 @@
   color: #0a0a0a;
   padding: 16px 28px;
   border-radius: 999px;
-  font-family: var(--font-nav);
+  /* mesma voz de CTA do hero (ui 700, 0.04em) — geometria própria */
+  font-family: var(--font-ui);
   font-size: 15px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 700;
   opacity: 0;
   transition: opacity 0.3s ease;
 }

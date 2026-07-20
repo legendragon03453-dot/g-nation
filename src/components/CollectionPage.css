@@ -160,12 +160,16 @@
   border: 1px solid #000;
   border-radius: 100px;
   padding: 12px 24px;
-  font-family: var(--font-opensauce);
-  font-weight: 600;
+  /* mesma voz dos outros CTAs (ui 700, 0.04em); o pill branco de borda
+     preta e o tamanho vêm do Figma e ficam como estão. */
+  font-family: var(--font-ui);
+  font-weight: 700;
   font-size: 14px;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #000;
   cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .cp__filters-count {

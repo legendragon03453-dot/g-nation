@@ -40,6 +40,14 @@
   filter: none;
 }
 
+/* Fundo CLARO (cartão de login): as duas artes são brancas e sumiriam.
+   brightness(0) leva todo pixel opaco pro preto preservando o alfa — o
+   desenho continua exatamente o mesmo, só troca de cor. Variante nova,
+   não afeta nenhum uso existente. */
+.wordmark--ink img {
+  filter: brightness(0);
+}
+
 @media (max-width: 640px) {
   .wordmark img:first-child {
     height: 2.1em;

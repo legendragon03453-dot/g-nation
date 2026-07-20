@@ -10,10 +10,12 @@ import "./Wordmark.css";
 // O lettering já traz o hífen desenhado, então não existe texto entre as
 // duas peças: o lockup inteiro é imagem, e o aria-label é quem carrega o
 // nome pro leitor de tela.
-export default function Wordmark({ className = "", flat = false }) {
+// flat → fundo escuro chapado (sem sombra); ink → fundo claro (a arte
+// branca vira preta, ver Wordmark.css). Sem prop, nada muda.
+export default function Wordmark({ className = "", flat = false, ink = false }) {
   return (
     <span
-      className={`wordmark ${flat ? "wordmark--flat" : ""} ${className}`.trim()}
+      className={`wordmark ${flat ? "wordmark--flat" : ""} ${ink ? "wordmark--ink" : ""} ${className}`.trim()}
       role="img"
       aria-label="G-Nation"
     >

@@ -6,12 +6,38 @@
   --shop-bg: rgb(248, 248, 248);
   --white: #ffffff;
 
-  --font-mono: "JetBrains Mono", monospace;
+  /* ---------------------------------------------------------------
+     TRÊS VOZES TIPOGRÁFICAS, e só três, no site inteiro:
+
+       display  JetBrains Mono   títulos, marca, nome de peça, preço
+       ui       Open Sauce One   navegação, botões, labels, legendas
+       body     Poppins          copy corrida
+
+     O site tinha SEIS famílias: as páginas internas (produto, coleção)
+     usavam Open Sauce pra interface, a home usava Hanken Grotesk num
+     lugar e Inter no outro — três fontes fazendo exatamente o mesmo
+     papel. Open Sauce ganhou por ser a maioria dos usos e a que veio do
+     arquivo do Figma.
+
+     --font-nav e --font-inter continuam existindo e agora apontam pra
+     Open Sauce: a troca acontece num ponto só, sem mexer em tamanho,
+     peso, espaçamento ou posição de nada. Em código novo use os nomes
+     semânticos (--font-display / --font-ui / --font-body).
+     --------------------------------------------------------------- */
+  --font-display: "JetBrains Mono", monospace;
+  --font-ui: "Open Sauce One", sans-serif;
+
+  --font-mono: var(--font-display);
   --font-body: "Poppins", sans-serif;
-  --font-nav: "Hanken Grotesk", sans-serif;
-  --font-inter: "Inter", sans-serif;
+  --font-nav: var(--font-ui);
+  --font-inter: var(--font-ui);
   --font-archivo: "Archivo Black", sans-serif;
-  --font-opensauce: "Open Sauce One", sans-serif;
+  --font-opensauce: var(--font-ui);
+
+  /* cor da marca — o vermelho que aparece na navbar, no fio do footer e
+     no CTA principal. Era escrito como `red` / #ff0000 solto em cada
+     arquivo. */
+  --gn-red: #ff0000;
   /* assinatura tipográfica do hero: linha sólida + linha só contorno */
   --tw-stroke-light: rgba(255, 255, 255, 0.85);
   --tw-stroke-dark: rgba(10, 10, 10, 0.8);

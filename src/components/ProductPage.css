@@ -227,8 +227,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-mono);
-  font-weight: 800;
+  /* Estava em JetBrains Mono 800 — a voz de TÍTULO. Botão é interface:
+     passa pra voz de UI (Open Sauce 700, 0.04em), igual aos CTAs do
+     resto do site. Altura, largura e posição não mudam. */
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   font-size: 17px;
   cursor: pointer;
@@ -239,12 +243,12 @@
   opacity: 0.85;
 }
 
-/* Cor exata do Figma: texto preto sobre fundo vermelho no botão
-   "Adicionar ao carrinho" — mantido como está no arquivo, mesmo sendo
-   um contraste incomum. */
+/* Ação principal: vermelho da marca com texto BRANCO. No Figma o texto
+   era preto sobre o vermelho — contraste fraco e diferente de todo o
+   resto do site, onde o vermelho aparece com branco por cima. */
 .pp__btn--atc {
-  background: red;
-  color: #000;
+  background: var(--gn-red, #ff0000);
+  color: #fff;
 }
 
 .pp__btn--buy {

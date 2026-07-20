@@ -1,0 +1,313 @@
+/* Porte do node 27:368 "minha-conta" do Figma (TXte9vygIeSP76UVjnbwLT).
+   A estrutura é a do arquivo: fundo #fff6f6 com a marca gigante girada
+   vazando atrás, cartão branco de borda preta fina centralizado, marca +
+   "login de membro", os dois campos, CTA vermelho, "esqueci minha senha",
+   separador OU, "criar conta", e o "voltar" no canto.
+
+   As proporções do Figma são de um frame 1920x1080 (cartão de 744px de
+   altura, marca em 69px). Aqui o cartão tem altura NATURAL e medidas de
+   tela real — o desenho é o mesmo, na escala certa pra um formulário de
+   login, sem ocupar a tela inteira.
+
+   Adaptações à identidade real do site, todas deliberadas:
+   1. O "G" de fundo no Figma é a letra da fonte Hyperwave One. Aqui é a
+      MARCA real do cliente (g-mark.png), no mesmo giro de -15° e na
+      mesma cor (vermelho a 20%), entrando como máscara — a arte do
+      cliente é branca e não apareceria num fundo claro.
+   2. O título "G-NATION" em Benzin-Bold vira o lockup real da marca.
+   3. Tipografia e botões seguem o padrão do site: display (JetBrains
+      Mono) só no que é título, ui (Open Sauce) em label, campo e botão,
+      CTA vermelho com texto branco. */
+
+.login {
+  position: relative;
+  min-height: 100vh;
+  background: #fff6f6;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 96px 24px 64px;
+  overflow: hidden;
+}
+
+/* 27:369 — marca gigante girada, textura de fundo */
+.login__watermark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 128vh;
+  aspect-ratio: 1551 / 3009; /* proporção real do arquivo g-mark.png */
+  /* atravessa o fundo POR TRÁS do cartão, como no Figma (lá o G vai de
+     x=125 a x=1964 num frame de 1920) — não empoçado num canto só */
+  transform: translate(-58%, -50%) rotate(-15deg);
+  background: var(--gn-red, #ff0000);
+  opacity: 0.13;
+  mask-image: url(/assets/brand/g-mark.png);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-image: url(/assets/brand/g-mark.png);
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 27:396 — "voltar" no canto superior esquerdo */
+.login__back {
+  position: absolute;
+  left: clamp(24px, 6vw, 88px);
+  top: 48px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #000;
+  transition: opacity 0.2s ease;
+}
+
+.login__back:hover {
+  opacity: 0.55;
+}
+
+.login__back img {
+  width: 18px;
+  height: 18px;
+}
+
+/* 27:370 — cartão branco de borda preta fina, altura natural */
+.login__card {
+  position: relative;
+  z-index: 1;
+  width: 460px;
+  max-width: 100%;
+  background: #fff;
+  border: 1px solid #000;
+  padding: 44px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* 27:371 — marca + linha de apoio */
+.login__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* O lockup escala pelo font-size do pai (ver Wordmark.css): 26px deixa a
+   marca com ~65px de altura, proporcional ao cartão de 460px — no Figma
+   o título tem 69px num cartão de 569px. */
+.login__wordmark {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.login__subtitle {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #808080;
+}
+
+/* 27:374 — formulário */
+.login__form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.login__field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.login__label {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #000;
+}
+
+.login__input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 44px;
+  border: 1px solid #000;
+  padding: 0 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login__input-wrap:focus-within {
+  box-shadow: inset 0 0 0 1px #000;
+}
+
+.login__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 14px;
+  color: #000;
+}
+
+.login__input::placeholder {
+  color: #a0a0a0;
+}
+
+.login__eye {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.55;
+  transition: opacity 0.2s ease;
+}
+
+.login__eye:hover {
+  opacity: 1;
+}
+
+.login__eye img {
+  width: 100%;
+  height: 100%;
+}
+
+.login__error {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--gn-red, #ff0000);
+}
+
+/* 27:386 — CTA principal. Mesma voz de botão do resto do site
+   (Open Sauce 700, 0.04em, uppercase) e o vermelho da marca com texto
+   branco — no Figma o texto era preto sobre o vermelho. */
+.login__submit {
+  width: 100%;
+  height: 48px;
+  border: none;
+  background: var(--gn-red, #ff0000);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.login__submit:hover {
+  background: #d40000;
+}
+
+/* 27:389 */
+.login__forgot {
+  align-self: center;
+  margin-top: 12px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 12px;
+  color: #000;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.login__forgot:hover {
+  opacity: 0.55;
+}
+
+.login__submit-block {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 27:390 — separador "OU" */
+.login__or {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.login__or::before,
+.login__or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #000;
+  opacity: 0.35;
+}
+
+.login__or span {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: #808080;
+}
+
+/* 27:394 — ação secundária: contorno preto, mesma voz de botão */
+.login__secondary {
+  width: 100%;
+  height: 46px;
+  background: transparent;
+  border: 1px solid #000;
+  color: #000;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.login__secondary:hover {
+  background: #000;
+  color: #fff;
+}
+
+@media (max-width: 560px) {
+  .login {
+    padding: 80px 16px 48px;
+  }
+  .login__back {
+    top: 28px;
+  }
+  .login__card {
+    padding: 32px 22px 28px;
+    gap: 24px;
+  }
+  .login__wordmark {
+    font-size: 20px;
+  }
+}
