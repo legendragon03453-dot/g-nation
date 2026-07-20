@@ -1,0 +1,22 @@
+/* Ribbon do SYLVEN: rgb(23,23,23), texto mono 16px branco uppercase,
+   faixa fina full-width. Altura controlada por framer-motion (variants
+   no componente) — aqui só o visual. */
+.fita {
+  width: 100%;
+  background: rgb(23, 23, 23);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.fita__item {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+  transform-origin: center center;
+}

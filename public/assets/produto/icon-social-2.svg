@@ -1,0 +1,6 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Frame">
+<rect x="0.5" y="0.5" width="39" height="39" stroke="var(--stroke-0, white)"/>
+<path id="Vector" d="M23 17L17 23M17 17L23 23M30 20C30 25.5228 25.5228 30 20 30C14.4772 30 10 25.5228 10 20C10 14.4772 14.4772 10 20 10C25.5228 10 30 14.4772 30 20Z" stroke="var(--stroke-0, white)" stroke-width="2"/>
+</g>
+</svg>

@@ -1,0 +1,83 @@
+:root {
+  --black: #000000;
+  --bg-body: #0d0d0d;
+  --zinc-200: rgb(228, 228, 231);
+  --zinc-800: rgb(39, 39, 42);
+  --shop-bg: rgb(248, 248, 248);
+  --white: #ffffff;
+
+  --font-mono: "JetBrains Mono", monospace;
+  --font-body: "Poppins", sans-serif;
+  --font-nav: "Hanken Grotesk", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --font-archivo: "Archivo Black", sans-serif;
+  --font-opensauce: "Open Sauce One", sans-serif;
+  /* assinatura tipográfica do hero: linha sólida + linha só contorno */
+  --tw-stroke-light: rgba(255, 255, 255, 0.85);
+  --tw-stroke-dark: rgba(10, 10, 10, 0.8);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Conteúdo acima da camada de fundo radar. O radar é fixed+z0 dentro do
+   #root; um wrapper posicionado com z-index maior garante que TODO o
+   conteúdo (inclusive seções de fundo static como o footer) pinte acima
+   dele — sem isso o radar posicionado cobre os blocos estáticos. */
+#root {
+  position: relative;
+}
+.app-content {
+  position: relative;
+  z-index: 1;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-body);
+  color: var(--white);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+/* Assinatura tipográfica do hero espalhada pelo site: título em duas
+   vozes, linha PREENCHIDA + linha só CONTORNO (igual às palavras que
+   cruzam o vídeo). A cor do contorno vem de --tw-stroke, definida por
+   seção conforme o fundo. */
+.tw-solid {
+  display: block;
+}
+.tw-outline {
+  display: block;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--tw-stroke, var(--tw-stroke-light));
+}

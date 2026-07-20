@@ -1,0 +1,427 @@
+/* Porte fiel do node 27:670 "CATEGORIA — CORRENTES" — valores px direto
+   do Figma (frame 1920). Fundo da página #fff6f6 como no arquivo. */
+
+.cp {
+  background: #fff6f6;
+  color: #000;
+}
+
+.cp--empty-page {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-family: var(--font-opensauce);
+}
+
+/* NAVBAR — 27:671: preta #080808, 155px, com "G" tipográfico gigante
+   (2758px no Figma, rotacionado, vermelho 20%) vazando como textura de
+   fundo, logo G real centralizado e ícones brancos mascarados à direita. */
+.cp__navbar {
+  position: relative;
+  height: 155px;
+  background: #080808;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 150px;
+}
+
+.cp__navbar-g {
+  position: absolute;
+  left: -60px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 520px;
+  line-height: 1;
+  color: rgba(255, 0, 0, 0.2);
+  pointer-events: none;
+  user-select: none;
+}
+
+.cp__nav-links {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 35px;
+}
+
+.cp__nav-links a {
+  font-family: var(--font-opensauce);
+  font-weight: 400;
+  font-size: 20.9px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.cp__nav-logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  height: 114px;
+  display: flex;
+  align-items: center;
+}
+
+.cp__nav-logo img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+}
+
+.cp__nav-icons {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 23px;
+  align-items: center;
+}
+
+/* Ícones do Figma são "mask groups": retângulo branco mascarado pela
+   forma do ícone (reconhecido e portado como mask CSS de verdade). */
+.cp__nav-icon {
+  width: 34px;
+  height: 34px;
+  background: #fff;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+/* HERO — 27:688: 400px, foto real de corrente coberta por véu preto 60%,
+   título Benzin 100px branco uppercase. Overflow hidden na máscara do
+   título pro reveal de baixo pra cima. */
+.cp__hero {
+  position: relative;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.cp__hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cp__hero-veil {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.cp__hero-mask {
+  position: relative;
+  overflow: hidden;
+  padding: 8px 24px;
+}
+
+.cp__hero-mask h1 {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: clamp(48px, 7vw, 100px);
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+/* FILTROS — 27:690: barra com borda inferior preta, pills brancas de
+   borda preta radius 100px, contagem à direita. */
+.cp__filters {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 40px 80px;
+  border-bottom: 1px solid #000;
+}
+
+.cp__filters-label {
+  font-family: var(--font-opensauce);
+  font-weight: 700;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.cp__filter-pill {
+  background: #fff;
+  border: 1px solid #000;
+  border-radius: 100px;
+  padding: 12px 24px;
+  font-family: var(--font-opensauce);
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #000;
+  cursor: pointer;
+}
+
+.cp__filters-count {
+  margin-left: auto;
+  font-family: var(--font-opensauce);
+  font-weight: 300;
+  font-size: 14px;
+  color: #666;
+}
+
+/* GRADE — 27:700: cards com borda preta 3px, 3 colunas, conteúdo
+   centralizado (título + foto + preço). No Figma são posições absolutas
+   (x calc()); portado como grid real com o mesmo resultado visual. */
+.cp__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  padding: 83px 50px;
+  row-gap: 0;
+}
+
+.cp__card {
+  border: 3px solid #000;
+  height: 433px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  background: #fff6f6;
+}
+
+.cp__card-title {
+  font-family: var(--font-opensauce);
+  font-weight: 600;
+  font-size: 26px;
+  color: #000;
+}
+
+.cp__card-photo {
+  width: 269px;
+  height: 276px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cp__card-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cp__card-price {
+  font-family: var(--font-opensauce);
+  font-weight: 300;
+  font-size: 20px;
+  color: #000;
+}
+
+.cp__empty {
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: var(--font-opensauce);
+  font-size: 18px;
+}
+
+.cp__empty a {
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+/* PAGINAÇÃO — 27:737: quadrados 48px, ativo preto/texto branco. */
+.cp__pagination {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding: 0 0 100px;
+}
+
+.cp__page {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #000;
+  background: transparent;
+  font-family: var(--font-opensauce);
+  font-weight: 600;
+  font-size: 12px;
+  color: #000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cp__page.is-active {
+  background: #080808;
+  border-color: #080808;
+  color: #fff;
+  font-weight: 700;
+}
+
+/* FOOTER — 27:747: #080808, accent bar vermelha 4px, 3 colunas. */
+.cp__footer {
+  background: #080808;
+}
+
+.cp__footer-accent {
+  height: 4px;
+  background: red;
+}
+
+.cp__footer-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 60px;
+  padding: 80px 150px 60px;
+}
+
+.cp__footer-brand {
+  width: 450px;
+}
+
+.cp__footer-wordmark {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 32px;
+  color: #fff;
+  margin-bottom: 32px;
+}
+
+.cp__footer-tagline {
+  font-family: var(--font-opensauce);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #666;
+}
+
+.cp__footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cp__footer-col-title {
+  font-family: var(--font-opensauce);
+  font-weight: 700;
+  font-size: 18px;
+  color: #fff;
+}
+
+.cp__footer-col a {
+  font-family: var(--font-opensauce);
+  font-weight: 300;
+  font-size: 14px;
+  color: #666;
+}
+
+.cp__footer-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.cp__footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32px 150px;
+}
+
+.cp__footer-bottom p {
+  font-family: var(--font-opensauce);
+  font-weight: 300;
+  font-size: 14px;
+  color: #fff;
+  opacity: 0.6;
+}
+
+.cp__footer-socials {
+  display: flex;
+  gap: 24px;
+}
+
+.cp__footer-socials img {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 1100px) {
+  .cp__navbar {
+    padding: 0 24px;
+    height: 110px;
+  }
+  .cp__navbar-g {
+    font-size: 320px;
+  }
+  .cp__nav-links {
+    gap: 16px;
+  }
+  .cp__nav-links a {
+    font-size: 13px;
+  }
+  .cp__nav-logo {
+    height: 72px;
+  }
+  .cp__nav-icons {
+    gap: 12px;
+  }
+  .cp__nav-icon {
+    width: 24px;
+    height: 24px;
+  }
+  .cp__hero {
+    height: 260px;
+  }
+  .cp__filters {
+    flex-wrap: wrap;
+    padding: 24px;
+    gap: 12px;
+  }
+  .cp__filters-count {
+    width: 100%;
+    margin-left: 0;
+  }
+  .cp__grid {
+    grid-template-columns: 1fr;
+    padding: 32px 24px;
+  }
+  .cp__card {
+    height: auto;
+    padding: 32px 16px;
+  }
+  .cp__card-photo {
+    width: 100%;
+    max-width: 269px;
+    height: auto;
+    aspect-ratio: 1;
+  }
+  .cp__footer-main {
+    flex-direction: column;
+    padding: 60px 24px 40px;
+    gap: 40px;
+  }
+  .cp__footer-brand {
+    width: 100%;
+  }
+  .cp__footer-bottom {
+    flex-direction: column;
+    gap: 12px;
+    padding: 24px;
+  }
+}

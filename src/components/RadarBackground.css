@@ -1,0 +1,49 @@
+/* Camada de fundo fixa, atrás de tudo. z-index 0 + conteúdo em z-index 1
+   (ver index.css #root). Não intercepta clique. */
+.radar-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: #0d0d0d;
+  overflow: hidden;
+}
+
+/* Anéis concêntricos: repeating-radial-gradient de 1px, centrado onde o
+   hero ancora a mídia (50% / 42%). Bem apagado — é atmosfera, não desenho.
+   A máscara radial some com os anéis nas bordas pra não virar padrão duro. */
+.radar-bg__rings {
+  position: absolute;
+  /* estende além da viewport pra os anéis externos não cortarem em quadrado */
+  inset: -40vh -40vw;
+  background: repeating-radial-gradient(
+    circle at 50% 42%,
+    transparent 0,
+    transparent 128px,
+    rgba(255, 255, 255, 0.035) 128px,
+    rgba(255, 255, 255, 0.035) 129px
+  );
+  -webkit-mask-image: radial-gradient(circle at 50% 42%, #000 0, #000 55%, transparent 82%);
+  mask-image: radial-gradient(circle at 50% 42%, #000 0, #000 55%, transparent 82%);
+}
+
+/* Mira: uma linha vertical e uma horizontal de 1px, cruzando no centro.
+   rgb(26,26,26) medido no original = branco a ~5% sobre a base. */
+.radar-bg__crosshair-v,
+.radar-bg__crosshair-h {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.05);
+}
+.radar-bg__crosshair-v {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-0.5px);
+}
+.radar-bg__crosshair-h {
+  left: 0;
+  right: 0;
+  top: 42%;
+  height: 1px;
+}

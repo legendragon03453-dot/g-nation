@@ -1,0 +1,236 @@
+/* Node 27:196 (1920x509): #080808, accent bar vermelha 4px, 3 colunas
+   com padding 80/150/60, divisor, bottom 32/150. Inter em tudo. */
+.footer {
+  background: #080808;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer__accent {
+  height: 4px;
+  background: red;
+  width: 100%;
+}
+
+/* 27:198 — footer-main */
+.footer__main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 60px;
+  padding: 80px 150px 60px;
+}
+
+/* 27:199 — brand-column 450px, gap 32 */
+.footer__brand {
+  width: 450px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.footer__logo-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* wordmark na tipografia do hero (era Inter Bold 48px do Figma) */
+.footer__wordmark {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 44px;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* 27:202 — Inter Light 14px, lh 1.6 */
+.footer__tagline {
+  font-family: var(--font-inter);
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #fff;
+}
+
+.footer__socials {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* títulos de coluna na tipografia do hero (era Inter Bold 18px caps) */
+.footer__col-title {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 16px;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+/* 27:205 — ícones sociais em quadrados brancos 40px */
+.footer__social-row {
+  display: flex;
+  gap: 12px;
+}
+
+.footer__social {
+  width: 40px;
+  height: 40px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.footer__social:hover {
+  opacity: 0.7;
+}
+
+/* os ícones do Figma vêm com stroke currentColor (branco por padrão);
+   dentro do quadrado branco ficariam invisíveis — brightness(0) força o
+   traço a preto pra contrastar com o fundo branco. */
+.footer__social img {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0);
+}
+
+/* 27:215 / 27:228 — colunas Navegação e Atendimento, gap 24 */
+.footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 27:219 etc — Inter Medium 16px */
+.footer__links a {
+  font-family: var(--font-inter);
+  font-weight: 500;
+  font-size: 16px;
+  color: #fff;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+.footer__links a:hover {
+  opacity: 0.6;
+}
+
+.footer__info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footer__info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* 27:232 etc — Inter Bold 14px */
+.footer__info-label {
+  font-family: var(--font-inter);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #fff;
+}
+
+/* 27:233 etc — Inter Medium 16px #808080 */
+.footer__info-value {
+  font-family: var(--font-inter);
+  font-weight: 500;
+  font-size: 16px;
+  color: #808080;
+  white-space: nowrap;
+}
+
+/* 27:239 — ícones de pagamento 32x30 em quadrados brancos */
+.footer__pay-row {
+  display: flex;
+  gap: 8px;
+}
+
+.footer__pay {
+  width: 32px;
+  height: 30px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+}
+
+.footer__pay img {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0);
+}
+
+/* 27:246 — linha divisória */
+.footer__divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+  width: 100%;
+}
+
+/* 27:248 — footer-bottom, Inter Regular 12px, opacity 60 */
+.footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32px 150px;
+  font-family: var(--font-inter);
+  font-weight: 400;
+  font-size: 12px;
+  color: #fff;
+}
+
+.footer__bottom p {
+  opacity: 0.6;
+}
+
+.footer__legal {
+  display: flex;
+  gap: 24px;
+}
+
+.footer__legal span {
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
+@media (max-width: 1100px) {
+  .footer__main {
+    flex-wrap: wrap;
+    padding: 48px 24px 32px;
+    gap: 40px;
+  }
+  .footer__brand {
+    width: 100%;
+  }
+  .footer__wordmark {
+    font-size: 36px;
+  }
+  .footer__bottom {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 24px;
+  }
+  .footer__legal {
+    flex-wrap: wrap;
+  }
+}

@@ -1,0 +1,60 @@
+.contact {
+  background: #000;
+  padding: 100px 40px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contact__title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 80px;
+}
+
+.contact__title h2 {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 56px;
+  text-transform: uppercase;
+  color: var(--zinc-200);
+  line-height: 1.1em;
+}
+
+.contact__cta {
+  margin-top: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #ff0000;
+  color: #fff;
+  padding: 18px 32px;
+  border-radius: 999px;
+  font-family: var(--font-nav);
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 700;
+  transition: transform 0.2s ease;
+}
+
+.contact__cta:hover {
+  transform: translateY(-2px);
+}
+
+.contact__slideshow {
+  width: 100%;
+  overflow: hidden;
+  transform: rotate(-3deg);
+}
+
+.contact__slide {
+  width: 300px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}

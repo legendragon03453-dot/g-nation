@@ -1,0 +1,2 @@
+import e from"react";const n=e.createContext(!0);function r(){throw new Error("A function wrapped in useEffectEvent can't be called during rendering.")}const t="use"in e?()=>{try{return e.use(n)}catch{return!1}}:()=>!1;function c(n){const c=e.useRef(r);return e.useInsertionEffect((()=>{c.current=n}),[n]),(...e)=>{t()&&r();const n=c.current;return n(...e)}}export{c as useEffectEvent};
+//# sourceMappingURL=index.js.map

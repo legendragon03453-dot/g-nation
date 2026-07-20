@@ -1,0 +1,48 @@
+/* Marca "G" ocupando o lugar da letra.
+
+   A arte é estreita (largura = 0.52 da altura) e só 73% do arquivo é o
+   corpo da letra — o resto é respingo e pingo escorrendo. Ancorada na
+   altura de uma maiúscula ela lê como risco fino, não como marca; por
+   isso a escala é generosa (2.5em ≈ corpo 2.5x a altura de caixa alta).
+
+   REGRA: a marca PARTICIPA do fluxo. A tentação é encaixá-la na linha com
+   margem negativa pra não mexer no ritmo do texto — foi o que quebrou a
+   cortina (os pingos caíam dentro do botão "VER PEÇAS") e a navbar (a
+   marca escapava do link e batia no G decorativo do fundo). Uma imagem
+   alta dentro de uma linha baixa não some: ela vaza por cima do vizinho.
+   Aqui a linha cresce pra caber a marca, e nada colide. */
+.logo-g {
+  height: 2.5em;
+  width: auto;
+  display: inline-block;
+  /* centra no meio da linha: a arte sangra pra cima e pra baixo em partes
+     iguais, que é como o desenho foi feito (spike em cima, pingo embaixo) */
+  vertical-align: middle;
+  margin-right: 0.04em;
+  user-select: none;
+
+  /* A marca é branca e cai sobre fotos claras (a macro de pulseira da
+     cortina engolia ela inteira). text-shadow não alcança imagem —
+     drop-shadow segue o alfa e destaca respingo por respingo, espelhando
+     a sombra que os rótulos de texto já usam. */
+  filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.7))
+          drop-shadow(0 1px 4px rgba(0, 0, 0, 0.6));
+}
+
+/* Sobre fundo já escuro e chapado (footer, navbar) a sombra vira ruído. */
+.logo-g--flat {
+  filter: none;
+}
+
+/* O texto ao lado da marca também precisa centrar na mesma linha, senão
+   ele assenta na baseline e a marca parece flutuar. */
+.logo-g-wrap {
+  display: inline-flex;
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .logo-g {
+    height: 2.1em;
+  }
+}

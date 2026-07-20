@@ -1,0 +1,357 @@
+.curtain {
+  /* z-index 2 + margin-top negativo = a Categoria SOBE POR CIMA do hero
+     (fase C): escorrega sobre o hero ainda pinado (z1), cobrindo o vídeo
+     como uma folha. O -100vh a puxa pra cima dos últimos 100vh do hero
+     (220vh) — casa com o fim do dwell. Só posicionamento; o conteúdo
+     (portas G-Shop/G-Customizadas) fica intacto. */
+  position: relative;
+  z-index: 2;
+  margin-top: -80vh;
+  width: 100%;
+  /* Reduzida de 3400px: era mais da metade de scroll morto (auditado —
+     ver comentário no Curtain.jsx). 2000px dá o mesmo efeito com um
+     "dwell" curto no fim em vez de uma trava longa parada. */
+  height: 2000px;
+  background: var(--zinc-200);
+}
+
+.curtain__pin {
+  position: sticky;
+  top: 90px;
+  width: 100%;
+  height: calc(100vh - 90px);
+  overflow: hidden;
+}
+
+.curtain__slices {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  z-index: 1;
+}
+
+.curtain__slice {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+}
+
+.curtain__slice-inner {
+  height: 100%;
+}
+
+.curtain__white-under {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  z-index: -1;
+  overflow: hidden;
+}
+
+/* Porta o design real da seção "Featured Works" do template espelho
+   (grateful-popup-643840.framer.app, WorksSection nodeId JQTMXIAPF):
+   fundo preto sólido (rgb(0,0,0), confirmado no XML do Framer — sem
+   textura), heading + parágrafo centralizados, grid 2x2 de cards
+   full-bleed, CTA ghost pill embaixo. Revelado atrás das fotos quando a
+   cortina termina de abrir. */
+.curtain__lancamentos {
+  width: 100%;
+  max-width: 1040px;
+  /* padding lateral maior pra grade não ficar grudada nas bordas (pedido);
+     vertical enxuto pra caber no pin sem scroll interno. */
+  padding: 14px 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.curtain__lancamentos.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.curtain__lanc-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+/* HeadingTitle component, text style /H2: JetBrains Mono 700, uppercase.
+   Escalado pra baixo em relação ao original (72px) já que o container
+   também encolheu (max-width 1040px) — mantém a proporção com o grid. */
+.curtain__lanc-head h2 {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: clamp(20px, 3vw, 32px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--zinc-200);
+}
+
+/* text style /Body: Poppins regular 16px, line-height 1.8 — copy enxuta
+   pra caber numa linha só e sobrar altura pra foto. */
+.curtain__lanc-head p {
+  max-width: 620px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.4;
+  color: rgba(228, 228, 231, 0.65);
+}
+
+/* Linhas divisórias: peça real do "Our Services" do template espelho
+   (grateful-popup-643840.framer.app) — conferido no DOM renderizado, cada
+   linha de serviço tem border-top de 2px, cor rgb(228,228,231) (zinc-200),
+   largura cheia. Aplicada aqui como grade (linha externa em cima + cruz no
+   meio) inspirada na estrutura do node 27:77 do Figma, mas com o traço
+   exato do template em vez das hairlines pretas que eu tinha usado antes. */
+/* Grade fechada como quadrado (pedido): borda 2px em TODA a volta +
+   as linhas internas (cruz) via border dos cards. */
+.curtain__lanc-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 2px solid rgb(228, 228, 231);
+}
+
+.curtain__lanc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 16px;
+}
+
+/* linha vertical interna: só entre colunas (não na última de cada linha) */
+.curtain__lanc-card:not(:nth-child(3n)) {
+  border-right: 2px solid rgb(228, 228, 231);
+}
+
+/* linha horizontal interna: entre a 1ª e a 2ª fileira */
+.curtain__lanc-card:nth-child(n + 4) {
+  border-top: 2px solid rgb(228, 228, 231);
+}
+
+/* Caixa em 16:9 real (conferido via ffprobe: o vídeo é 1280x720, 16:9
+   exato) — altura vem do mesmo orçamento em vh de antes (min(20vh,210px),
+   já provado que cabe no pin sem scroll interno), a LARGURA é derivada
+   dessa altura via aspect-ratio (não mais width:100% esticando a coluna).
+   Com a caixa na mesma proporção do vídeo, ele preenche 100% sem sobrar
+   tarja preta nem cortar nada. align-self:center porque o flex-column do
+   card por padrão esticaria a largura (align-items:stretch) — aqui a
+   caixa tem largura própria, então precisa se centralizar na coluna.
+   Sem background próprio (era #0a0a0a antes) — a foto é PNG com fundo
+   transparente, então sem uma cor de "sub-card" atrás ela se funde direto
+   com o preto real do card, sem parecer uma miniatura emoldurada dentro
+   do card. Vale pro vídeo também (mesma caixa, mesmo tratamento). */
+.curtain__lanc-photo {
+  position: relative;
+  /* conferido via ffprobe: a foto real é 1290x1257 (praticamente 1:1) —
+     caixa quadrada em vez de 16:9 (herdado de quando tinha vídeo) elimina
+     o pillarbox vazio dos lados e deixa a peça visivelmente maior dentro
+     do mesmo orçamento de altura. Reduzida de 26vh pra caber o grid de
+     6 peças (3x2) no pin encurtado pela navbar de 155px. */
+  height: min(21vh, 250px);
+  aspect-ratio: 1 / 1;
+  max-width: 100%;
+  align-self: center;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.curtain__lanc-photo-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.curtain__lanc-card:hover .curtain__lanc-photo-img--base {
+  transform: scale(1.05);
+}
+
+/* Preview no hover: crossfade pra uma segunda foto do produto (outro
+   ângulo/detalhe) em vez de vídeo — o vídeo com pele/roupa/fundo quebrava
+   o clima preto/minimalista da vitrine. Só troca se o card tiver
+   `hoverImg`; sem isso a foto base só recebe o zoom leve de sempre
+   (:has() garante que cards sem segunda foto não apaguem a imagem base). */
+.curtain__lanc-photo-img--hover {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.curtain__lanc-card:hover .curtain__lanc-photo-img--hover {
+  opacity: 1;
+}
+
+.curtain__lanc-card:hover:has(.curtain__lanc-photo-img--hover) .curtain__lanc-photo-img--base {
+  opacity: 0;
+}
+
+/* título do card: JetBrains Mono bold uppercase, branco */
+.curtain__lanc-card h4 {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+/* "categoria" do original vira preço aqui — mesmo peso visual: pequeno,
+   mono, uppercase, cinza apagado (idêntico ao card-info da seção Works) */
+.curtain__lanc-price {
+  font-family: var(--font-nav);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Botão "Secondary" do Framer (mesma peça do ieD7TFXTb.js já usada nas
+   tags G-Shop/G-Customizadas do Categoria): ghost, transparente em
+   repouso, pill 44px/radius 22px. Aqui em vez de solid porque o fundo já
+   é preto liso — não precisa de contraste extra pra ler. */
+.curtain__lanc-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 24px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: transparent;
+  color: #fff;
+  font-family: var(--font-nav);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.curtain__lanc-more-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+@media (max-width: 900px) {
+  .curtain__lancamentos {
+    padding: 40px 24px;
+    gap: 32px;
+  }
+  .curtain__lanc-head {
+    gap: 16px;
+  }
+  .curtain__lanc-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .curtain__lanc-card:not(:nth-child(3n)) {
+    border-right: none;
+  }
+  .curtain__lanc-card:nth-child(n + 2) {
+    border-top: 2px solid rgb(228, 228, 231);
+  }
+  .curtain__lanc-card h4 {
+    font-size: 18px;
+  }
+}
+
+/* Estas tags são a "CATEGORIA" do site (Figma node 27:64: dois painéis de
+   foto lado a lado, cada um com um título grande centralizado + CTA
+   sublinhado tipo "Explorar Mais"). Fiel a isso, precisam ler como o
+   nome da categoria — não como uma legenda de canto discreta. */
+.curtain__tag {
+  position: absolute;
+  bottom: 64px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+  padding: 0 24px;
+}
+
+.curtain__tag-label {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: clamp(28px, 3.4vw, 46px);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.7), 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* CTA sempre visível e sólido em repouso — a interação real (escala +
+   leve subida) é feita via framer-motion (whileHover/whileTap no
+   componente), não CSS estático. */
+/* Botão de categoria maior (pedido): de 48px pra 64px de altura, texto
+   maior — agora leva pra /colecao/:slug de verdade. */
+.curtain__tag-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 64px;
+  padding: 0 36px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #0a0a0a;
+  font-family: var(--font-nav);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.curtain__tag-cta-icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+
+@media (max-width: 900px) {
+  .curtain {
+    height: 1500px;
+  }
+  .curtain__pin {
+    top: 90px;
+    height: calc(100vh - 90px);
+  }
+  .curtain__slices {
+    flex-direction: column;
+  }
+  .curtain__tag {
+    bottom: 28px;
+    padding: 0 16px;
+    gap: 12px;
+  }
+  .curtain__tag-label {
+    font-size: 24px;
+  }
+  .curtain__tag-cta {
+    height: 52px;
+    padding: 0 24px;
+    font-size: 15px;
+  }
+}

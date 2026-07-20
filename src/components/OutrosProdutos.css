@@ -1,0 +1,99 @@
+.outros-produtos {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  align-items: stretch;
+  background: #fff;
+  color: #0a0a0a;
+  border-top: 1px solid rgba(10, 10, 10, 0.15);
+  border-bottom: 1px solid rgba(10, 10, 10, 0.15);
+}
+
+.outros-produtos__title {
+  display: flex;
+  align-items: center;
+  padding: 60px 48px;
+  border-right: 1px solid rgba(10, 10, 10, 0.15);
+}
+
+.outros-produtos__title h2 {
+  --tw-stroke: var(--tw-stroke-dark);
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 1.15;
+  text-transform: uppercase;
+  color: #0a0a0a;
+}
+
+.outros-produtos__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.outros-produtos__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 40px 24px;
+  text-align: center;
+  border-left: 1px solid rgba(10, 10, 10, 0.15);
+}
+
+.outros-produtos__card:first-child {
+  border-left: none;
+}
+
+.outros-produtos__image {
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f4f4f4;
+}
+
+.outros-produtos__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.outros-produtos__card:hover .outros-produtos__image img {
+  transform: scale(1.06);
+}
+
+.outros-produtos__card h4 {
+  font-family: var(--font-inter);
+  font-weight: 600;
+  font-size: 18px;
+  color: #0a0a0a;
+}
+
+.outros-produtos__card span {
+  font-family: var(--font-inter);
+  font-size: 15px;
+  color: rgba(10, 10, 10, 0.6);
+}
+
+@media (max-width: 800px) {
+  .outros-produtos {
+    grid-template-columns: 1fr;
+  }
+  .outros-produtos__title {
+    border-right: none;
+    border-bottom: 1px solid rgba(10, 10, 10, 0.15);
+    padding: 40px 24px;
+  }
+  .outros-produtos__grid {
+    grid-template-columns: 1fr;
+  }
+  .outros-produtos__card {
+    border-left: none;
+    border-top: 1px solid rgba(10, 10, 10, 0.15);
+  }
+  .outros-produtos__card:first-child {
+    border-top: none;
+  }
+}

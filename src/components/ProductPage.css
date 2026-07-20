@@ -1,0 +1,579 @@
+/* Porte fiel do node 27:400 "detalhe-produto" — valores em px direto do
+   Figma (get_design_context), não arredondados/adaptados no olho. */
+
+.pp {
+  background: #fff;
+  color: #000;
+}
+
+.pp--empty {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-family: var(--font-opensauce);
+}
+
+/* NAVBAR — 27:401, própria dessa tela (não é o Navbar.jsx do resto do
+   site: no Figma é um componente diferente, com busca/conta/carrinho) */
+.pp__navbar {
+  height: 120px;
+  background: #000;
+  border-bottom: 1px solid #333;
+  padding: 0 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pp__nav-left {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.pp__nav-link {
+  font-family: var(--font-opensauce);
+  font-weight: 600;
+  font-size: 16px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.pp__nav-link--accent {
+  color: red;
+}
+
+.pp__logo {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 32px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.pp__nav-right {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.pp__nav-icon {
+  width: 19.2px;
+  height: 19.2px;
+}
+
+/* MAIN_CONTENT — 27:421. Auditado: a foto tinha altura fixa de 800px
+   (mais alta que muitas telas já só com a navbar) e o bloco de info tinha
+   870px de altura, maior que a foto e maior que o viewport — a caixa de
+   frete ficava fora da tela em qualquer notebook comum. Redesenhado pra
+   caber inteiro (foto + info + CTA) numa tela só: foto quadrada (a
+   proporção real do arquivo) que encolhe com a altura disponível em vez
+   de um valor fixo, e espaçamento vertical do bloco de info reduzido em
+   todos os níveis pra bater com a altura da foto. */
+.pp__main {
+  display: flex;
+  gap: 64px;
+  padding: 48px 80px;
+  align-items: center;
+  min-height: calc(100vh - 120px);
+}
+
+/* image-gallery — 27:422 */
+.pp__gallery {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pp__main-photo {
+  width: 100%;
+  aspect-ratio: 1;
+  max-height: min(64vh, 680px);
+  max-width: min(64vh, 680px);
+  overflow: hidden;
+  background: #f4f4f4;
+}
+
+.pp__main-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* product-info — 27:429 */
+.pp__info {
+  width: 560px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pp__title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pp__eyebrow {
+  font-family: var(--font-opensauce);
+  font-weight: 700;
+  font-size: 14px;
+  color: red;
+}
+
+/* Benzin-Bold não é uma fonte disponível/licenciada — mantido o
+   substituto já usado no resto do projeto para esse mesmo peso
+   geométrico (var(--font-mono), JetBrains Mono 700). */
+.pp__title {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 1.1;
+  color: #000;
+}
+
+.pp__price {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 34px;
+  color: red;
+}
+
+.pp__selectors {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pp__selector {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pp__selector-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pp__selector-label {
+  font-family: var(--font-opensauce);
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #000;
+}
+
+.pp__size-guide {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-opensauce);
+  font-weight: 300;
+  font-size: 12px;
+  text-decoration: underline;
+  color: #888;
+  cursor: pointer;
+}
+
+.pp__chips {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pp__chip {
+  border: 1px solid #000;
+  background: #fff;
+  padding: 10px 20px;
+  font-family: var(--font-opensauce);
+  font-weight: 700;
+  font-size: 13px;
+  color: #000;
+  cursor: pointer;
+}
+
+.pp__chip.is-active {
+  background: #000;
+  color: #fff;
+}
+
+.pp__chip--size {
+  width: 56px;
+  height: 42px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pp__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pp__btn {
+  height: 56px;
+  width: 100%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 17px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.pp__btn:hover {
+  opacity: 0.85;
+}
+
+/* Cor exata do Figma: texto preto sobre fundo vermelho no botão
+   "Adicionar ao carrinho" — mantido como está no arquivo, mesmo sendo
+   um contraste incomum. */
+.pp__btn--atc {
+  background: red;
+  color: #000;
+}
+
+.pp__btn--buy {
+  background: #000;
+  color: #fff;
+}
+
+.pp__description {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pp__description h3 {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 18px;
+  color: #000;
+}
+
+.pp__description p {
+  font-family: var(--font-opensauce);
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #888;
+}
+
+.pp__shipping {
+  border: 1px solid #333;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.pp__shipping img {
+  width: 19.2px;
+  height: 19.2px;
+  flex: none;
+}
+
+.pp__shipping strong {
+  display: block;
+  font-family: var(--font-opensauce);
+  font-weight: 700;
+  font-size: 14px;
+  color: #000;
+}
+
+.pp__shipping span {
+  display: block;
+  font-family: var(--font-opensauce);
+  font-weight: 300;
+  font-size: 12px;
+  color: #888;
+  margin-top: 2px;
+}
+
+/* OUTROS PRODUTOS — 27:488. No Figma é um bloco de altura fixa (488px)
+   com 3 cards e linhas divisórias verticais rotacionadas; aqui portado
+   como grid real em vez dos x calc()/rotate(90deg) do Figma (que são
+   posicionamento manual, não o jeito certo de fazer isso em CSS — mas
+   preserva o mesmo resultado visual: título à esquerda + 3 colunas com
+   fio vertical entre elas). */
+.pp__others {
+  background: #fff;
+  border-top: 3px solid #000;
+  padding: 64px 96px;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.pp__others-title {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 55px;
+  line-height: 1.4;
+  color: #000;
+}
+
+.pp__others-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* a borda divisória fica no filho direto da grade (o wrapper de motion),
+   não no card — o card agora vive dentro de um motion.div. */
+.pp__others-grid > div {
+  border-left: 1px solid #000;
+}
+
+.pp__others-grid > div:first-child {
+  border-left: none;
+}
+
+.pp__others-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+}
+
+.pp__others-card-title {
+  font-family: var(--font-opensauce);
+  font-weight: 600;
+  font-size: 26px;
+  color: #000;
+  text-align: center;
+}
+
+.pp__others-photo {
+  width: 100%;
+  max-width: 269px;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.pp__others-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pp__others-price {
+  font-family: var(--font-opensauce);
+  font-weight: 300;
+  font-size: 20px;
+  color: #000;
+}
+
+/* footer-g-nation — 27:507. Próprio dessa tela, diferente do Footer.jsx
+   do resto do site (copy e estrutura são as do Figma). */
+.pp__footer {
+  background: #080808;
+  display: flex;
+  flex-direction: column;
+}
+
+.pp__footer-accent {
+  height: 4px;
+  background: red;
+  width: 100%;
+}
+
+.pp__footer-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 60px;
+  padding: 80px 150px 60px;
+}
+
+.pp__footer-brand {
+  width: 450px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.pp__footer-brand h4 {
+  font-family: var(--font-opensauce);
+  font-weight: 700;
+  font-size: 48px;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.pp__footer-brand p {
+  font-family: var(--font-opensauce);
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #fff;
+}
+
+.pp__footer-socials {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pp__footer-socials > span {
+  font-family: var(--font-opensauce);
+  font-weight: 700;
+  font-size: 18px;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.pp__footer-social-icons {
+  display: flex;
+  gap: 12px;
+}
+
+.pp__footer-social-icons img {
+  width: 40px;
+  height: 40px;
+}
+
+.pp__footer-links,
+.pp__footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pp__footer-links > span,
+.pp__footer-contact > span {
+  font-family: var(--font-opensauce);
+  font-weight: 700;
+  font-size: 18px;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.pp__footer-links {
+  gap: 12px;
+}
+
+.pp__footer-links > span {
+  margin-bottom: 12px;
+}
+
+.pp__footer-links a {
+  font-family: var(--font-opensauce);
+  font-weight: 600;
+  font-size: 16px;
+  color: #fff;
+}
+
+.pp__footer-contact > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pp__footer-contact-label {
+  font-family: var(--font-opensauce);
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+}
+
+.pp__footer-contact-value {
+  font-family: var(--font-opensauce);
+  font-weight: 600;
+  font-size: 16px;
+  color: #808080;
+}
+
+.pp__footer-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+  width: 100%;
+}
+
+.pp__footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32px 150px;
+  font-family: var(--font-opensauce);
+  font-weight: 300;
+  font-size: 12px;
+  color: #fff;
+}
+
+.pp__footer-bottom p {
+  opacity: 0.6;
+}
+
+.pp__footer-legal {
+  display: flex;
+  gap: 24px;
+}
+
+.pp__footer-legal span {
+  opacity: 0.6;
+}
+
+@media (max-width: 1100px) {
+  .pp__main {
+    flex-direction: column;
+    padding: 40px 24px;
+    gap: 32px;
+    min-height: 0;
+    align-items: stretch;
+  }
+  .pp__info {
+    width: 100%;
+  }
+  .pp__main-photo {
+    max-width: 100%;
+    max-height: 60vh;
+  }
+  .pp__others {
+    grid-template-columns: 1fr;
+    padding: 40px 24px;
+  }
+  .pp__others-grid {
+    grid-template-columns: 1fr;
+  }
+  .pp__others-grid > div {
+    border-left: none;
+    border-top: 1px solid #000;
+  }
+  .pp__others-grid > div:first-child {
+    border-top: none;
+  }
+  .pp__others-card {
+    padding: 24px 0 0;
+  }
+  .pp__footer-main {
+    flex-direction: column;
+    padding: 60px 24px 40px;
+    gap: 40px;
+  }
+  .pp__footer-brand {
+    width: 100%;
+  }
+  .pp__footer-bottom {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 24px;
+  }
+}

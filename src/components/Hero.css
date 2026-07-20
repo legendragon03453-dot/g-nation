@@ -1,0 +1,409 @@
+/* Hero = mecanismo da Categoria, horizontal, em 3 fases pinadas:
+   A) painéis se afastam e revelam SÓ o vídeo (fundo);
+   B) dwell — o vídeo fica pinado sozinho, respirando;
+   C) a Categoria sobe POR CIMA (cover) — feito no Curtain.css com
+      z-index + margin-top negativo, escorregando sobre este hero ainda
+      pinado. z-index:1 garante que a Categoria (z2) cubra. */
+.hero {
+  position: relative;
+  /* 640vh: papel abre nos primeiros ~50vh, o filme de 8s roda quadro a
+     quadro até 70% e sobra dwell pra Categoria cobrir. */
+  height: 640vh;
+  z-index: 1;
+}
+
+.hero__defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.hero__pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* FUNDO real: joia full-bleed atrás dos painéis (z0). Revelada na fresta
+   quando os painéis se afastam. */
+.hero__joia {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* O "telão": quadro 16:9 do filme. Nasce em 112vw (cobre a viewport toda,
+   igual full-bleed) e recua pra 70vw quando a cortina termina de abrir,
+   mostrando o enquadramento inteiro sobre o radar. A largura é animada
+   inline (framer-motion). */
+.hero__screen {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  flex: none;
+  overflow: hidden;
+  background: #000;
+}
+.hero__joia-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.hero__joia-veil {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(13, 13, 13, 0) 0%,
+    rgba(13, 13, 13, 0.28) 76%,
+    rgba(13, 13, 13, 0.55) 100%
+  );
+}
+/* moldura hairline: o "corte" do telão, aparece junto do recuo */
+.hero__screen-frame {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  pointer-events: none;
+}
+
+/* ===== capítulos do scrollytelling ===== */
+.hero__chapter {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.hero__chapter a {
+  pointer-events: auto;
+}
+
+/* palavras: sólida em cima, outline embaixo (ou o inverso), sempre
+   mordendo a borda do telão pra tipografia viver meio no filme, meio
+   no radar. */
+.hero__word {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 0.92;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.hero__word-solid {
+  color: #fff;
+}
+.hero__word-solid--red {
+  color: #ff0000;
+}
+.hero__word-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.85);
+}
+
+/* cap 1: BRILHO DE VERDADE à esquerda, card Trevo Royal à direita */
+.hero__chapter--brilho .hero__word--left {
+  position: absolute;
+  left: 4vw;
+  bottom: 12vh;
+  font-size: clamp(40px, 6.4vw, 118px);
+  text-align: left;
+}
+.hero__chapter--brilho .hero__card--right {
+  position: absolute;
+  right: 4.5vw;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* cap 2: PRA QUEM ENCARA gigante, centralizado sobre os olhos */
+.hero__chapter--encara .hero__word--center {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  transform: translateX(-50%);
+  align-items: center;
+  font-size: clamp(52px, 8.6vw, 160px);
+}
+
+/* cap 3: PESO NO PEITO à direita, card Trevo Gold + CTA à esquerda */
+.hero__chapter--peso .hero__word--right {
+  position: absolute;
+  right: 4vw;
+  bottom: 12vh;
+  align-items: flex-end;
+  font-size: clamp(40px, 6.4vw, 118px);
+  text-align: right;
+}
+.hero__chapter-left {
+  position: absolute;
+  left: 4.5vw;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+.hero__cta--chapter {
+  margin-top: 0;
+}
+
+/* card de peça: foto real com alfa sobre chapa escura + hairline */
+.hero__card {
+  display: flex;
+  flex-direction: column;
+  width: clamp(190px, 16vw, 250px);
+  padding: 14px 14px 16px;
+  background: rgba(10, 10, 10, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(4px);
+  text-decoration: none;
+  color: #fff;
+}
+.hero__card-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  margin-bottom: 12px;
+  background: #0d0d0d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.hero__card-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 8%;
+  box-sizing: border-box;
+}
+.hero__card-cat {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+.hero__card-title {
+  margin-top: 4px;
+  font-family: var(--font-nav);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+.hero__card-row {
+  margin-top: 10px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.hero__card-price {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+.hero__card-go {
+  font-family: var(--font-nav);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: #ff0000;
+  border-bottom: 1px solid #ff0000;
+  padding-bottom: 1px;
+}
+
+/* O papel rasgado real (z1): imagem quadrada com furo de alfa real.
+   O wrap corta o excesso; o papel é posicionado de modo que o CENTRO DO
+   FURO (51.8% x, 55.2% y da imagem) caia no centro da viewport, e escala
+   a partir desse ponto (transform-origin idêntico). --paper-size garante
+   cobertura da viewport na escala 1. */
+.hero__paper-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hero__paper {
+  /* imagem SEM padding (textura real até a borda), esticada pra proporção
+     da viewport — o papel cobre a tela inteira e o CENTRO DO FURO
+     (51.8% x, 55.3% y da imagem) cai no centro exato da viewport. A
+     distorção não aparece na textura de papel e o furo segue orgânico. */
+  position: absolute;
+  width: 104vw;
+  height: 112vh;
+  left: calc(50% - 104vw * 0.518);
+  /* 0.49 em vez de 0.553 (centro exato): folha ~7vh mais baixa (pedidos:
+     "abaixa só um pouco mais a folha" 2x), furo abaixo do centro */
+  top: calc(50% - 112vh * 0.49);
+  transform-origin: 51.8% 55.3%;
+  will-change: transform;
+}
+.hero__paper-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: fill;
+  user-select: none;
+}
+
+/* pilha de texto centralizada sobre o furo (z2): eyebrow, duas linhas de
+   título e CTA, tudo no eixo central da tela. As metades voam em direções
+   opostas quando o rasgo abre. */
+.hero__stack {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  pointer-events: none;
+}
+.hero__stack a {
+  pointer-events: auto;
+}
+.hero__stack-half {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  will-change: transform;
+}
+.hero__stack .hero__eyebrow {
+  margin-bottom: 14px;
+}
+.hero__stack .hero__giant {
+  font-size: clamp(44px, calc(100vw / 11), 132px);
+  text-shadow: 0 4px 34px rgba(0, 0, 0, 0.55);
+}
+.hero__stack .hero__cta {
+  margin-top: 26px;
+}
+
+.hero__marquee-wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2.5vh;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+}
+
+.hero__giant {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: clamp(48px, calc(100vw / 10), 150px);
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fff;
+}
+
+.hero__cta {
+  margin-top: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  color: #0a0a0a;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-family: var(--font-nav);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+.hero__cta span {
+  color: #ff0000;
+  font-weight: 700;
+}
+
+.hero__marquee {
+  width: 100%;
+  margin-top: 32px;
+}
+.hero__marquee-text {
+  display: inline-block;
+  font-family: var(--font-nav);
+  font-weight: 500;
+  font-size: clamp(18px, 2vw, 34px);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+}
+
+@media (max-width: 800px) {
+  .hero__giant {
+    font-size: calc(100vw / 7);
+  }
+  .hero__marquee-text {
+    font-size: 16px;
+  }
+  /* mobile: o telão recuado ocupa quase a tela toda (min-width vence a
+     width animada) e os capítulos empilham palavra + card sem sobrepor */
+  .hero__screen {
+    min-width: 94vw;
+  }
+  .hero__chapter--brilho .hero__word--left {
+    left: 5vw;
+    bottom: auto;
+    top: 12vh;
+    font-size: calc(100vw / 9);
+  }
+  .hero__chapter--brilho .hero__card--right {
+    right: auto;
+    left: 50%;
+    top: auto;
+    bottom: 8vh;
+    transform: translateX(-50%);
+  }
+  .hero__chapter--encara .hero__word--center {
+    top: 72%;
+    font-size: calc(100vw / 8);
+  }
+  .hero__chapter--peso .hero__word--right {
+    right: 5vw;
+    bottom: auto;
+    top: 12vh;
+    font-size: calc(100vw / 9);
+  }
+  .hero__chapter-left {
+    left: 50%;
+    top: auto;
+    bottom: 8vh;
+    transform: translateX(-50%);
+    align-items: center;
+  }
+  .hero__card {
+    width: clamp(180px, 52vw, 230px);
+  }
+}

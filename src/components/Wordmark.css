@@ -1,0 +1,50 @@
+/* Lockup do wordmark completo: marca do G + lettering "-Nation".
+
+   Proporção interna FIXA: as duas artes têm quantidades diferentes de ar
+   em volta do desenho (corpo do G = 73% do arquivo, corpo do "-Nation" =
+   57%), então a razão entre as ALTURAS DE IMAGEM não é a razão entre os
+   desenhos — travar as duas na mesma altura encolhe o lettering.
+   Razão de imagem 1.15:1 => corpo do G ~1.4x o corpo do lettering: uma
+   inicial com presença, sem o Nation virar apêndice miúdo (1.8:1 fazia o
+   G ficar 2.3x e era exatamente esse o defeito). Só o conjunto escala; o
+   encaixe interno nunca muda.
+
+   Como em LogoG, o lockup PARTICIPA do fluxo: a linha cresce pra caber
+   ele. Encaixar por margem negativa faz a arte vazar por cima do vizinho. */
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1em;
+  vertical-align: middle;
+  user-select: none;
+}
+
+.wordmark img:first-child {
+  height: 2.5em;
+  width: auto;
+}
+
+.wordmark img:last-child {
+  height: 2.17em;
+  width: auto;
+}
+
+/* Sobre foto: as duas artes são brancas e somem em fundo claro. */
+.wordmark img {
+  filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.7))
+          drop-shadow(0 1px 4px rgba(0, 0, 0, 0.6));
+}
+
+/* Fundo escuro e chapado (footer, navbar, copyright): sombra vira ruído. */
+.wordmark--flat img {
+  filter: none;
+}
+
+@media (max-width: 640px) {
+  .wordmark img:first-child {
+    height: 2.1em;
+  }
+  .wordmark img:last-child {
+    height: 1.83em;
+  }
+}

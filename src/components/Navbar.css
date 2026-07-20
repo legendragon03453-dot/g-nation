@@ -1,0 +1,124 @@
+/* Node 27:40 (1920x155): #080808, "G" gigante vermelho 20% vazando,
+   logo central 182x114, links à esquerda (x=150), ícones à direita. */
+/* Altura mantida nos 90px originais do projeto (as seções — pin da
+   cortina, hero etc — foram projetadas em cima disso); o resto segue o
+   Figma (27:40): G gigante vermelho, logo central, ícones mascarados. */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #080808;
+  padding: 0 48px;
+  overflow: hidden;
+}
+
+/* 27:41 — "G" tipográfico colossal (no Figma: 3173px de largura,
+   vermelho translúcido) vazando pra fora da barra como textura. */
+.navbar__g {
+  position: absolute;
+  left: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 300px;
+  line-height: 1;
+  color: rgba(255, 0, 0, 0.2);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 27:53 — links à esquerda (tamanho reescalado pra barra de 90px) */
+.navbar__links {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 35px;
+}
+
+.navbar__links a {
+  font-family: var(--font-nav);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+.navbar__links a:hover {
+  opacity: 0.6;
+}
+
+/* 27:42 — logo centralizado (proporção do Figma, escala da barra 90px) */
+.navbar__logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  height: 66px;
+  display: flex;
+  align-items: center;
+}
+
+.navbar__logo img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+}
+
+/* 27:43 — ícones mask-group (retângulo branco mascarado pela forma do
+   ícone, padrão do Figma reconhecido e portado como mask CSS real). */
+.navbar__icons {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 23px;
+}
+
+.navbar__icon {
+  width: 26px;
+  height: 26px;
+  background: #fff;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+@media (max-width: 1100px) {
+  .navbar {
+    padding: 0 20px;
+  }
+  .navbar__g {
+    font-size: 240px;
+  }
+  .navbar__links {
+    gap: 14px;
+  }
+  .navbar__links a {
+    font-size: 12px;
+  }
+  .navbar__logo {
+    height: 52px;
+  }
+  .navbar__icons {
+    gap: 12px;
+  }
+  .navbar__icon {
+    width: 22px;
+    height: 22px;
+  }
+}
