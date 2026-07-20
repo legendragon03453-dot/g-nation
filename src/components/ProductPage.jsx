@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { PRODUCTS, getProductBySlug } from "../data/products";
-import LogoG from "./LogoG";
 import Wordmark from "./Wordmark";
+import Navbar from "./Navbar";
 import { useCart } from "../CartContext";
 import "./ProductPage.css";
 
@@ -40,7 +40,7 @@ export default function ProductPage() {
 
   const [material, setMaterial] = useState(product?.materials[0]);
   const [size, setSize] = useState(product?.sizes[0]);
-  const { adicionar, totalItens, abrir: abrirSacola } = useCart();
+  const { adicionar } = useCart();
 
   // Material e tamanho vão junto: a sacola trata cada combinação como uma
   // linha própria, como numa loja de verdade. `adicionar` já abre a
@@ -62,39 +62,7 @@ export default function ProductPage() {
 
   return (
     <div className="pp">
-      <nav className="pp__navbar">
-        <div className="pp__nav-left">
-          <a href="/projects" className="pp__nav-link pp__nav-link--accent">
-            <LogoG className="logo-g--flat" />-SHOP
-          </a>
-          <a href="/about" className="pp__nav-link">
-            <LogoG className="logo-g--flat" />-CUSTOMIZADAS
-          </a>
-          <a href="/contact" className="pp__nav-link">
-            CONTATO
-          </a>
-        </div>
-        <Link to="/" className="pp__logo">
-          <Wordmark flat />
-        </Link>
-        <div className="pp__nav-right">
-          <Link className="pp__nav-icon-btn" to="/colecao/g-shop" aria-label="Buscar peças">
-            <img className="pp__nav-icon" src="/assets/produto/icon-search.svg" alt="" />
-          </Link>
-          <Link className="pp__nav-icon-btn" to="/login" aria-label="Minha conta">
-            <img className="pp__nav-icon" src="/assets/produto/icon-user.svg" alt="" />
-          </Link>
-          <button
-            type="button"
-            className="pp__nav-icon-btn"
-            onClick={abrirSacola}
-            aria-label={totalItens > 0 ? `Sacola (${totalItens})` : "Sacola"}
-          >
-            <img className="pp__nav-icon" src="/assets/produto/icon-cart.svg" alt="" />
-            {totalItens > 0 && <span className="pp__nav-badge">{totalItens}</span>}
-          </button>
-        </div>
-      </nav>
+      <Navbar variant="inline" />
 
       <div className="pp__main">
         <div className="pp__gallery">

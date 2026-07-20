@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { getCollection } from "../data/products";
 import LogoG, { brandG } from "./LogoG";
 import Wordmark from "./Wordmark";
-import { useCart } from "../CartContext";
+import Navbar from "./Navbar";
 import "./CollectionPage.css";
 
 // quantas peças por página da vitrine (grade 3 colunas → 2 fileiras)
@@ -31,7 +31,6 @@ export default function CollectionPage() {
   const { slug } = useParams();
   const collection = getCollection(slug);
   const [page, setPage] = useState(1);
-  const { totalItens, abrir: abrirSacola } = useCart();
 
   if (!collection) {
     return (
@@ -54,42 +53,7 @@ export default function CollectionPage() {
 
   return (
     <div className="cp">
-      <nav className="cp__navbar">
-        <motion.span
-          className="cp__navbar-g"
-          initial={{ x: -80, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 1.2, ease: EASE }}
-          aria-hidden="true"
-        >
-          G
-        </motion.span>
-        <div className="cp__nav-links">
-          <Link to="/colecao/g-shop"><LogoG className="logo-g--flat" />-SHOP</Link>
-          <Link to="/colecao/g-customizadas"><LogoG className="logo-g--flat" />-CUSTOMIZADAS</Link>
-          <a href="/contact">CONTATO</a>
-        </div>
-        <Link to="/" className="cp__nav-logo">
-          <img src="/assets/colecao/navbar-logo.png" alt="G-Nation" />
-        </Link>
-        <div className="cp__nav-icons">
-          <button
-            type="button"
-            className="cp__nav-icon-btn"
-            onClick={abrirSacola}
-            aria-label={totalItens > 0 ? `Sacola (${totalItens})` : "Sacola"}
-          >
-            <span className="cp__nav-icon" style={{ maskImage: "url(/assets/colecao/mask-cart.png)", WebkitMaskImage: "url(/assets/colecao/mask-cart.png)" }} />
-            {totalItens > 0 && <span className="cp__nav-badge">{totalItens}</span>}
-          </button>
-          <Link className="cp__nav-icon-btn" to="/login" aria-label="Minha conta">
-            <span className="cp__nav-icon" style={{ maskImage: "url(/assets/colecao/mask-user.png)", WebkitMaskImage: "url(/assets/colecao/mask-user.png)" }} />
-          </Link>
-          <Link className="cp__nav-icon-btn" to="/colecao/g-shop" aria-label="Buscar peças">
-            <span className="cp__nav-icon" style={{ maskImage: "url(/assets/colecao/mask-search.png)", WebkitMaskImage: "url(/assets/colecao/mask-search.png)" }} />
-          </Link>
-        </div>
-      </nav>
+      <Navbar variant="inline" />
 
       <header className="cp__hero">
         <img className="cp__hero-bg" src="/assets/colecao/hero-correntes.png" alt="" />

@@ -4,18 +4,32 @@
    cortina, hero etc — foram projetadas em cima disso); o resto segue o
    Figma (27:40): G gigante vermelho, logo central, ícones mascarados. */
 .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 50;
-  height: 90px;
+  height: var(--gn-navbar-h, 90px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   background: #080808;
   padding: 0 48px;
   overflow: hidden;
+}
+
+/* overlay — barra FIXA por cima do conteúdo (home). O hero é desenhado
+   pra começar debaixo dela. */
+.navbar--overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+}
+
+/* inline — barra ESTÁTICA, ocupando espaço no fluxo (páginas internas).
+   O conteúdo começa depois dela naturalmente; nenhuma página precisa de
+   padding-top compensando barra fixa — que é a gambiarra que quebra o
+   layout quando alguém edita a página depois. */
+.navbar--inline {
+  position: relative;
+  z-index: 40;
 }
 
 /* 27:41 — "G" tipográfico colossal (no Figma: 3173px de largura,
@@ -56,6 +70,13 @@
 
 .navbar__links a:hover {
   opacity: 0.6;
+}
+
+/* seção em que se está: vermelho da marca. Vem da rota, não escrito à
+   mão — na navbar antiga do produto o vermelho ficava preso em "G-SHOP"
+   mesmo quando a peça era de outra categoria. */
+.navbar__links a.is-atual {
+  color: var(--gn-red, #ff0000);
 }
 
 /* 27:42 — logo centralizado (proporção do Figma, escala da barra 90px) */

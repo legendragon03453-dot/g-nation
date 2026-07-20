@@ -16,87 +16,10 @@
   font-family: var(--font-opensauce);
 }
 
-/* NAVBAR — 27:401, própria dessa tela (não é o Navbar.jsx do resto do
-   site: no Figma é um componente diferente, com busca/conta/carrinho) */
-.pp__navbar {
-  height: 120px;
-  background: #000;
-  border-bottom: 1px solid #333;
-  padding: 0 80px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+/* A navbar desta tela saiu daqui: agora é a Navbar global
+   (<Navbar variant="inline" />). Ela tinha 120px, outra logo e outros
+   arquivos de ícone — era o mesmo desenho já divergido. */
 
-.pp__nav-left {
-  display: flex;
-  align-items: center;
-  gap: 48px;
-}
-
-.pp__nav-link {
-  font-family: var(--font-opensauce);
-  font-weight: 600;
-  font-size: 16px;
-  color: #fff;
-  white-space: nowrap;
-}
-
-.pp__nav-link--accent {
-  color: red;
-}
-
-.pp__logo {
-  font-family: var(--font-mono);
-  font-weight: 800;
-  font-size: 32px;
-  color: #fff;
-  white-space: nowrap;
-}
-
-.pp__nav-right {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-}
-
-.pp__nav-icon-btn {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-}
-
-.pp__nav-icon-btn:hover {
-  opacity: 0.6;
-}
-
-.pp__nav-badge {
-  position: absolute;
-  top: -7px;
-  right: -9px;
-  min-width: 17px;
-  height: 17px;
-  padding: 0 4px;
-  border-radius: 999px;
-  background: var(--gn-red, #ff0000);
-  color: #fff;
-  font-family: var(--font-ui);
-  font-weight: 700;
-  font-size: 10px;
-  line-height: 17px;
-  text-align: center;
-}
-
-.pp__nav-icon {
-  width: 19.2px;
-  height: 19.2px;
-}
 
 /* MAIN_CONTENT — 27:421. Auditado: a foto tinha altura fixa de 800px
    (mais alta que muitas telas já só com a navbar) e o bloco de info tinha
@@ -111,7 +34,7 @@
   gap: 64px;
   padding: 48px 80px;
   align-items: center;
-  min-height: calc(100vh - 120px);
+  min-height: calc(100vh - var(--gn-navbar-h));
 }
 
 /* image-gallery — 27:422 */

@@ -1,34 +1,64 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import LogoG from "./LogoG";
 import { useCart } from "../CartContext";
 import "./Navbar.css";
 
-// Porte fiel do node 27:40 "NAVBAR" do Figma (frame 1920x155): fundo
-// #080808 com "G" tipográfico gigante vermelho translúcido vazando como
-// textura (27:41), logo real centralizado (27:42, asset baixado —
-// navbar-logo.png), links à esquerda em x=150 (27:53) e os três ícones
-// mascarados (carrinho/conta/busca, 27:43) à direita em x=1622 — os
-// mesmos assets já baixados pra navbar da página de coleção (27:671 é o
-// mesmo componente no Figma).
-export default function Navbar() {
+// NAVBAR GLOBAL — uma só no site inteiro (node 27:40 do Figma).
+//
+// Antes existiam TRÊS: esta, a `.cp__navbar` da coleção (155px, fonte e
+// ícones maiores) e a `.pp__navbar` do produto (120px, outra logo, outros
+// arquivos de ícone, um link vermelho fixo). Mexer numa página bagunçava
+// as outras, porque não havia fonte única — era o mesmo desenho copiado
+// três vezes e já divergido.
+//
+// A adaptação por página é DECLARADA, não improvisada:
+//
+//   variant="overlay"  (padrão) barra fixa por cima do conteúdo. É o caso
+//                      da home, onde o hero começa debaixo dela.
+//   variant="inline"   barra estática, ocupando espaço no fluxo. É o caso
+//                      das páginas internas, onde o conteúdo começa
+//                      DEPOIS dela — sem isso a página precisaria de um
+//                      padding-top compensando a barra fixa, que é
+//                      exatamente o tipo de gambiarra que quebra layout
+//                      quando alguém edita a página.
+//
+// O link da seção em que se está fica em vermelho sozinho, lendo a rota.
+// Antes esse vermelho era escrito na mão na navbar do produto, e por isso
+// apontava "G-SHOP" mesmo quando a peça era de outra categoria.
+export default function Navbar({ variant = "overlay" }) {
   const { totalItens, abrir } = useCart();
+  const { pathname } = useLocation();
+
+  const ehAtual = (destino) => pathname.startsWith(destino);
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar navbar--${variant}`}>
       <span className="navbar__g" aria-hidden="true">
         G
       </span>
+
       <div className="navbar__links">
-        <Link to="/colecao/g-shop"><LogoG className="logo-g--flat" />-SHOP</Link>
-        <Link to="/colecao/g-customizadas"><LogoG className="logo-g--flat" />-CUSTOMIZADAS</Link>
+        <Link
+          to="/colecao/g-shop"
+          className={ehAtual("/colecao/g-shop") ? "is-atual" : undefined}
+        >
+          <LogoG className="logo-g--flat" />-SHOP
+        </Link>
+        <Link
+          to="/colecao/g-customizadas"
+          className={ehAtual("/colecao/g-customizadas") ? "is-atual" : undefined}
+        >
+          <LogoG className="logo-g--flat" />-CUSTOMIZADAS
+        </Link>
         <a href="/contact">CONTATO</a>
       </div>
+
       <Link className="navbar__logo" to="/">
         <img src="/assets/colecao/navbar-logo.png" alt="G-Nation" />
       </Link>
-      {/* Os três ícones do Figma agora fazem o que prometem: carrinho
-          abre a sacola (com contador), conta leva ao login, busca leva à
-          vitrine. Antes eram <span> decorativos, sem ação nenhuma. */}
+
+      {/* Os três ícones do Figma fazem o que prometem: carrinho abre a
+          sacola (com contador), conta leva ao login, busca leva à vitrine. */}
       <div className="navbar__icons">
         <button
           type="button"

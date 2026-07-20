@@ -38,6 +38,10 @@
      no CTA principal. Era escrito como `red` / #ff0000 solto em cada
      arquivo. */
   --gn-red: #ff0000;
+
+  /* altura da navbar global. Fica aqui porque o pin da cortina e o
+     dimensionamento do hero dependem dela — mudar em um lugar só. */
+  --gn-navbar-h: 90px;
   /* assinatura tipográfica do hero: linha sólida + linha só contorno */
   --tw-stroke-light: rgba(255, 255, 255, 0.85);
   --tw-stroke-dark: rgba(10, 10, 10, 0.8);
