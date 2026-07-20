@@ -364,49 +364,151 @@
   white-space: nowrap;
 }
 
-@media (max-width: 800px) {
+/* ================= CELULAR / RETRATO =================
+   O filme é a cereja do site e aqui ele TOMA A TELA INTEIRA.
+
+   Antes: o telão mantinha aspect-ratio 16/9 com min-width 94vw. Num
+   aparelho de 390x844 isso dava 366x206px — uma tarja no meio da tela,
+   com preto sobrando em cima e embaixo. O recuo (112vw -> 70vw), que no
+   desktop é o gesto de "afastar a câmera pra mostrar o enquadramento",
+   em retrato só encolhia o filme sem motivo.
+
+   Agora: 100vw x 100dvh com object-fit:cover. Corta as laterais do 16:9,
+   que é o preço certo — em retrato, ver a cena grande vale mais do que
+   ver o enquadramento inteiro. O recuo é desligado no JS
+   (useTelaEstreita), porque a largura é animada inline e venceria
+   qualquer regra daqui.
+   ==================================================== */
+@media (max-width: 860px) {
   .hero__giant {
     font-size: calc(100vw / 7);
   }
   .hero__marquee-text {
     font-size: 16px;
   }
-  /* mobile: o telão recuado ocupa quase a tela toda (min-width vence a
-     width animada) e os capítulos empilham palavra + card sem sobrepor */
+
   .hero__screen {
-    min-width: 94vw;
+    /* a largura vem inline (100vw); aqui a altura e o fim do 16:9 */
+    aspect-ratio: auto;
+    height: 100dvh;
+    min-width: 0;
   }
+
+  /* a moldura hairline era o "corte" do telão recuado — em tela cheia
+     ela vira só um risco na borda do aparelho */
+  .hero__screen-frame {
+    display: none;
+  }
+
+  /* véu mais forte: em tela cheia a tipografia branca cai sobre a cena
+     inteira, não sobre um quadro escuro cercado de fundo */
+  .hero__joia-veil {
+    background: linear-gradient(
+      180deg,
+      rgba(13, 13, 13, 0.62) 0%,
+      rgba(13, 13, 13, 0.2) 34%,
+      rgba(13, 13, 13, 0.28) 62%,
+      rgba(13, 13, 13, 0.8) 100%
+    );
+  }
+
+  /* Capítulos: a palavra sobe pro alto e o card desce pro rodapé — os
+     dois usam a largura toda da tela, sem se sobrepor no meio (onde
+     está o assunto do filme). */
   .hero__chapter--brilho .hero__word--left {
     left: 5vw;
-    bottom: auto;
-    top: 12vh;
-    font-size: calc(100vw / 9);
-  }
-  .hero__chapter--brilho .hero__card--right {
-    right: auto;
-    left: 50%;
-    top: auto;
-    bottom: 8vh;
-    transform: translateX(-50%);
-  }
-  .hero__chapter--encara .hero__word--center {
-    top: 72%;
-    font-size: calc(100vw / 8);
-  }
-  .hero__chapter--peso .hero__word--right {
     right: 5vw;
     bottom: auto;
     top: 12vh;
-    font-size: calc(100vw / 9);
+    font-size: calc(100vw / 7.6);
+    white-space: normal;
+  }
+  .hero__chapter--brilho .hero__card--right {
+    right: 5vw;
+    left: 5vw;
+    top: auto;
+    bottom: 6vh;
+    transform: none;
+  }
+  .hero__chapter--encara .hero__word--center {
+    left: 5vw;
+    right: 5vw;
+    transform: none;
+    top: 50%;
+    margin-top: -12vh;
+    align-items: center;
+    text-align: center;
+    font-size: calc(100vw / 6.4);
+    white-space: normal;
+  }
+  .hero__chapter--peso .hero__word--right {
+    right: 5vw;
+    left: 5vw;
+    bottom: auto;
+    top: 12vh;
+    font-size: calc(100vw / 7.6);
+    white-space: normal;
   }
   .hero__chapter-left {
-    left: 50%;
+    left: 5vw;
+    right: 5vw;
     top: auto;
-    bottom: 8vh;
-    transform: translateX(-50%);
-    align-items: center;
+    bottom: 6vh;
+    transform: none;
+    align-items: stretch;
+    gap: 12px;
   }
+
+  /* CARD EM DUAS COLUNAS: foto à esquerda, informação à direita.
+     Empilhado (foto em cima de tudo) ele comia 300px de altura e cobria
+     o filme; deitado ocupa ~110px e ainda sobra cena pra ver. */
   .hero__card {
-    width: clamp(180px, 52vw, 230px);
+    width: auto;
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    grid-template-areas:
+      "foto cat"
+      "foto titulo"
+      "foto preco";
+    align-items: center;
+    column-gap: 14px;
+    row-gap: 2px;
+    padding: 12px;
+  }
+  .hero__card-photo {
+    grid-area: foto;
+    margin-bottom: 0;
+    align-self: stretch;
+  }
+  .hero__card-cat {
+    grid-area: cat;
+  }
+  .hero__card-title {
+    grid-area: titulo;
+    margin-top: 0;
+    font-size: 19px;
+  }
+  .hero__card-row {
+    grid-area: preco;
+    margin-top: 4px;
+  }
+  .hero__card-price {
+    font-size: 15px;
+  }
+
+  /* o CTA do capítulo 3 ocupa a largura, abaixo do card */
+  .hero__cta--chapter {
+    justify-content: center;
+  }
+}
+
+/* aparelho pequeno: só aperta os números, a composição é a mesma */
+@media (max-width: 400px) {
+  .hero__card {
+    grid-template-columns: 78px 1fr;
+    padding: 10px;
+  }
+  .hero__card-title {
+    font-size: 17px;
   }
 }

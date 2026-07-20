@@ -302,13 +302,14 @@
     width: 100%;
     margin-left: 0;
   }
+  /* Tablet: a vitrine continua em 3 colunas — cabe folgado e evita que
+     a peça vire miniatura. */
   .cp__grid {
-    grid-template-columns: 1fr;
-    padding: 32px 24px;
+    padding: 40px 24px;
   }
   .cp__card {
     height: auto;
-    padding: 32px 16px;
+    padding: 28px 14px;
   }
   .cp__card-photo {
     width: 100%;
@@ -316,17 +317,77 @@
     height: auto;
     aspect-ratio: 1;
   }
+  .cp__card-title {
+    font-size: 18px;
+  }
+  .cp__card-price {
+    font-size: 15px;
+  }
+  /* Footer em GRADE, não em coluna: a marca ocupa a linha inteira e as
+     duas listas de links ficam lado a lado. Em coluna única viravam três
+     blocos empilhados de rolagem morta. */
   .cp__footer-main {
-    flex-direction: column;
-    padding: 60px 24px 40px;
-    gap: 40px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 48px 24px 36px;
+    gap: 32px 24px;
   }
   .cp__footer-brand {
     width: 100%;
+    grid-column: 1 / -1;
   }
   .cp__footer-bottom {
     flex-direction: column;
     gap: 12px;
     padding: 24px;
+  }
+}
+
+/* CELULAR — a vitrine NUNCA cai pra coluna única: em 1 coluna o card
+   fica com 400px de altura e ver 6 peças vira 4.000px de rolagem
+   (medido). Em 2 colunas a pessoa compara as peças lado a lado, que é
+   pra isso que serve uma vitrine. */
+@media (max-width: 700px) {
+  .cp__grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 28px 16px;
+  }
+  .cp__card {
+    border-width: 2px;
+    padding: 18px 10px;
+    gap: 6px;
+  }
+  .cp__card-title {
+    font-size: 14px;
+    line-height: 1.2;
+  }
+  .cp__card-price {
+    font-size: 13px;
+  }
+  /* filtros viram uma faixa que rola na horizontal, em vez de quebrar em
+     três linhas e empurrar a vitrine pra fora da tela */
+  .cp__filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    padding: 16px;
+    gap: 10px;
+  }
+  .cp__filters::-webkit-scrollbar {
+    display: none;
+  }
+  .cp__filters-label {
+    flex: none;
+    font-size: 13px;
+  }
+  .cp__filter-pill {
+    flex: none;
+    padding: 9px 16px;
+    font-size: 12px;
+  }
+  /* a contagem sai da faixa rolável e vira legenda embaixo */
+  .cp__filters-count {
+    display: none;
   }
 }

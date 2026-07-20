@@ -90,3 +90,28 @@
     font-size: 12px;
   }
 }
+
+/* Celular: o botão vira só o equalizador, sem rótulo. Com o filme em
+   tela cheia ele passou a cair EM CIMA do card de peça dos capítulos —
+   a pílula com texto ocupava um terço da largura do rodapé. O ícone
+   sozinho continua óbvio e libera a cena. */
+@media (max-width: 640px) {
+  .sound-toggle {
+    right: 14px;
+    bottom: 14px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    justify-content: center;
+    gap: 0;
+  }
+  .sound-toggle__label {
+    /* fora da vista, mas continua sendo lido por leitor de tela */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import LogoG from "./LogoG";
 import { useCart } from "../CartContext";
@@ -28,14 +29,38 @@ import "./Navbar.css";
 export default function Navbar({ variant = "overlay" }) {
   const { totalItens, abrir } = useCart();
   const { pathname } = useLocation();
+  const [menuAberto, setMenuAberto] = useState(false);
 
   const ehAtual = (destino) => pathname.startsWith(destino);
 
+  // fecha o menu ao trocar de página — sem isso ele fica aberto por cima
+  // do conteúdo novo depois de clicar num link
+  useEffect(() => {
+    setMenuAberto(false);
+  }, [pathname]);
+
   return (
-    <nav className={`navbar navbar--${variant}`}>
-      <span className="navbar__g" aria-hidden="true">
-        G
+    <nav className={`navbar navbar--${variant}${menuAberto ? " is-menu-aberto" : ""}`}>
+      {/* O "G" gigante precisa ser recortado pela barra, mas o painel do
+          menu (celular) precisa ESCAPAR dela. Como as duas coisas usam
+          overflow, o recorte fica neste wrapper e não na .navbar. */}
+      <span className="navbar__g-clip" aria-hidden="true">
+        <span className="navbar__g">G</span>
       </span>
+
+      {/* Só no celular: os três links não cabem ao lado da logo e dos
+          ícones (atropelavam um ao outro em 390px). Viram este menu. */}
+      <button
+        type="button"
+        className="navbar__burger"
+        onClick={() => setMenuAberto((v) => !v)}
+        aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
+        aria-expanded={menuAberto}
+      >
+        <span />
+        <span />
+        <span />
+      </button>
 
       <div className="navbar__links">
         <Link

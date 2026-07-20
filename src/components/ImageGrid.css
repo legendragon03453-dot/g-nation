@@ -49,15 +49,29 @@
   opacity: 1;
 }
 
+/* São DUAS fotos: continuam lado a lado no celular. Empilhar transformava
+   um banner duplo em 800px de rolagem e desfazia o par, que é o ponto da
+   seção. Só a altura encolhe. */
 @media (max-width: 800px) {
-  .image-grid {
-    grid-template-columns: 1fr;
-  }
   .image-grid img {
-    height: 400px;
+    height: 340px;
   }
   .image-grid__cta {
     opacity: 1;
     bottom: 20px;
+    padding: 12px 18px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .image-grid img {
+    height: 240px;
+  }
+  .image-grid__cta {
+    bottom: 14px;
+    padding: 10px 14px;
+    font-size: 11px;
+    gap: 6px;
   }
 }

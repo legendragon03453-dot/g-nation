@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { getProductBySlug } from "../data/products";
@@ -67,8 +67,32 @@ function ChapterCard({ slug, align }) {
   );
 }
 
+// Retrato/celular: decide a DRAMATURGIA da cena, não só o tamanho da
+// fonte. No desktop o filme "recua" de full-bleed pra um quadro 16:9
+// afastado — mostrar o enquadramento inteiro é o gesto. Num celular em
+// pé, esse mesmo quadro 16:9 vira uma tarja de 206px no meio de uma tela
+// de 844px (medido em 390px de largura): o filme, que é a cereja do
+// site, ficava do tamanho de um banner. No celular o filme NÃO recua —
+// ele ocupa a tela toda, do topo ao rodapé, e a tipografia entra por
+// cima. Ler isso em JS (e não só em CSS) é necessário porque a largura
+// do telão é animada inline pelo framer-motion, e estilo inline ganha
+// de qualquer media query.
+function useTelaEstreita() {
+  const [estreita, setEstreita] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(max-width: 860px)").matches
+  );
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 860px)");
+    const onChange = (e) => setEstreita(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return estreita;
+}
+
 export default function Hero() {
   const ref = useRef(null);
+  const telaEstreita = useTelaEstreita();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -83,8 +107,14 @@ export default function Hero() {
   const paperOp = useTransform(scrollYProgress, (p) =>
     p <= 0.066 ? 1 : p >= 0.086 ? 0 : (0.086 - p) / 0.02
   );
-  const topY = useTransform(scrollYProgress, [0, 0.066], ["0%", "-320%"]);
-  const bottomY = useTransform(scrollYProgress, [0, 0.066], ["0%", "320%"]);
+  // Saída do título em VH, não em %. Em % o deslocamento é relativo à
+  // altura do próprio bloco: no desktop -320% limpava a tela, mas no
+  // celular o bloco é baixo (fonte menor) e 320% dele não chegava a
+  // 480px numa tela de 844px — "PRESENÇA" e "QUE PESA" ficavam presos
+  // por cima do filme durante a cena inteira. Em vh o texto sempre sai,
+  // em qualquer aparelho.
+  const topY = useTransform(scrollYProgress, [0, 0.066], ["0vh", "-85vh"]);
+  const bottomY = useTransform(scrollYProgress, [0, 0.066], ["0vh", "85vh"]);
 
   // O RECUO: logo depois da cortina abrir, o vídeo afasta de full-bleed
   // (112vw cobre a viewport) pro quadro 16:9 inteiro, com moldura hairline.
@@ -121,9 +151,31 @@ export default function Hero() {
       return;
     }
 
+    // PRIMING — o motivo de o filme não andar no celular.
+    // `preload="auto"` é uma sugestão que navegador de celular ignora:
+    // ele baixa só os metadados e espera um gesto pra buscar os dados.
+    // Sem dados, `currentTime` não tem pra onde ir e a cena fica no
+    // poster enquanto o scroll passa. Um play() mudo seguido de pause()
+    // é gesto suficiente pra ele decodificar e encher o buffer, e como o
+    // vídeo está mudo o autoplay é permitido. O toque na tela serve de
+    // segunda chance pros aparelhos que exigem interação de verdade.
+    const primeVideo = () => {
+      const p = video.play();
+      if (p && typeof p.then === "function") {
+        p.then(() => {
+          video.pause();
+          video.currentTime = targetTime.current || 0;
+        }).catch(() => {});
+      }
+    };
+    primeVideo();
+    window.addEventListener("touchstart", primeVideo, { once: true, passive: true });
+
     let raf;
     const chase = () => {
-      if (video.readyState >= 1) {
+      // readyState >= 2 (HAVE_CURRENT_DATA): com >= 1 só há metadado, e
+      // mandar currentTime nesse estado no celular não move nada.
+      if (video.readyState >= 2) {
         const diff = targetTime.current - video.currentTime;
         if (Math.abs(diff) > 0.02) {
           video.currentTime += diff * 0.28;
@@ -132,7 +184,10 @@ export default function Hero() {
       raf = requestAnimationFrame(chase);
     };
     raf = requestAnimationFrame(chase);
-    return () => cancelAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("touchstart", primeVideo);
+    };
   }, []);
 
   // capítulos ancorados nos atos do filme de 8s: t0-1 plano médio |
@@ -147,17 +202,34 @@ export default function Hero() {
         {/* FUNDO revelado na fresta: o filme da peça, que depois recua
             pro quadro 16:9 sobre o radar */}
         <div className="hero__joia">
-          <motion.div className="hero__screen" style={{ width: screenW }}>
+          {/* no celular o telão não recua: fica em 100vw a cena inteira
+              (a altura vem do CSS, 100dvh) — ver useTelaEstreita */}
+          <motion.div
+            className="hero__screen"
+            style={{ width: telaEstreita ? "100vw" : screenW }}
+          >
+            {/* No celular entra a versão leve: 1,34 MB contra 14,89 MB.
+                O arquivo grande simplesmente não terminava de baixar
+                antes da pessoa rolar, e sem os dados na mão o
+                `currentTime` não anda — o filme ficava parado no poster
+                enquanto o scroll passava. As duas versões são all-intra
+                (keyframe em ~todo frame), que é o que faz o seek ser
+                instantâneo em vez de engasgar a cada quadro.
+                O src vai direto no <video> (não em <source>) porque
+                trocar o src de um <source> não recarrega o vídeo. */}
             <video
               ref={videoRef}
               className="hero__joia-media"
+              src={
+                telaEstreita
+                  ? "/assets/hero/hero-video-mobile.mp4"
+                  : "/assets/hero/hero-video.mp4"
+              }
               poster="/assets/hero/hero-video-poster-new.jpg"
               preload="auto"
               muted
               playsInline
-            >
-              <source src="/assets/hero/hero-video.mp4" type="video/mp4" />
-            </video>
+            />
             <div className="hero__joia-veil" />
             <motion.div className="hero__screen-frame" style={{ opacity: frameOp }} />
           </motion.div>
@@ -223,7 +295,11 @@ export default function Hero() {
         {/* pilha de texto CENTRALIZADA sobre o furo: eyebrow + título em
             duas linhas + CTA. Quando o rasgo abre, a metade de cima voa
             pra cima e a de baixo pra baixo. */}
-        <div className="hero__stack">
+        {/* opacity junto do papel: rede de segurança pro título. Se por
+            qualquer motivo o deslocamento não limpar a tela (aparelho
+            muito baixo, barra do navegador aparecendo), ele some com a
+            cortina em vez de ficar preso sobre o filme. */}
+        <motion.div className="hero__stack" style={{ opacity: paperOp }}>
           <motion.div className="hero__stack-half" style={{ y: topY }}>
             <p className="hero__eyebrow">
               Marca de joias e acessórios de streetwear premium
@@ -232,11 +308,11 @@ export default function Hero() {
           </motion.div>
           <motion.div className="hero__stack-half" style={{ y: bottomY }}>
             <h1 className="hero__giant">QUE PESA</h1>
-            <a className="hero__cta" href="/colecao/g-shop">
+            <Link className="hero__cta" to="/colecao/g-shop">
               <span aria-hidden="true">↗</span> VER PEÇAS
-            </a>
+            </Link>
           </motion.div>
-        </div>
+        </motion.div>
 
         {/* marquee no rodapé, some junto com o papel */}
         <motion.div className="hero__marquee-wrap" style={{ opacity: paperOp }}>

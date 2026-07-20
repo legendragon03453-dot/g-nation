@@ -77,6 +77,8 @@
   color: rgba(10, 10, 10, 0.6);
 }
 
+/* O título sai da coluna lateral e vai pra cima, mas os CARDS seguem em
+   3 colunas: são peças pra comparar de relance. */
 @media (max-width: 800px) {
   .outros-produtos {
     grid-template-columns: 1fr;
@@ -84,16 +86,48 @@
   .outros-produtos__title {
     border-right: none;
     border-bottom: 1px solid rgba(10, 10, 10, 0.15);
-    padding: 40px 24px;
+    padding: 32px 24px;
   }
-  .outros-produtos__grid {
-    grid-template-columns: 1fr;
+  .outros-produtos__title h2 {
+    font-size: 30px;
   }
   .outros-produtos__card {
-    border-left: none;
+    padding: 28px 12px;
+  }
+  .outros-produtos__card h4 {
+    font-size: 15px;
+  }
+  .outros-produtos__card span {
+    font-size: 13px;
+  }
+}
+
+/* CELULAR — 2 colunas. Em 390px, 3 cards dariam 120px cada e a peça
+   viraria miniatura; em coluna única viravam três blocos empilhados. */
+@media (max-width: 640px) {
+  .outros-produtos__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .outros-produtos__card {
+    padding: 20px 10px;
+    gap: 8px;
+  }
+  /* a 3ª peça fica sozinha na última fileira: em vez de meia-linha
+     vazia, ela ocupa a largura toda com a foto em tamanho contido */
+  .outros-produtos__card:nth-child(3):last-child {
+    grid-column: 1 / -1;
     border-top: 1px solid rgba(10, 10, 10, 0.15);
   }
-  .outros-produtos__card:first-child {
-    border-top: none;
+  .outros-produtos__card:nth-child(3):last-child .outros-produtos__image {
+    max-width: 150px;
+  }
+  .outros-produtos__card:nth-child(2n) {
+    border-left: 1px solid rgba(10, 10, 10, 0.15);
+  }
+  .outros-produtos__card h4 {
+    font-size: 14px;
+  }
+  .outros-produtos__card span {
+    font-size: 12px;
   }
 }

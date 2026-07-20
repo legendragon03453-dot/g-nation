@@ -253,25 +253,62 @@
 }
 
 @media (max-width: 900px) {
+  /* respiro medido pra caber no pin: a seção vive numa tela travada, e
+     com 40px/32px o bloco passava 9px do topo (medido em 390x844). */
   .curtain__lancamentos {
-    padding: 40px 24px;
-    gap: 32px;
+    padding: 16px 18px;
+    gap: 14px;
   }
   .curtain__lanc-head {
-    gap: 16px;
+    gap: 6px;
   }
+  .curtain__lanc-head h2 {
+    font-size: clamp(19px, 6.2vw, 28px);
+  }
+  .curtain__lanc-head p {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+  .curtain__lanc-more {
+    height: 40px;
+    padding: 0 20px;
+    font-size: 12px;
+  }
+  /* Lançamentos em 2 COLUNAS (3 fileiras), nunca em coluna única: a
+     seção vive dentro de um pin — em 1 coluna as 6 peças não cabem na
+     tela travada e a grade rola por dentro, que é o defeito. A foto
+     encolhe pra caber as 3 fileiras no orçamento do pin. */
   .curtain__lanc-grid {
-    grid-template-columns: 1fr;
-    gap: 32px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
   }
+  .curtain__lanc-card {
+    padding: 8px 10px;
+    gap: 2px;
+  }
+  /* fio vertical: agora entre as 2 colunas */
   .curtain__lanc-card:not(:nth-child(3n)) {
     border-right: none;
   }
-  .curtain__lanc-card:nth-child(n + 2) {
+  .curtain__lanc-card:not(:nth-child(2n)) {
+    border-right: 2px solid rgb(228, 228, 231);
+  }
+  /* fio horizontal: a partir da 2ª fileira */
+  .curtain__lanc-card:nth-child(n + 4) {
+    border-top: none;
+  }
+  .curtain__lanc-card:nth-child(n + 3) {
     border-top: 2px solid rgb(228, 228, 231);
   }
+  .curtain__lanc-photo {
+    height: min(13vh, 130px);
+  }
   .curtain__lanc-card h4 {
-    font-size: 18px;
+    font-size: 13px;
+    line-height: 1.2;
+  }
+  .curtain__lanc-price {
+    font-size: 11px;
   }
 }
 

@@ -212,14 +212,19 @@
   white-space: nowrap;
 }
 
+/* Footer em GRADE de 2 colunas: a marca ocupa a linha inteira e as duas
+   listas (Navegação / Atendimento) ficam lado a lado. Empilhado em uma
+   coluna virava um rodapé de rolagem infinita no celular. */
 @media (max-width: 1100px) {
   .footer__main {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     padding: 48px 24px 32px;
-    gap: 40px;
+    gap: 36px 24px;
   }
   .footer__brand {
     width: 100%;
+    grid-column: 1 / -1;
   }
   .footer__wordmark {
     font-size: 36px;
@@ -232,5 +237,25 @@
   }
   .footer__legal {
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer__main {
+    padding: 36px 16px 24px;
+    gap: 28px 18px;
+  }
+  .footer__wordmark {
+    font-size: 28px;
+  }
+  /* a marca também vira grade: texto e redes lado a lado em vez de
+     duas caixas empilhadas */
+  .footer__brand {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .footer__bottom {
+    padding: 20px 16px;
   }
 }
