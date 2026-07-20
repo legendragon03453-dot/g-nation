@@ -208,13 +208,26 @@ export default function Hero() {
             className="hero__screen"
             style={{ width: telaEstreita ? "100vw" : screenW }}
           >
-            {/* No celular entra a versão leve: 1,34 MB contra 14,89 MB.
-                O arquivo grande simplesmente não terminava de baixar
-                antes da pessoa rolar, e sem os dados na mão o
-                `currentTime` não anda — o filme ficava parado no poster
-                enquanto o scroll passava. As duas versões são all-intra
-                (keyframe em ~todo frame), que é o que faz o seek ser
-                instantâneo em vez de engasgar a cada quadro.
+            {/* No celular entra outra CÓPIA do filme, não o mesmo
+                arquivo menor:
+
+                  desktop  1280x720 paisagem, 14,89 MB
+                  celular   406x720 RETRATO,   3,09 MB
+
+                Duas razões. (1) O arquivo de 14,89 MB não terminava de
+                baixar antes da pessoa rolar, e sem dados na mão o
+                `currentTime` não anda — o filme ficava travado no poster
+                enquanto o scroll passava. (2) Num celular em pé o
+                `object-fit: cover` joga fora ~74% da largura do 16:9;
+                codificar aquilo era gastar banda em pixel que ninguém vê
+                e ainda sobrava pouco bitrate pro que aparece — daí a
+                imagem ruim. A versão de celular já vem cortada em
+                retrato, então cada byte vai pro que está na tela: com
+                MENOS peso ela tem MAIS qualidade onde importa (CRF 20
+                contra os 27 da primeira tentativa).
+
+                As duas são all-intra (keyframe em ~todo frame), que é o
+                que faz o seek ser instantâneo em vez de engasgar.
                 O src vai direto no <video> (não em <source>) porque
                 trocar o src de um <source> não recarrega o vídeo. */}
             <video
