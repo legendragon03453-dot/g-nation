@@ -11,6 +11,9 @@ import Footer from "./components/Footer";
 import ProductPage from "./components/ProductPage";
 import CollectionPage from "./components/CollectionPage";
 import LoginPage from "./components/LoginPage";
+import RegisterPage from "./components/RegisterPage";
+import CartDrawer from "./components/CartDrawer";
+import { CartProvider } from "./CartContext";
 
 // Home enxuta, na ordem exata do frame HOME do Figma (27:39):
 // NAVBAR (27:40) → HERO (27:57) → CATEGORIA (27:64, as fatias da Curtain)
@@ -54,27 +57,36 @@ function CollectionPageRoute() {
 // nodes 27:400 e 27:670 do Figma) — ficam direto na rota.
 // O botão de som acompanha as páginas de conteúdo do site; numa tela de
 // entrada (login) ele só polui o canto. Único uso da rota aqui.
+const ROTAS_SEM_SOM = ["/login", "/criar-conta"];
+
 function SiteSound() {
   const { pathname } = useLocation();
-  return pathname.startsWith("/login") ? null : <SoundToggle />;
+  const nua = ROTAS_SEM_SOM.some((r) => pathname.startsWith(r));
+  return nua ? null : <SoundToggle />;
 }
 
 function App() {
   return (
-    <>
+    // CartProvider por fora de tudo: o ícone da navbar (contador), a
+    // página de produto (adicionar) e a gaveta precisam do mesmo estado.
+    <CartProvider>
       <RadarBackground />
       <SiteSound />
       <div className="app-content">
         <Routes>
           <Route path="/" element={<Home />} />
-      <Route path="/produto/:slug" element={<ProductPageRoute />} />
+          <Route path="/produto/:slug" element={<ProductPageRoute />} />
           <Route path="/colecao/:slug" element={<CollectionPageRoute />} />
-          {/* Login (node 27:368): tela de entrada, sem navbar/footer —
-              o cartão é o conteúdo inteiro e ela tem o próprio "voltar". */}
+          {/* Telas de conta (node 27:368): entrada, sem navbar/footer —
+              o cartão é o conteúdo inteiro e elas têm o próprio "voltar".
+              As duas usam a mesma casca (AuthShell). */}
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/criar-conta" element={<RegisterPage />} />
         </Routes>
       </div>
-    </>
+      {/* fora do .app-content: a gaveta cobre a página inteira */}
+      <CartDrawer />
+    </CartProvider>
   );
 }
 

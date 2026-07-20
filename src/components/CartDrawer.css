@@ -1,0 +1,354 @@
+/* SACOLA — gaveta lateral, não página.
+   Conversa com o resto do site pelas mesmas peças: preto #080808 do
+   footer/navbar, fio de acento vermelho no topo (igual .footer__accent),
+   nome da peça em display (JetBrains Mono 800 uppercase, como o card de
+   Lançamentos), rótulo e botão em ui (Open Sauce 700, 0.04em), CTA
+   vermelho com texto branco.
+
+   É gaveta e não página porque a sacola é uma CONSULTA no meio da
+   navegação: quem está vendo uma peça não quer perder a página pra
+   conferir o que já pegou. Sair da gaveta devolve exatamente onde estava. */
+
+.cart-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.cart {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 91;
+  width: 420px;
+  max-width: 100vw;
+  height: 100dvh;
+  background: var(--gn-ink, #080808);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -24px 0 60px rgba(0, 0, 0, 0.5);
+}
+
+/* mesmo fio vermelho que abre o footer do site */
+.cart__accent {
+  height: 4px;
+  background: var(--gn-red, #ff0000);
+  flex: none;
+}
+
+.cart__head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 26px 28px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.cart__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.cart__count {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  display: block;
+  margin-top: 4px;
+}
+
+.cart__close {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: transparent;
+  color: #fff;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.cart__close:hover {
+  background: #fff;
+  color: #0a0a0a;
+}
+
+/* a lista é a única parte que rola — cabeçalho e total ficam fixos */
+.cart__list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px 28px;
+}
+
+.cart__item {
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cart__item:last-child {
+  border-bottom: none;
+}
+
+/* caixa quadrada com a peça em `contain`, igual ao card de Lançamentos:
+   o PNG tem fundo transparente e se funde ao preto da gaveta */
+.cart__photo {
+  width: 76px;
+  height: 76px;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.cart__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cart__info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.cart__name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.cart__variant {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.cart__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+/* stepper: dois quadrados e o número, na mesma linguagem dos chips de
+   tamanho da página de produto */
+.cart__qty {
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.cart__qty button {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.cart__qty button:hover {
+  background: #fff;
+  color: #0a0a0a;
+}
+
+.cart__qty span {
+  min-width: 30px;
+  text-align: center;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 13px;
+  color: #fff;
+}
+
+.cart__price {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 14px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.cart__remove {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.cart__remove:hover {
+  color: var(--gn-red, #ff0000);
+}
+
+/* estado vazio: diz o que fazer e leva pra lá, em vez de só informar */
+.cart__empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 32px 28px;
+  text-align: center;
+}
+
+.cart__empty p {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.55);
+  max-width: 260px;
+}
+
+.cart__foot {
+  flex: none;
+  padding: 22px 28px 28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cart__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.cart__total-label {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.cart__total-value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 24px;
+  color: #fff;
+}
+
+.cart__note {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: -8px;
+}
+
+/* mesma voz de botão do site inteiro (ui 700, 0.04em, uppercase) */
+.cart__cta {
+  width: 100%;
+  height: 52px;
+  border: none;
+  background: var(--gn-red, #ff0000);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cart__cta:hover {
+  background: #d40000;
+}
+
+.cart__ghost {
+  width: 100%;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.cart__ghost:hover {
+  background: #fff;
+  color: #0a0a0a;
+}
+
+@media (max-width: 520px) {
+  .cart {
+    width: 100vw;
+  }
+  .cart__head,
+  .cart__list,
+  .cart__foot {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .cart__item {
+    grid-template-columns: 64px 1fr;
+    gap: 12px;
+  }
+  .cart__photo {
+    width: 64px;
+    height: 64px;
+  }
+}

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { getCollection } from "../data/products";
 import LogoG, { brandG } from "./LogoG";
 import Wordmark from "./Wordmark";
+import { useCart } from "../CartContext";
 import "./CollectionPage.css";
 
 // quantas peças por página da vitrine (grade 3 colunas → 2 fileiras)
@@ -30,6 +31,7 @@ export default function CollectionPage() {
   const { slug } = useParams();
   const collection = getCollection(slug);
   const [page, setPage] = useState(1);
+  const { totalItens, abrir: abrirSacola } = useCart();
 
   if (!collection) {
     return (
@@ -71,9 +73,21 @@ export default function CollectionPage() {
           <img src="/assets/colecao/navbar-logo.png" alt="G-Nation" />
         </Link>
         <div className="cp__nav-icons">
-          <span className="cp__nav-icon" style={{ maskImage: "url(/assets/colecao/mask-cart.png)" }} />
-          <span className="cp__nav-icon" style={{ maskImage: "url(/assets/colecao/mask-user.png)" }} />
-          <span className="cp__nav-icon" style={{ maskImage: "url(/assets/colecao/mask-search.png)" }} />
+          <button
+            type="button"
+            className="cp__nav-icon-btn"
+            onClick={abrirSacola}
+            aria-label={totalItens > 0 ? `Sacola (${totalItens})` : "Sacola"}
+          >
+            <span className="cp__nav-icon" style={{ maskImage: "url(/assets/colecao/mask-cart.png)", WebkitMaskImage: "url(/assets/colecao/mask-cart.png)" }} />
+            {totalItens > 0 && <span className="cp__nav-badge">{totalItens}</span>}
+          </button>
+          <Link className="cp__nav-icon-btn" to="/login" aria-label="Minha conta">
+            <span className="cp__nav-icon" style={{ maskImage: "url(/assets/colecao/mask-user.png)", WebkitMaskImage: "url(/assets/colecao/mask-user.png)" }} />
+          </Link>
+          <Link className="cp__nav-icon-btn" to="/colecao/g-shop" aria-label="Buscar peças">
+            <span className="cp__nav-icon" style={{ maskImage: "url(/assets/colecao/mask-search.png)", WebkitMaskImage: "url(/assets/colecao/mask-search.png)" }} />
+          </Link>
         </div>
       </nav>
 

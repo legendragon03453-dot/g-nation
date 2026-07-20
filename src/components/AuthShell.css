@@ -22,23 +22,23 @@
    ============================================================
    AS CAMADAS (de trás pra frente)
 
-     1. .login__bg        o clipe (versão leve) cobrindo a tela inteira
-     2. .login__scrim     o branco #fff6f6 POR CIMA do vídeo — é ele que
+     1. .auth__bg        o clipe (versão leve) cobrindo a tela inteira
+     2. .auth__scrim     o branco #fff6f6 POR CIMA do vídeo — é ele que
                           continua sendo o fundo; o clipe atravessa como
                           flash. A opacidade dele é o dial do efeito.
-     3. .login__watermark a marca gigante do Figma, sobre o branco:
+     3. .auth__watermark a marca gigante do Figma, sobre o branco:
                           nada do fundo original se perde
-     4. .login__card      o quadro, com o clipe em HD preenchendo dentro
+     4. .auth__card      o quadro, com o clipe em HD preenchendo dentro
 
    Dentro do quadro o mesmo cuidado: o clipe fica à mostra no topo (onde
    só existe a marca, branca, que lê sobre imagem escura) e, da metade
-   pra baixo, entra o .login__panel — vidro claro e opaco o bastante pra
+   pra baixo, entra o .auth__form — vidro claro e opaco o bastante pra
    nenhum label, campo ou botão perder contraste. O vídeo continua vivo
    atrás dele, desfocado. Nenhum elemento interativo fica sobre imagem
    crua.
    ============================================================ */
 
-.login {
+.auth {
   position: relative;
   min-height: 100vh;
   background: #fff6f6;
@@ -55,7 +55,7 @@
    e não escorrega quando a barra do navegador some no celular. O blur é
    moderado (não os 110px de antes): aqui não é pra derreter a imagem, é
    pra suavizar — quem controla a presença dele é o véu branco por cima. */
-.login__bg {
+.auth__bg {
   position: fixed;
   inset: 0;
   width: 100dvw;
@@ -85,7 +85,7 @@
    de ser clara. Um gradiente leve em vez de cor chapada: abre um pouco
    nas bordas (onde o clipe pode aparecer) e fecha no miolo, atrás do
    cartão, onde nada pode competir com o formulário. */
-.login__scrim {
+.auth__scrim {
   position: fixed;
   inset: 0;
   z-index: 1;
@@ -100,7 +100,7 @@
 
 /* CAMADA 3 — 27:369, a marca gigante girada. Fica na frente do branco,
    então o fundo original do Figma se mantém inteiro. */
-.login__watermark {
+.auth__watermark {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -127,31 +127,31 @@
 /* As duas laterais: mesma arte, menores, mais apagadas e com o giro
    espelhado — assim não parecem três cópias iguais enfileiradas. Ficam
    atrás do cartão nas bordas da tela, então o miolo continua limpo. */
-.login__watermark--left,
-.login__watermark--right {
+.auth__watermark--left,
+.auth__watermark--right {
   height: 92vh;
   opacity: 0.09;
 }
 
-.login__watermark--left {
+.auth__watermark--left {
   transform: translate(-190%, -50%) rotate(-15deg);
 }
 
-.login__watermark--right {
+.auth__watermark--right {
   transform: translate(78%, -50%) rotate(15deg);
 }
 
 /* telas estreitas: as laterais sairiam da vista e só somariam pintura —
    fica só a central, como no Figma */
 @media (max-width: 900px) {
-  .login__watermark--left,
-  .login__watermark--right {
+  .auth__watermark--left,
+  .auth__watermark--right {
     display: none;
   }
 }
 
 /* 27:396 — "voltar" no canto superior esquerdo */
-.login__back {
+.auth__back {
   position: absolute;
   left: clamp(24px, 6vw, 88px);
   top: 48px;
@@ -168,18 +168,18 @@
   transition: opacity 0.2s ease;
 }
 
-.login__back:hover {
+.auth__back:hover {
   opacity: 0.55;
 }
 
-.login__back img {
+.auth__back img {
   width: 18px;
   height: 18px;
 }
 
 /* CAMADA 4 — 27:370, o quadro. Sem padding próprio: o clipe precisa
    encostar nas quatro bordas; o respiro fica no topo e no painel. */
-.login__card {
+.auth__card {
   position: relative;
   z-index: 3;
   width: 460px;
@@ -199,7 +199,7 @@
    sumia. A trava vem do próprio vídeo — brightness baixo + contraste
    alto derrubam o teto de luminância, então NENHUM quadro estoura, e o
    véu por cima só faz o acabamento. */
-.login__card-video {
+.auth__card-video {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -216,7 +216,7 @@
    branco que fica direto sobre o clipe (marca, rótulos, "OU") apagaria
    justo quando a peça brilha. Mais denso no topo, onde está o lockup,
    e nunca opaco: em nenhum ponto o vídeo some. */
-.login__card-veil {
+.auth__card-veil {
   position: absolute;
   inset: 0;
   z-index: 1;
@@ -231,7 +231,7 @@
 }
 
 /* 27:371 — marca + linha de apoio, sobre o clipe */
-.login__head {
+.auth__head {
   position: relative;
   z-index: 2;
   display: flex;
@@ -245,12 +245,12 @@
    marca com ~65px de altura, proporcional ao cartão de 460px — no Figma
    o título tem 69px num cartão de 569px. Aqui usa a arte BRANCA (sem a
    variante ink), porque atrás dela tem vídeo escuro, não papel. */
-.login__wordmark {
+.auth__wordmark {
   font-size: 26px;
   line-height: 1;
 }
 
-.login__subtitle {
+.auth__subtitle {
   font-family: var(--font-ui);
   font-weight: 400;
   font-size: 12px;
@@ -262,11 +262,11 @@
 
 /* 27:374 — o formulário. SEM placa própria: uma chapa branca cobrindo a
    metade de baixo mataria o clipe justo onde ele tem mais movimento.
-   Em vez disso cada peça carrega o seu vidro (ver .login__input-wrap e
+   Em vez disso cada peça carrega o seu vidro (ver .auth__input-wrap e
    os botões), e o vídeo aparece nos VÃOS — entre os campos, em volta do
    "OU", nas margens. O gap maior existe pra isso: é por ele que o clipe
    respira. */
-.login__panel {
+.auth__form {
   position: relative;
   z-index: 2;
   display: flex;
@@ -275,7 +275,7 @@
   padding: 4px 34px 34px;
 }
 
-.login__field {
+.auth__field {
   display: flex;
   flex-direction: column;
   gap: 7px;
@@ -283,7 +283,7 @@
 
 /* rótulo fica direto sobre o clipe — branco com sombra curta, que é o
    que o site já faz em texto sobre foto (ver .curtain__tag-label) */
-.login__label {
+.auth__label {
   font-family: var(--font-ui);
   font-weight: 700;
   font-size: 10px;
@@ -298,7 +298,7 @@
    quadro claro do vídeo passa por baixo do que a pessoa está digitando.
    O blur mantém a cor do clipe viva atrás sem deixar nenhuma forma
    reconhecível competir com o texto. */
-.login__input-wrap {
+.auth__input-wrap {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -311,18 +311,18 @@
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.login__input-wrap:hover {
+.auth__input-wrap:hover {
   border-color: rgba(255, 255, 255, 0.75);
 }
 
 /* foco: fecha mais o vidro e acende a borda no vermelho da marca — quem
    está digitando ganha o ponto mais opaco da tela. */
-.login__input-wrap:focus-within {
+.auth__input-wrap:focus-within {
   background: rgba(10, 10, 10, 0.8);
   border-color: var(--gn-red, #ff0000);
 }
 
-.login__input {
+.auth__input {
   flex: 1;
   min-width: 0;
   height: 100%;
@@ -335,23 +335,23 @@
   color: #fff;
 }
 
-.login__input::placeholder {
+.auth__input::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
 
 /* O autofill do Chrome pinta o campo de amarelo e o texto de preto —
    sobre vidro escuro vira ilegível. Não dá pra sobrescrever o fundo,
    mas dá pra empurrar a cor via sombra interna e travar o texto. */
-.login__input:-webkit-autofill,
-.login__input:-webkit-autofill:hover,
-.login__input:-webkit-autofill:focus {
+.auth__input:-webkit-autofill,
+.auth__input:-webkit-autofill:hover,
+.auth__input:-webkit-autofill:focus {
   -webkit-text-fill-color: #fff;
   caret-color: #fff;
   -webkit-box-shadow: 0 0 0 60px rgba(14, 14, 14, 0.98) inset;
   transition: background-color 9999s ease-in-out 0s;
 }
 
-.login__eye {
+.auth__eye {
   flex: none;
   width: 18px;
   height: 18px;
@@ -365,13 +365,13 @@
   transition: opacity 0.2s ease;
 }
 
-.login__eye:hover {
+.auth__eye:hover {
   opacity: 1;
 }
 
 /* o ícone exportado do Figma é preto; dentro do campo escuro precisa ser
    branco. invert(1) preserva o desenho e o alfa. */
-.login__eye img {
+.auth__eye img {
   width: 100%;
   height: 100%;
   filter: invert(1);
@@ -379,7 +379,7 @@
 
 /* aviso: placa própria, porque é a única coisa que aparece do nada e
    precisa ser lida na hora */
-.login__error {
+.auth__error {
   font-family: var(--font-ui);
   font-size: 12px;
   line-height: 1.4;
@@ -395,7 +395,7 @@
    (Open Sauce 700, 0.04em, uppercase) e o vermelho da marca com texto
    branco — no Figma o texto era preto sobre o vermelho. Fundo sólido,
    nunca translúcido: é a ação principal da tela. */
-.login__submit {
+.auth__submit {
   width: 100%;
   height: 48px;
   border: none;
@@ -410,17 +410,17 @@
   transition: background-color 0.2s ease;
 }
 
-.login__submit:hover {
+.auth__submit:hover {
   background: #d40000;
 }
 
-.login__submit-block {
+.auth__submit-block {
   display: flex;
   flex-direction: column;
 }
 
 /* 27:389 — fica direto sobre o clipe, então branco com sombra */
-.login__forgot {
+.auth__forgot {
   align-self: center;
   margin-top: 14px;
   background: none;
@@ -436,30 +436,103 @@
   transition: color 0.2s ease;
 }
 
-.login__forgot:hover {
+.auth__forgot:hover {
   color: #fff;
 }
 
 /* 27:390 — separador "OU". Respiro extra em volta: é a fresta mais
    aberta do formulário, onde o clipe aparece por inteiro. */
-.login__or {
+.auth__or {
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 6px 0;
 }
 
+/* Aceite dos termos (tela de criar conta). Caixa desenhada à mão em vez
+   do checkbox do sistema: o nativo vem com o azul do SO e ignora quase
+   todo estilo. O input real continua no DOM (só escondido) — é ele que
+   guarda o estado, recebe foco e responde ao teclado. */
+.auth__check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.auth__check input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.auth__check-box {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(10, 10, 10, 0.5);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  position: relative;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* o "tique" é um L girado, feito com duas bordas — sem depender de fonte
+   de ícone nem de outro asset */
+.auth__check-box::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0.6);
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.auth__check input:checked + .auth__check-box {
+  background: var(--gn-red, #ff0000);
+  border-color: var(--gn-red, #ff0000);
+}
+
+.auth__check input:checked + .auth__check-box::after {
+  opacity: 1;
+  transform: rotate(45deg) scale(1);
+}
+
+/* foco por teclado precisa aparecer: o input real está escondido, então
+   o anel vai na caixa desenhada */
+.auth__check input:focus-visible + .auth__check-box {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.auth__check-text {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+}
+
 /* 27:390 — o separador é o ponto MAIS aberto do formulário: só dois
    fios e uma palavra, o clipe passa inteiro por aqui. */
-.login__or::before,
-.login__or::after {
+.auth__or::before,
+.auth__or::after {
   content: "";
   flex: 1;
   height: 1px;
   background: rgba(255, 255, 255, 0.45);
 }
 
-.login__or span {
+.auth__or span {
   font-family: var(--font-ui);
   font-weight: 400;
   font-size: 10px;
@@ -471,9 +544,15 @@
 /* 27:394 — ação secundária: vidro leve com contorno branco. Mais aberto
    que os campos (não se digita nele, então pode deixar passar mais) e
    preenche no hover. */
-.login__secondary {
+.auth__secondary {
   width: 100%;
   height: 46px;
+  /* serve como <button> e como <Link>: o flex centraliza o rótulo nos
+     dois casos, o text-decoration mata o sublinhado do link */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(14px) saturate(1.3);
   -webkit-backdrop-filter: blur(14px) saturate(1.3);
@@ -488,7 +567,7 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.login__secondary:hover {
+.auth__secondary:hover {
   background: #fff;
   color: #0a0a0a;
 }
@@ -497,16 +576,16 @@
    o vídeo cru por baixo do texto digitado. Fecha a cor no lugar do
    desfoque — perde o efeito, nunca a legibilidade. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .login__input-wrap {
+  .auth__input-wrap {
     background: rgba(10, 10, 10, 0.92);
   }
-  .login__input-wrap:focus-within {
+  .auth__input-wrap:focus-within {
     background: rgba(10, 10, 10, 0.97);
   }
-  .login__secondary {
+  .auth__secondary {
     background: rgba(10, 10, 10, 0.75);
   }
-  .login__error {
+  .auth__error {
     background: rgb(178, 0, 0);
   }
 }
@@ -517,58 +596,66 @@
    voltar a preto — senão some no branco. É o desenho estático do Figma,
    inteiro: fundo creme, marca gigante, cartão branco de borda preta. */
 @media (prefers-reduced-motion: reduce) {
-  .login__bg,
-  .login__card-video,
-  .login__card-veil {
+  .auth__bg,
+  .auth__card-video,
+  .auth__card-veil {
     display: none;
   }
 
   /* sem o vídeo atrás, o véu não precisa ser translúcido */
-  .login__scrim {
+  .auth__scrim {
     background: #fff6f6;
   }
 
-  .login__wordmark img {
+  .auth__wordmark img {
     filter: brightness(0);
   }
 
-  .login__subtitle,
-  .login__or span {
+  .auth__subtitle,
+  .auth__or span {
     color: #808080;
     text-shadow: none;
   }
 
-  .login__label,
-  .login__forgot {
+  .auth__label,
+  .auth__forgot,
+  .auth__check-text {
     color: #000;
     text-shadow: none;
   }
 
-  .login__or::before,
-  .login__or::after {
-    background: rgba(0, 0, 0, 0.35);
-  }
-
-  .login__input-wrap {
+  .auth__check-box {
     background: #fff;
     border-color: #000;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
 
-  .login__input {
+  .auth__or::before,
+  .auth__or::after {
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  .auth__input-wrap {
+    background: #fff;
+    border-color: #000;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .auth__input {
     color: #000;
   }
 
-  .login__input::placeholder {
+  .auth__input::placeholder {
     color: #a0a0a0;
   }
 
-  .login__eye img {
+  .auth__eye img {
     filter: none;
   }
 
-  .login__secondary {
+  .auth__secondary {
     background: #fff;
     border-color: #000;
     color: #000;
@@ -578,20 +665,20 @@
 }
 
 @media (max-width: 560px) {
-  .login {
+  .auth {
     padding: 80px 16px 48px;
   }
-  .login__back {
+  .auth__back {
     top: 28px;
   }
-  .login__head {
+  .auth__head {
     padding: 32px 22px 26px;
   }
-  .login__panel {
+  .auth__form {
     padding: 24px 22px 28px;
     gap: 16px;
   }
-  .login__wordmark {
+  .auth__wordmark {
     font-size: 20px;
   }
 }

@@ -85,6 +85,39 @@
 
 /* Ícones do Figma são "mask groups": retângulo branco mascarado pela
    forma do ícone (reconhecido e portado como mask CSS de verdade). */
+.cp__nav-icon-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.cp__nav-icon-btn:hover {
+  opacity: 0.6;
+}
+
+.cp__nav-badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--gn-red, #ff0000);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 19px;
+  text-align: center;
+}
+
 .cp__nav-icon {
   width: 34px;
   height: 34px;

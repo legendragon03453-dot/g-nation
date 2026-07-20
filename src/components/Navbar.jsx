@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import LogoG from "./LogoG";
+import { useCart } from "../CartContext";
 import "./Navbar.css";
 
 // Porte fiel do node 27:40 "NAVBAR" do Figma (frame 1920x155): fundo
@@ -10,6 +11,8 @@ import "./Navbar.css";
 // mesmos assets já baixados pra navbar da página de coleção (27:671 é o
 // mesmo componente no Figma).
 export default function Navbar() {
+  const { totalItens, abrir } = useCart();
+
   return (
     <nav className="navbar">
       <span className="navbar__g" aria-hidden="true">
@@ -23,19 +26,34 @@ export default function Navbar() {
       <Link className="navbar__logo" to="/">
         <img src="/assets/colecao/navbar-logo.png" alt="G-Nation" />
       </Link>
+      {/* Os três ícones do Figma agora fazem o que prometem: carrinho
+          abre a sacola (com contador), conta leva ao login, busca leva à
+          vitrine. Antes eram <span> decorativos, sem ação nenhuma. */}
       <div className="navbar__icons">
-        <span
-          className="navbar__icon"
-          style={{ maskImage: "url(/assets/colecao/mask-cart.png)", WebkitMaskImage: "url(/assets/colecao/mask-cart.png)" }}
-        />
-        <span
-          className="navbar__icon"
-          style={{ maskImage: "url(/assets/colecao/mask-user.png)", WebkitMaskImage: "url(/assets/colecao/mask-user.png)" }}
-        />
-        <span
-          className="navbar__icon"
-          style={{ maskImage: "url(/assets/colecao/mask-search.png)", WebkitMaskImage: "url(/assets/colecao/mask-search.png)" }}
-        />
+        <button
+          type="button"
+          className="navbar__icon-btn"
+          onClick={abrir}
+          aria-label={totalItens > 0 ? `Sacola (${totalItens})` : "Sacola"}
+        >
+          <span
+            className="navbar__icon"
+            style={{ maskImage: "url(/assets/colecao/mask-cart.png)", WebkitMaskImage: "url(/assets/colecao/mask-cart.png)" }}
+          />
+          {totalItens > 0 && <span className="navbar__badge">{totalItens}</span>}
+        </button>
+        <Link className="navbar__icon-btn" to="/login" aria-label="Minha conta">
+          <span
+            className="navbar__icon"
+            style={{ maskImage: "url(/assets/colecao/mask-user.png)", WebkitMaskImage: "url(/assets/colecao/mask-user.png)" }}
+          />
+        </Link>
+        <Link className="navbar__icon-btn" to="/colecao/g-shop" aria-label="Buscar peças">
+          <span
+            className="navbar__icon"
+            style={{ maskImage: "url(/assets/colecao/mask-search.png)", WebkitMaskImage: "url(/assets/colecao/mask-search.png)" }}
+          />
+        </Link>
       </div>
     </nav>
   );

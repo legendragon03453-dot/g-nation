@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { PRODUCTS, getProductBySlug } from "../data/products";
 import LogoG from "./LogoG";
 import Wordmark from "./Wordmark";
+import { useCart } from "../CartContext";
 import "./ProductPage.css";
 
 // Motion da página (framer-motion): foto entra com fade+scale suave, a
@@ -39,6 +40,14 @@ export default function ProductPage() {
 
   const [material, setMaterial] = useState(product?.materials[0]);
   const [size, setSize] = useState(product?.sizes[0]);
+  const { adicionar, totalItens, abrir: abrirSacola } = useCart();
+
+  // Material e tamanho vão junto: a sacola trata cada combinação como uma
+  // linha própria, como numa loja de verdade. `adicionar` já abre a
+  // gaveta — sem isso a pessoa clica e nada visível acontece.
+  function addToCart() {
+    adicionar(product, { material, tamanho: size });
+  }
 
   if (!product) {
     return (
@@ -69,9 +78,21 @@ export default function ProductPage() {
           <Wordmark flat />
         </Link>
         <div className="pp__nav-right">
-          <img className="pp__nav-icon" src="/assets/produto/icon-search.svg" alt="Buscar" />
-          <img className="pp__nav-icon" src="/assets/produto/icon-user.svg" alt="Conta" />
-          <img className="pp__nav-icon" src="/assets/produto/icon-cart.svg" alt="Carrinho" />
+          <Link className="pp__nav-icon-btn" to="/colecao/g-shop" aria-label="Buscar peças">
+            <img className="pp__nav-icon" src="/assets/produto/icon-search.svg" alt="" />
+          </Link>
+          <Link className="pp__nav-icon-btn" to="/login" aria-label="Minha conta">
+            <img className="pp__nav-icon" src="/assets/produto/icon-user.svg" alt="" />
+          </Link>
+          <button
+            type="button"
+            className="pp__nav-icon-btn"
+            onClick={abrirSacola}
+            aria-label={totalItens > 0 ? `Sacola (${totalItens})` : "Sacola"}
+          >
+            <img className="pp__nav-icon" src="/assets/produto/icon-cart.svg" alt="" />
+            {totalItens > 0 && <span className="pp__nav-badge">{totalItens}</span>}
+          </button>
         </div>
       </nav>
 
@@ -148,6 +169,7 @@ export default function ProductPage() {
             <motion.button
               type="button"
               className="pp__btn pp__btn--atc"
+              onClick={addToCart}
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 380, damping: 22 }}
@@ -157,6 +179,7 @@ export default function ProductPage() {
             <motion.button
               type="button"
               className="pp__btn pp__btn--buy"
+              onClick={addToCart}
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 380, damping: 22 }}

@@ -86,6 +86,42 @@
   gap: 23px;
 }
 
+/* os três ícones são clicáveis (sacola/conta/busca) — o botão só
+   carrega a área de clique e o hover; a arte segue em .navbar__icon */
+.navbar__icon-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.navbar__icon-btn:hover {
+  opacity: 0.6;
+}
+
+/* contador da sacola: no vermelho da marca, encostado no canto do ícone */
+.navbar__badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--gn-red, #ff0000);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 17px;
+  text-align: center;
+}
+
 .navbar__icon {
   width: 26px;
   height: 26px;
