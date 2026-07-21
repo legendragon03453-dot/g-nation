@@ -47,22 +47,47 @@
   margin: 0;
 }
 
+/* GRADE de verdade, não flex-wrap com card de largura fixa.
+   Antes: `flex` com `.depo__card { width: 400px }` e gap de 50px. Isso
+   exigia 1.750px pra caber os 4 depoimentos numa linha — então numa tela
+   de 1600px eles já quebravam em 2+2, e no celular o `max-width:100%`
+   fazia cada card ocupar a linha inteira: UMA coluna. A grade resolve os
+   dois: 4 numa fileira no desktop e nunca menos de 2 no celular. */
 .depo__row {
-  display: flex;
-  gap: 50px;
-  justify-content: center;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  align-items: start;
 }
 
-/* 27:105 — card preto 400px, padding 40, coluna gap 24 */
+/* 27:105 — card preto (padding 40, coluna gap 24). A LARGURA agora vem
+   da grade; o card só se estica pra preencher a coluna que recebeu. */
 .depo__card {
-  width: 400px;
-  max-width: 100%;
+  width: 100%;
   background: #000;
-  padding: 40px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 22px;
+}
+
+/* telas grandes: mantém o respiro original entre os cards */
+@media (min-width: 1500px) {
+  .depo__row {
+    gap: 40px;
+  }
+  .depo__card {
+    padding: 40px;
+  }
+}
+
+/* notebook: 4 cards de texto longo ficariam estreitos demais — 2 por
+   fileira dá linha de leitura confortável */
+@media (max-width: 1200px) {
+  .depo__row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
 }
 
 .depo__stars {
@@ -116,9 +141,42 @@
     display: none;
   }
   .depo__row {
-    gap: 20px;
+    gap: 16px;
   }
   .depo__card {
-    width: 100%;
+    padding: 24px;
+    gap: 16px;
+  }
+}
+
+/* CELULAR — 2 colunas, nunca uma. A tipografia encolhe junto pra a
+   linha de leitura continuar honesta na coluna estreita: sem isso o
+   texto de 18px em ~140px de largura quebraria a cada 3 palavras. */
+@media (max-width: 700px) {
+  .depo__inner {
+    padding: 32px 16px 44px;
+  }
+  .depo__row {
+    gap: 12px;
+  }
+  .depo__card {
+    padding: 16px 14px;
+    gap: 12px;
+  }
+  .depo__stars img {
+    width: 13px;
+    height: 13px;
+  }
+  .depo__stars {
+    gap: 3px;
+  }
+  .depo__body {
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  .depo__name {
+    font-size: 10px;
+    /* na coluna estreita o nome não cabe em uma linha só */
+    white-space: normal;
   }
 }
