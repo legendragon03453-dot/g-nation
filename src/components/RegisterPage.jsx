@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "./AuthShell";
+import { useAuth, mensagemErro } from "../AuthContext";
 
 // "Criar conta" — a MESMA peça do login (AuthShell): mesmo quadro, mesmo
 // vídeo, mesma tipografia, mesmos botões. Muda só o que o formulário
@@ -18,9 +19,23 @@ export default function RegisterPage() {
   const [verSenha, setVerSenha] = useState(false);
   const [aceite, setAceite] = useState(false);
   const [aviso, setAviso] = useState("");
+  const [ok, setOk] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
-  function onSubmit(e) {
+  const { criarConta, logado } = useAuth();
+  const navigate = useNavigate();
+
+  // Se a confirmação de e-mail estiver desligada no projeto, o signUp já
+  // devolve sessão — nesse caso a pessoa entra direto, sem passar pelo
+  // login. Com confirmação ligada, o `ok` abaixo é que dá a instrução.
+  useEffect(() => {
+    if (logado) navigate("/", { replace: true });
+  }, [logado, navigate]);
+
+  async function onSubmit(e) {
     e.preventDefault();
+    setAviso("");
+    setOk("");
     if (!nome.trim() || !email.trim() || !senha.trim()) {
       setAviso("Preencha nome, e-mail e senha para criar sua conta.");
       return;
@@ -33,7 +48,16 @@ export default function RegisterPage() {
       setAviso("É preciso aceitar os termos para criar a conta.");
       return;
     }
-    setAviso("A área de membro ainda não está no ar. Em breve.");
+    setEnviando(true);
+    const { data, error } = await criarConta(email.trim(), senha, nome.trim());
+    setEnviando(false);
+    if (error) {
+      setAviso(mensagemErro(error));
+      return;
+    }
+    if (!data.session) {
+      setOk("Conta criada. Confirme o e-mail que enviamos para entrar.");
+    }
   }
 
   return (
@@ -111,10 +135,11 @@ export default function RegisterPage() {
         </label>
 
         {aviso && <p className="auth__error">{aviso}</p>}
+        {ok && <p className="auth__ok">{ok}</p>}
 
         <div className="auth__submit-block">
-          <button type="submit" className="auth__submit">
-            Criar conta
+          <button type="submit" className="auth__submit" disabled={enviando}>
+            {enviando ? "Criando…" : "Criar conta"}
           </button>
         </div>
 

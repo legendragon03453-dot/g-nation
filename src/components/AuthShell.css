@@ -377,6 +377,26 @@
   filter: invert(1);
 }
 
+/* confirmação (link de senha enviado, conta criada): mesma placa do
+   erro, em verde — o contorno diz sozinho que deu certo */
+.auth__ok {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.4;
+  color: #fff;
+  background: rgba(0, 110, 45, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 10px 14px;
+  border-left: 3px solid #00c853;
+}
+
+.auth__submit:disabled,
+.auth__forgot:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 /* aviso: placa própria, porque é a única coisa que aparece do nada e
    precisa ser lida na hora */
 .auth__error {

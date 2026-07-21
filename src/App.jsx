@@ -12,8 +12,10 @@ import ProductPage from "./components/ProductPage";
 import CollectionPage from "./components/CollectionPage";
 import LoginPage from "./components/LoginPage";
 import RegisterPage from "./components/RegisterPage";
+import AccountPage from "./components/AccountPage";
 import CartDrawer from "./components/CartDrawer";
 import { CartProvider } from "./CartContext";
+import { AuthProvider } from "./AuthContext";
 
 // Home enxuta, na ordem exata do frame HOME do Figma (27:39):
 // NAVBAR (27:40) → HERO (27:57) → CATEGORIA (27:64, as fatias da Curtain)
@@ -67,8 +69,9 @@ function SiteSound() {
 
 function App() {
   return (
-    // CartProvider por fora de tudo: o ícone da navbar (contador), a
-    // página de produto (adicionar) e a gaveta precisam do mesmo estado.
+    // AuthProvider por fora do CartProvider: a sacola e o checkout
+    // precisam saber quem está logado, nunca o contrário.
+    <AuthProvider>
     <CartProvider>
       <RadarBackground />
       <SiteSound />
@@ -82,11 +85,14 @@ function App() {
               As duas usam a mesma casca (AuthShell). */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/criar-conta" element={<RegisterPage />} />
+          {/* protegida: redireciona pro login guardando o destino */}
+          <Route path="/conta" element={<AccountPage />} />
         </Routes>
       </div>
       {/* fora do .app-content: a gaveta cobre a página inteira */}
       <CartDrawer />
     </CartProvider>
+    </AuthProvider>
   );
 }
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import LogoG from "./LogoG";
 import { useCart } from "../CartContext";
+import { useAuth } from "../AuthContext";
 import "./Navbar.css";
 
 // NAVBAR GLOBAL — uma só no site inteiro (node 27:40 do Figma).
@@ -28,6 +29,7 @@ import "./Navbar.css";
 // apontava "G-SHOP" mesmo quando a peça era de outra categoria.
 export default function Navbar({ variant = "overlay" }) {
   const { totalItens, abrir } = useCart();
+  const { logado, nome } = useAuth();
   const { pathname } = useLocation();
   const [menuAberto, setMenuAberto] = useState(false);
 
@@ -97,7 +99,14 @@ export default function Navbar({ variant = "overlay" }) {
           />
           {totalItens > 0 && <span className="navbar__badge">{totalItens}</span>}
         </button>
-        <Link className="navbar__icon-btn" to="/login" aria-label="Minha conta">
+        {/* logado: o ícone acende no vermelho da marca e o título diz o
+            nome — é o sinal de que a sessão está de pé */}
+        <Link
+          className={`navbar__icon-btn${logado ? " is-logado" : ""}`}
+          to={logado ? "/conta" : "/login"}
+          aria-label={logado ? `Minha conta (${nome})` : "Entrar"}
+          title={logado ? nome : "Entrar"}
+        >
           <span
             className="navbar__icon"
             style={{ maskImage: "url(/assets/colecao/mask-user.png)", WebkitMaskImage: "url(/assets/colecao/mask-user.png)" }}

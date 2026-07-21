@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart, brl } from "../CartContext";
+import { useAuth } from "../AuthContext";
 import { brandG } from "./LogoG";
 import "./CartDrawer.css";
 
@@ -12,6 +13,8 @@ const EASE = [0.16, 1, 0.3, 1];
 // exatamente onde ela estava, sem recarregar a vitrine.
 export default function CartDrawer() {
   const { itens, totalItens, subtotal, aberta, fechar, remover, mudarQtd } = useCart();
+  const { logado } = useAuth();
+  const navigate = useNavigate();
 
   // Esc fecha, e o body para de rolar enquanto a gaveta está aberta —
   // sem isso o fundo rola atrás da gaveta quando a lista chega ao fim.
@@ -150,8 +153,20 @@ export default function CartDrawer() {
                     <span className="cart__total-value">{brl(subtotal)}</span>
                   </div>
                   <p className="cart__note">Frete grátis para todo o Brasil.</p>
-                  <button type="button" className="cart__cta">
-                    Finalizar compra
+                  {/* Compra só com conta (decisão do cliente). Quem não
+                      está logado vai pro login levando o destino junto,
+                      pra voltar pro checkout depois de entrar em vez de
+                      cair na home e ter que refazer o caminho. */}
+                  <button
+                    type="button"
+                    className="cart__cta"
+                    onClick={() => {
+                      fechar();
+                      if (logado) navigate("/checkout");
+                      else navigate("/login", { state: { de: "/checkout" } });
+                    }}
+                  >
+                    {logado ? "Finalizar compra" : "Entrar para finalizar"}
                   </button>
                   <button type="button" className="cart__ghost" onClick={fechar}>
                     Continuar comprando

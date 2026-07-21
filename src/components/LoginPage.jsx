@@ -1,26 +1,62 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthShell from "./AuthShell";
+import { useAuth, mensagemErro } from "../AuthContext";
 
 // Porte do node 27:368 "minha-conta" do Figma (TXte9vygIeSP76UVjnbwLT).
 // A casca (vídeo, véu, marcas, quadro, cabeçalho) é o AuthShell, o mesmo
 // da tela de criar conta — aqui fica só o formulário.
 //
-// Ainda não existe backend de conta: o formulário valida os campos e diz
-// a verdade sobre o estado, em vez de simular uma sessão que não existe.
+// Autenticação real via Supabase (projeto gnation).
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [verSenha, setVerSenha] = useState(false);
   const [aviso, setAviso] = useState("");
+  const [ok, setOk] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
-  function onSubmit(e) {
+  const { entrar, recuperarSenha, logado } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Volta pra onde a pessoa queria ir antes de ser mandada pro login
+  // (ex.: clicou em finalizar compra). Sem isso ela entra e cai na home,
+  // tendo que refazer o caminho.
+  const destino = location.state?.de || "/";
+
+  useEffect(() => {
+    if (logado) navigate(destino, { replace: true });
+  }, [logado, destino, navigate]);
+
+  async function onSubmit(e) {
     e.preventDefault();
+    setAviso("");
+    setOk("");
     if (!email.trim() || !senha.trim()) {
       setAviso("Preencha e-mail e senha para entrar.");
       return;
     }
-    setAviso("A área de membro ainda não está no ar. Em breve.");
+    setEnviando(true);
+    const { error } = await entrar(email.trim(), senha);
+    setEnviando(false);
+    if (error) setAviso(mensagemErro(error));
+    // sucesso não precisa de nada aqui: o useEffect acima redireciona
+    // assim que a sessão chega
+  }
+
+  async function onEsqueci() {
+    setAviso("");
+    setOk("");
+    if (!email.trim()) {
+      setAviso("Escreva seu e-mail no campo acima para receber o link.");
+      return;
+    }
+    setEnviando(true);
+    const { error } = await recuperarSenha(email.trim());
+    setEnviando(false);
+    if (error) setAviso(mensagemErro(error));
+    else setOk("Link enviado. Veja sua caixa de entrada.");
   }
 
   return (
@@ -69,12 +105,18 @@ export default function LoginPage() {
         </div>
 
         {aviso && <p className="auth__error">{aviso}</p>}
+        {ok && <p className="auth__ok">{ok}</p>}
 
         <div className="auth__submit-block">
-          <button type="submit" className="auth__submit">
-            Entrar
+          <button type="submit" className="auth__submit" disabled={enviando}>
+            {enviando ? "Entrando…" : "Entrar"}
           </button>
-          <button type="button" className="auth__forgot">
+          <button
+            type="button"
+            className="auth__forgot"
+            onClick={onEsqueci}
+            disabled={enviando}
+          >
             Esqueci minha senha
           </button>
         </div>

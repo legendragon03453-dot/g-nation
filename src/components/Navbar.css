@@ -135,6 +135,11 @@
   opacity: 0.6;
 }
 
+/* sessão de pé: o ícone de conta acende no vermelho da marca */
+.navbar__icon-btn.is-logado .navbar__icon {
+  background: var(--gn-red, #ff0000);
+}
+
 /* contador da sacola: no vermelho da marca, encostado no canto do ícone */
 .navbar__badge {
   position: absolute;
