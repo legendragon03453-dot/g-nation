@@ -77,7 +77,7 @@ export default function Navbar({ variant = "overlay" }) {
         >
           <LogoG className="logo-g--flat" />-CUSTOMIZADAS
         </Link>
-        <a href="/contact">CONTATO</a>
+        <Link to="/contato">CONTATO</Link>
       </div>
 
       <Link className="navbar__logo" to="/">

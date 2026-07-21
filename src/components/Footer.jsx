@@ -47,7 +47,7 @@ export default function Footer() {
             <Link to="/colecao/g-shop">Produtos</Link>
             <a href="/#lancamentos">Lançamentos</a>
             <a href="/#depoimentos">Depoimentos</a>
-            <a href="/contact">Contato</a>
+            <Link to="/contato">Contato</Link>
           </div>
         </div>
 

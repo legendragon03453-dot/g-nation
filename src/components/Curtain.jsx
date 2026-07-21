@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import "./Curtain.css";
 import ImageCrossfade from "./ImageCrossfade";
@@ -99,7 +100,7 @@ export default function Curtain() {
   });
 
   return (
-    <section className="curtain" ref={curtainRef}>
+    <section className="curtain" id="lancamentos" ref={curtainRef}>
       <div className="curtain__pin">
         <div className="curtain__slices">
           <motion.div className="curtain__slice" style={{ x: leftX }}>
@@ -178,16 +179,19 @@ export default function Curtain() {
                 ))}
               </div>
 
-              <motion.a
-                className="curtain__lanc-more"
-                href="/projects"
+              {/* "Ver mais" apontava pra /projects, rota que nunca
+                  existiu — clicar dava tela branca. O destino real é a
+                  vitrine. */}
+              <motion.div
                 whileHover={{ scale: 1.04, y: -3 }}
                 whileTap={{ scale: 0.96 }}
                 transition={{ type: "spring", stiffness: 420, damping: 24 }}
               >
-                <span>Ver mais</span>
-                <img className="curtain__lanc-more-icon" src="/assets/sections/arrow-right.svg" alt="" />
-              </motion.a>
+                <Link className="curtain__lanc-more" to="/colecao/g-shop">
+                  <span>Ver mais</span>
+                  <img className="curtain__lanc-more-icon" src="/assets/sections/arrow-right.svg" alt="" />
+                </Link>
+              </motion.div>
             </div>
           </div>
         </div>

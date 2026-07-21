@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./Shop.css";
 import { PRODUCTS } from "../data/products";
 
@@ -10,9 +11,9 @@ export default function Shop() {
             <span className="shop__tag">Novidades</span>
             <h2>O drop novo já tá na vitrine</h2>
           </div>
-          <a className="shop__see-all" href="/projects">
+          <Link className="shop__see-all" to="/colecao/g-shop">
             Ver todas as peças
-          </a>
+          </Link>
         </div>
 
         <div className="shop__grid">

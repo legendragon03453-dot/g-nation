@@ -228,10 +228,10 @@ export default function ProductPage() {
           <div className="pp__footer-links">
             <span>NAVEGAÇÃO</span>
             <Link to="/">Início</Link>
-            <a href="/projects">Produtos</a>
+            <Link to="/colecao/g-shop">Produtos</Link>
             <a href="/#lancamentos">Lançamentos</a>
             <a href="/#depoimentos">Depoimentos</a>
-            <a href="/contact">Contato</a>
+            <Link to="/contato">Contato</Link>
           </div>
           <div className="pp__footer-contact">
             <span>ATENDIMENTO</span>

@@ -47,56 +47,296 @@
   word-break: break-word;
 }
 
-.conta__grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-bottom: 36px;
-}
+/* ---------- abas ---------- */
 
-.conta__bloco {
-  border: 2px solid #000;
-  padding: 26px 24px;
+.conta__abas {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: flex-start;
+  gap: 0;
+  border-bottom: 2px solid #000;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
-.conta__bloco-titulo {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 15px;
-  letter-spacing: 0.06em;
+.conta__abas::-webkit-scrollbar {
+  display: none;
+}
+
+.conta__aba {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.conta__aba:hover {
   color: #000;
 }
 
-.conta__dados {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin: 0;
-  width: 100%;
+.conta__aba.is-ativa {
+  background: #000;
+  color: #fff;
 }
 
-.conta__dados dt {
+.conta__aba-n {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--gn-red, #ff0000);
+  color: #fff;
+  font-size: 10px;
+  line-height: 18px;
+  text-align: center;
+}
+
+.conta__painel {
+  margin-bottom: 32px;
+}
+
+.conta__nada {
+  border: 2px solid #000;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+/* ---------- pedidos ---------- */
+
+.conta__pedidos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.conta__pedido {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  border: 2px solid #000;
+  background: #fff;
+  padding: 16px 20px;
+  text-decoration: none;
+  color: #000;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.conta__pedido:hover {
+  background: #000;
+  color: #fff;
+}
+
+.conta__pedido-num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.conta__pedido-data {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.conta__pedido-total {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.conta__status {
+  justify-self: start;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 9px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.conta__status--espera {
+  background: #b26a00;
+}
+.conta__status--andando {
+  background: #0a4d8c;
+}
+.conta__status--ok {
+  background: #0a7d32;
+}
+.conta__status--ruim {
+  background: #8c0a0a;
+}
+
+/* ---------- formulário de dados ---------- */
+
+.conta__form {
+  border: 2px solid #000;
+  background: #fff;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 620px;
+}
+
+.conta__linha {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.conta__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.conta__campo label {
   font-family: var(--font-ui);
   font-weight: 700;
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.5);
-  margin-bottom: 3px;
+  color: rgba(0, 0, 0, 0.6);
 }
 
-.conta__dados dd {
-  margin: 0;
+.conta__campo input {
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid #000;
+  background: #fff;
   font-family: var(--font-ui);
-  font-weight: 400;
   font-size: 15px;
   color: #000;
-  word-break: break-word;
+  outline: none;
+  min-width: 0;
+}
+
+.conta__campo input:focus {
+  box-shadow: inset 0 0 0 1px #000;
+}
+
+.conta__campo input:disabled {
+  background: #f2f2f2;
+  color: rgba(0, 0, 0, 0.5);
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+.conta__campo-erro {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--gn-red, #ff0000);
+}
+
+.conta__campo-nota {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.conta__salvo {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: #0a7d32;
+}
+
+/* ---------- endereços ---------- */
+
+.conta__enderecos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.conta__enderecos li {
+  border: 2px solid rgba(0, 0, 0, 0.25);
+  background: #fff;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  justify-content: space-between;
+}
+
+.conta__enderecos li.is-padrao {
+  border-color: #000;
+}
+
+.conta__end-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.conta__end-texto strong {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 14px;
+  color: #000;
+}
+
+.conta__end-tag {
+  align-self: flex-start;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: #000;
+  color: #fff;
+  padding: 4px 8px;
+  margin-bottom: 6px;
+}
+
+.conta__end-acoes {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.conta__end-acoes button {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #000;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.conta__end-remover {
+  color: var(--gn-red, #ff0000) !important;
 }
 
 .conta__vazio {
@@ -104,6 +344,14 @@
   font-size: 14px;
   line-height: 1.5;
   color: rgba(0, 0, 0, 0.55);
+}
+
+.conta__nada p {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(0, 0, 0, 0.6);
+  max-width: 460px;
 }
 
 /* mesma voz de botão do site */
@@ -128,6 +376,35 @@
 .conta__ghost:hover {
   background: #000;
   color: #fff;
+}
+
+/* botão de salvar do formulário de dados — mesma voz do site */
+.conta__cta {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 28px;
+  border: none;
+  background: var(--gn-red, #ff0000);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.conta__cta:hover {
+  background: #d40000;
+}
+
+.conta__cta:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
 .conta__sair {
@@ -159,19 +436,6 @@
   .conta__inner {
     padding: 28px 16px 48px;
   }
-  .conta__grid {
-    gap: 12px;
-  }
-  .conta__bloco {
-    padding: 18px 14px;
-    gap: 12px;
-  }
-  .conta__bloco-titulo {
-    font-size: 13px;
-  }
-  .conta__dados dd {
-    font-size: 13px;
-  }
   .conta__vazio {
     font-size: 12.5px;
   }
@@ -180,7 +444,63 @@
     padding: 0 14px;
     font-size: 11px;
   }
-  .conta__sair {
+  .conta__sair,
+  .conta__cta {
     width: 100%;
+  }
+
+  .conta__aba {
+    padding: 12px 14px;
+    font-size: 11px;
+  }
+
+  .conta__form,
+  .conta__nada {
+    padding: 16px 14px;
+  }
+
+  /* o cartão do pedido vira duas linhas: número+status em cima,
+     data+total embaixo. Em uma linha só, o total era espremido. */
+  .conta__pedido {
+    grid-template-columns: auto 1fr;
+    gap: 8px 12px;
+    padding: 14px 16px;
+  }
+  .conta__pedido-data {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .conta__pedido-total {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+  }
+  .conta__status {
+    justify-self: end;
+  }
+
+  /* endereços continuam em 2 colunas — a regra do site */
+  .conta__enderecos {
+    gap: 10px;
+  }
+  .conta__enderecos li {
+    padding: 14px 12px;
+  }
+  .conta__end-texto {
+    font-size: 12px;
+  }
+  .conta__end-texto strong {
+    font-size: 12.5px;
+  }
+}
+
+/* aparelho estreito: o formulário de dados perde a linha dupla, porque
+   telefone e CPF ficariam com ~150px cada e a máscara não caberia */
+@media (max-width: 460px) {
+  .conta__linha {
+    grid-template-columns: 1fr;
+  }
+  .conta__enderecos {
+    grid-template-columns: 1fr;
   }
 }

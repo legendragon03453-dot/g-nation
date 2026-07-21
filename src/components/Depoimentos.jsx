@@ -76,7 +76,7 @@ function Card({ i }) {
 
 export default function Depoimentos() {
   return (
-    <section className="depo">
+    <section className="depo" id="depoimentos">
       <Fita />
 
       <div className="depo__inner">

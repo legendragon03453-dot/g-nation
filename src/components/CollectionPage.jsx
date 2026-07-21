@@ -167,9 +167,9 @@ export default function CollectionPage() {
           <div className="cp__footer-col">
             <p className="cp__footer-col-title">NAVEGAÇÃO</p>
             <Link to="/colecao/g-shop"><LogoG className="logo-g--flat" />-Shop</Link>
-            <a href="/about">Manifesto</a>
+            <Link to="/sobre">Manifesto</Link>
             <Link to="/colecao/g-customizadas">Personalizadas</Link>
-            <a href="/contact">Atendimento</a>
+            <Link to="/contato">Atendimento</Link>
           </div>
           <div className="cp__footer-col">
             <p className="cp__footer-col-title">CATEGORIAS</p>

@@ -64,6 +64,13 @@ export function CartProvider({ children }) {
     );
   }, []);
 
+  // Esvazia a sacola depois que o pedido é fechado. Sem isso a pessoa
+  // volta pra loja com os itens que acabou de comprar ainda no carrinho.
+  const limpar = useCallback(() => {
+    setItens([]);
+    setAberta(false);
+  }, []);
+
   const valor = useMemo(() => {
     const totalItens = itens.reduce((s, i) => s + i.qtd, 0);
     const subtotal = itens.reduce((s, i) => s + i.priceValue * i.qtd, 0);
@@ -77,8 +84,9 @@ export function CartProvider({ children }) {
       adicionar,
       remover,
       mudarQtd,
+      limpar,
     };
-  }, [itens, aberta, abrir, fechar, adicionar, remover, mudarQtd]);
+  }, [itens, aberta, abrir, fechar, adicionar, remover, mudarQtd, limpar]);
 
   return <CartContext.Provider value={valor}>{children}</CartContext.Provider>;
 }

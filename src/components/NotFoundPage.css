@@ -1,0 +1,110 @@
+/* 404 — mesma língua do site: fundo escuro como as seções de vitrine,
+   título nas duas vozes (sólida + contorno) e os botões do padrão. */
+
+.e404 {
+  background: var(--gn-ink, #080808);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.e404__inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px var(--gn-gutter, 80px);
+  gap: 18px;
+}
+
+/* o número grande é textura de fundo, não informação — quem lê é o
+   título abaixo */
+.e404__codigo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(80px, 18vw, 220px);
+  line-height: 0.85;
+  color: rgba(255, 255, 255, 0.07);
+  letter-spacing: -0.04em;
+  user-select: none;
+  margin-bottom: -12px;
+}
+
+.e404__titulo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(28px, 5.6vw, 62px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.e404__texto {
+  max-width: 460px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.e404__acoes {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.e404__cta,
+.e404__ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  padding: 0 28px;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.e404__cta {
+  background: var(--gn-red, #ff0000);
+  color: #fff;
+  border: none;
+}
+
+.e404__cta:hover {
+  background: #d40000;
+}
+
+.e404__ghost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #fff;
+}
+
+.e404__ghost:hover {
+  background: #fff;
+  color: #0a0a0a;
+}
+
+@media (max-width: 640px) {
+  .e404__inner {
+    padding: 56px 20px;
+  }
+  .e404__acoes {
+    width: 100%;
+    flex-direction: column;
+  }
+  .e404__cta,
+  .e404__ghost {
+    width: 100%;
+  }
+}

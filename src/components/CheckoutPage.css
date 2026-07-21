@@ -1,0 +1,519 @@
+/* CHECKOUT — mesma língua do site (fundo #fff6f6, display nos títulos,
+   ui nos rótulos e botões, blocos com fio preto como a vitrine).
+
+   Duas colunas no desktop: formulário à esquerda, resumo GRUDADO à
+   direita. O resumo é sticky de propósito — a pesquisa de e-commerce
+   brasileiro aponta "custo que aparece só no fim" como causa nº 1 de
+   abandono, então o total fica na tela o tempo todo, nunca só no último
+   passo. */
+
+.ck {
+  background: var(--gn-paper, #fff6f6);
+  color: #000;
+  min-height: 100vh;
+}
+
+.ck__carregando {
+  padding: 100px 24px;
+  text-align: center;
+  font-family: var(--font-ui);
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.ck__inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 48px var(--gn-gutter, 80px) 80px;
+}
+
+.ck__head {
+  margin-bottom: 32px;
+}
+
+.ck__eyebrow {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gn-red, #ff0000);
+  margin-bottom: 8px;
+}
+
+.ck__titulo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(26px, 3.6vw, 44px);
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.ck__grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
+}
+
+.ck__colunas {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ck__bloco {
+  border: 2px solid #000;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ck__bloco-titulo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---------- campos ---------- */
+
+.ck__linha {
+  display: grid;
+  gap: 14px;
+}
+
+.ck__linha--2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* CEP grande, número pequeno: o CEP é quem faz o trabalho */
+.ck__linha--cep {
+  grid-template-columns: 1.4fr 1fr;
+}
+
+.ck__linha--cidade {
+  grid-template-columns: 1fr 84px;
+}
+
+.ck__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ck__campo label {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* 48px de altura: alvo confortável pro polegar no celular, que é de onde
+   vem a maior parte do tráfego de e-commerce no Brasil */
+.ck__campo input {
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid #000;
+  background: #fff;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  color: #000;
+  outline: none;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  min-width: 0;
+}
+
+.ck__campo input:focus {
+  box-shadow: inset 0 0 0 1px #000;
+}
+
+.ck__campo input::placeholder {
+  color: #a8a8a8;
+}
+
+.ck__campo-erro {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--gn-red, #ff0000);
+}
+
+.ck__campo-nota {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.ck__nota {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+/* ---------- pagamento ---------- */
+
+.ck__pgto {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ck__pgto-op {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.ck__pgto-op:hover {
+  border-color: #000;
+}
+
+.ck__pgto-op.is-ativo {
+  border-color: #000;
+  box-shadow: inset 0 0 0 1px #000;
+}
+
+/* o radio nativo vem com o azul do sistema e ignora estilo */
+.ck__pgto-op input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.ck__pgto-marca {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid #000;
+  position: relative;
+}
+
+.ck__pgto-op.is-ativo .ck__pgto-marca::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--gn-red, #ff0000);
+}
+
+.ck__pgto-op input:focus-visible + .ck__pgto-marca {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+.ck__pgto-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ck__pgto-texto strong {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.ck__pgto-texto span {
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+/* PIX é o meio de maior conversão no Brasil — a etiqueta diz isso sem
+   precisar de texto explicativo */
+.ck__pgto-tag {
+  margin-left: auto;
+  flex: none;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--gn-red, #ff0000);
+  padding: 4px 8px;
+}
+
+/* ---------- resumo ---------- */
+
+.ck__resumo {
+  position: sticky;
+  top: 24px;
+  border: 2px solid #000;
+  background: #fff;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.ck__itens {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.ck__itens li {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.ck__item-foto {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  background: #f4f4f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ck__item-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* a quantidade fica na foto, como em carrinho de loja grande */
+.ck__item-qtd {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #000;
+  color: #fff;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 19px;
+  text-align: center;
+}
+
+.ck__item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ck__item-info strong {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 12.5px;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.ck__item-info span {
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.ck__item-preco {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.ck__contas {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  padding-top: 16px;
+}
+
+.ck__contas > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.ck__contas dt {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.ck__contas dd {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 13px;
+}
+
+.ck__gratis {
+  color: #0a7d32;
+  font-weight: 700;
+}
+
+.ck__total {
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.ck__total dt {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #000;
+}
+
+.ck__total dd {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 24px;
+}
+
+.ck__erro-geral {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.4;
+  color: #fff;
+  background: rgba(190, 0, 0, 0.95);
+  padding: 10px 12px;
+  border-left: 3px solid var(--gn-red, #ff0000);
+}
+
+/* ---------- botões (voz do site) ---------- */
+
+.ck__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 28px;
+  border: none;
+  background: var(--gn-red, #ff0000);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.ck__cta:hover {
+  background: #d40000;
+}
+
+.ck__cta:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.ck__cta--full {
+  width: 100%;
+}
+
+.ck__voltar {
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.6);
+  text-decoration: underline;
+}
+
+.ck__vazio {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  padding: 40px 24px;
+}
+
+.ck__vazio h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 4vw, 34px);
+  text-transform: uppercase;
+}
+
+.ck__vazio p {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+/* ---------- responsivo ---------- */
+
+@media (max-width: 1000px) {
+  .ck__inner {
+    padding: 32px 24px 60px;
+  }
+  /* o resumo sobe pro topo: no celular ele é a informação que segura a
+     decisão, não um apêndice do fim da página */
+  .ck__grid {
+    grid-template-columns: 1fr;
+  }
+  .ck__resumo {
+    position: static;
+    order: -1;
+  }
+  .ck__itens {
+    max-height: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .ck__inner {
+    padding: 24px 16px 48px;
+  }
+  .ck__bloco,
+  .ck__resumo {
+    padding: 18px 14px;
+  }
+  .ck__linha--2,
+  .ck__linha--cep {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ck__linha--cidade {
+    grid-template-columns: 1fr 72px;
+  }
+  .ck__campo input {
+    height: 46px;
+    font-size: 16px; /* < 16px faz o iOS dar zoom ao focar o campo */
+  }
+  .ck__total dd {
+    font-size: 21px;
+  }
+}

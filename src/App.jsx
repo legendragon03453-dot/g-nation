@@ -13,6 +13,9 @@ import CollectionPage from "./components/CollectionPage";
 import LoginPage from "./components/LoginPage";
 import RegisterPage from "./components/RegisterPage";
 import AccountPage from "./components/AccountPage";
+import NotFoundPage from "./components/NotFoundPage";
+import CheckoutPage from "./components/CheckoutPage";
+import OrderPage from "./components/OrderPage";
 import CartDrawer from "./components/CartDrawer";
 import { CartProvider } from "./CartContext";
 import { AuthProvider } from "./AuthContext";
@@ -87,6 +90,11 @@ function App() {
           <Route path="/criar-conta" element={<RegisterPage />} />
           {/* protegida: redireciona pro login guardando o destino */}
           <Route path="/conta" element={<AccountPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/pedido/:id" element={<OrderPage />} />
+          {/* Sem esta, qualquer URL errada renderizava NADA: o rewrite da
+              Vercel devolve 200 pra tudo, então quem trata é o roteador. */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
       {/* fora do .app-content: a gaveta cobre a página inteira */}

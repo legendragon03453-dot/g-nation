@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import LogoG, { brandG } from "./LogoG";
 import Wordmark from "./Wordmark";
 import "./Works.css";
@@ -41,9 +42,9 @@ export default function Works() {
         ))}
       </div>
 
-      <a className="works__button" href="/projects">
+      <Link className="works__button" to="/colecao/g-shop">
         Ver Peças <span aria-hidden="true">→</span>
-      </a>
+      </Link>
     </section>
   );
 }
