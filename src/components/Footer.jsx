@@ -26,15 +26,35 @@ export default function Footer() {
           </div>
           <div className="footer__socials">
             <p className="footer__col-title">Siga a cultura</p>
+            {/* REDES — eram três ícones, e dois deles usavam `x.svg`, que
+                NÃO é o logo do X: abrindo o arquivo, o id é "circle-x",
+                o placeholder de "ícone não encontrado" do Figma. O
+                próprio arquivo de design tem três quadrados brancos
+                vazios aqui, então nunca houve ícone pra portar.
+
+                Em vez de repetir o buraco ou desenhar à mão o glifo de
+                uma marca registrada (que sai torto e é o tipo de coisa
+                que denuncia arte gerada), a rede vira um chip de texto na
+                tipografia da casa — mesma linguagem dos filtros da
+                vitrine. E são as duas redes que o cliente informou ter:
+                Instagram e WhatsApp. */}
             <div className="footer__social-row">
-              <a className="footer__social" href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
-                <img src="/assets/footer/instagram.svg" alt="" />
+              <a
+                className="footer__social"
+                href="https://instagram.com/gnation"
+                target="_blank"
+                rel="noopener"
+              >
+                <img src="/assets/footer/instagram.svg" alt="" aria-hidden="true" />
+                Instagram
               </a>
-              <a className="footer__social" href="https://x.com" target="_blank" rel="noopener" aria-label="X">
-                <img src="/assets/footer/x.svg" alt="" />
-              </a>
-              <a className="footer__social" href="https://tiktok.com" target="_blank" rel="noopener" aria-label="TikTok">
-                <img src="/assets/footer/x.svg" alt="" />
+              <a
+                className="footer__social"
+                href="https://wa.me/5532988887777"
+                target="_blank"
+                rel="noopener"
+              >
+                WhatsApp
               </a>
             </div>
           </div>
@@ -64,10 +84,16 @@ export default function Footer() {
             </div>
             <div className="footer__info-block">
               <p className="footer__info-label">Pagamento</p>
+              {/* PAGAMENTO — mesma história: `pay-1.svg` também é o
+                  "circle-x" placeholder, e aparecia duas vezes. Agora diz
+                  os meios que o checkout realmente oferece, escritos.
+                  Bandeira de cartão a gente não desenha: são marcas de
+                  terceiros e o site não sabe quais o gateway vai aceitar
+                  até ele ser escolhido. */}
               <div className="footer__pay-row">
-                <span className="footer__pay"><img src="/assets/footer/pay-1.svg" alt="" /></span>
-                <span className="footer__pay"><img src="/assets/footer/pay-card.svg" alt="" /></span>
-                <span className="footer__pay"><img src="/assets/footer/pay-1.svg" alt="" /></span>
+                <span className="footer__pay">Pix</span>
+                <span className="footer__pay">Cartão</span>
+                <span className="footer__pay">Boleto</span>
               </div>
             </div>
           </div>
@@ -77,7 +103,7 @@ export default function Footer() {
       <div className="footer__divider" />
 
       <div className="footer__bottom">
-        <p>© 2024 <Wordmark flat /> URBAN JEWELRY. TODOS OS DIREITOS RESERVADOS.</p>
+        <p>© {new Date().getFullYear()} <Wordmark flat /> URBAN JEWELRY. TODOS OS DIREITOS RESERVADOS.</p>
         <div className="footer__legal">
           <span>Políticas de Privacidade</span>
           <span>Termos de Uso</span>

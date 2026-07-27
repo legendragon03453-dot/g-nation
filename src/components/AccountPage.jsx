@@ -79,12 +79,17 @@ export default function AccountPage() {
     if (Object.keys(err).length) return;
 
     setSalvando(true);
-    const { error } = await supabase.from("perfis").upsert({
-      id: usuario.id,
-      nome: perfil.nome.trim(),
-      telefone: perfil.telefone ? soDigitos(perfil.telefone) : null,
-      cpf: perfil.cpf ? soDigitos(perfil.cpf) : null,
-    });
+    // UPDATE e não `upsert`: o perfil já existe desde o cadastro (trigger
+    // `ao_criar_usuario`), e o upsert mandava o `id` no SET, que o banco
+    // recusa — o cliente edita os dados dele, não a identidade da linha.
+    const { error } = await supabase
+      .from("perfis")
+      .update({
+        nome: perfil.nome.trim(),
+        telefone: perfil.telefone ? soDigitos(perfil.telefone) : null,
+        cpf: perfil.cpf ? soDigitos(perfil.cpf) : null,
+      })
+      .eq("id", usuario.id);
     setSalvando(false);
     setSalvo(error ? `Não foi possível salvar: ${error.message}` : "Dados salvos.");
   }

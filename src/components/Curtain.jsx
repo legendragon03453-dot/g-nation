@@ -1,10 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import "./Curtain.css";
 import ImageCrossfade from "./ImageCrossfade";
 import LogoG from "./LogoG";
-import { PRODUCTS } from "../data/products";
+import { useCatalog } from "../CatalogContext";
+import PecaCard from "./PecaCard";
 
 const LEFT_IMAGES = [
   "/assets/hero/slice-left-1.png",
@@ -22,41 +23,90 @@ const RIGHT_IMAGES = [
 // produtos (src/data/products.js). Agora 6 peças (3x2): os 4 originais
 // + as duas pulseiras novas com foto REAL baixada do Figma (nodes
 // 27:11/27:10 — Trevo Rosé e Trevo Gold).
-const LANCAMENTOS = [
+// Ordem preferida da faixa de lançamentos. Quem marcar "mostrar em
+// destaque" no painel entra na frente — é assim que o dono promove uma
+// coleção nova sem pedir deploy.
+const PREFERIDAS = [
   "trevo-royal",
   "trevo-rose",
   "trevo-gold",
   "cubana-cravejada",
   "tennis-ice",
   "anel-cruz-ice",
-]
-  .map((slug) => PRODUCTS.find((p) => p.slug === slug))
-  .filter(Boolean);
+];
 
-function LancCard({ p, i }) {
-  return (
-    <motion.a
-      className="curtain__lanc-card"
-      href={`/produto/${p.slug}`}
-      initial={{ opacity: 0, y: 26 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.55, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <div className="curtain__lanc-photo">
-        <img className="curtain__lanc-photo-img curtain__lanc-photo-img--base" src={`/assets/products/${p.img}`} alt={p.title} />
-        {p.hoverImg && (
-          <img
-            className="curtain__lanc-photo-img curtain__lanc-photo-img--hover"
-            src={`/assets/products/${p.hoverImg}`}
-            alt=""
-          />
-        )}
-      </div>
-      <h4>{p.title}</h4>
-      <span className="curtain__lanc-price">{p.price}</span>
-    </motion.a>
+// QUANTAS PEÇAS ESTA FAIXA COMPORTA — e por quê.
+//
+// TETO 6. A grade é de 3 colunas e vive DENTRO do pin da cortina: a
+// seção inteira precisa caber numa tela, senão o pin ganha scroll
+// interno e a rolagem trava no meio da animação. Duas fileiras de 3
+// (com a foto em min(20vh,210px)) é o que cabe. Uma terceira fileira
+// estoura.
+//
+// SEMPRE MÚLTIPLO DE 3. A malha desenha o fio vertical em toda célula
+// que não seja a 3ª da fileira; com 4 ou 5 peças a última fileira fica
+// pela metade e o retângulo da moldura abre um buraco. Então 6 peças, ou
+// 3 — nunca 4, 5, 7.
+//
+// Isso é limite de LAYOUT, não de catálogo: o dono pode marcar quantas
+// peças quiser como destaque no painel, que a home mostra as 6
+// primeiras. O aviso na tela de Produtos explica isso pra ele.
+// A contagem depende do LAYOUT, que muda com a tela:
+//   desktop → grade de 3 colunas, 2 fileiras = 6 peças
+//   celular → grade de 2 colunas, 2 fileiras = 4 peças
+// No celular, tentar encaixar 6 numa grade de 2 colunas dá 3 fileiras
+// dentro do pin: a seção não cabe na tela travada, as fotos comprimem e
+// cortam (foi o que o usuário viu). 4 (2×2) respira e mostra a peça
+// inteira. Sempre múltiplo do número de colunas, pra malha não abrir
+// buraco na última fileira.
+const CONFIG_DESKTOP = { cabem: 6, porFileira: 3 };
+const CONFIG_MOBILE = { cabem: 4, porFileira: 2 };
+
+// Media query reativa: recalcula quando a largura cruza o ponto do
+// layout mobile (o mesmo 900px em que a grade da Curtain vira 2 colunas),
+// inclusive ao girar o aparelho.
+function useEhMobile() {
+  const [ehMobile, setEhMobile] = useState(
+    typeof window !== "undefined" && window.matchMedia("(max-width: 900px)").matches
   );
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 900px)");
+    const ouvir = (e) => setEhMobile(e.matches);
+    mq.addEventListener("change", ouvir);
+    return () => mq.removeEventListener("change", ouvir);
+  }, []);
+  return ehMobile;
+}
+
+function useLancamentos() {
+  const { produtos, destaques } = useCatalog();
+  const ehMobile = useEhMobile();
+  const { cabem, porFileira } = ehMobile ? CONFIG_MOBILE : CONFIG_DESKTOP;
+
+  const preferidas = PREFERIDAS.map((s) => produtos.find((p) => p.slug === s)).filter(
+    Boolean
+  );
+
+  // Ordem: quem está em destaque no painel primeiro, depois a lista
+  // preferida do desenho original, depois o resto do catálogo — assim a
+  // faixa se completa sozinha mesmo que o dono tire peças de linha.
+  const vistos = new Set();
+  const fila = [...destaques, ...preferidas, ...produtos].filter((p) =>
+    vistos.has(p.slug) ? false : vistos.add(p.slug)
+  );
+
+  // Arredonda PRA BAIXO até fechar a fileira. Catálogo com 5 peças
+  // ativas mostra 4 (mobile) ou 3 (desktop), nunca a malha quebrada.
+  const teto = Math.min(fila.length, cabem);
+  const cheias = teto - (teto % porFileira);
+  return fila.slice(0, cheias);
+}
+
+// O visual do card mora em <PecaCard/> — o mesmo que o "Confira também"
+// usa. Aqui fica só a classe da malha (curtain__lanc-card), que desenha
+// os fios entre as células desta grade.
+function LancCard({ p, i }) {
+  return <PecaCard p={p} i={i} className="curtain__lanc-card" />;
 }
 
 // Faithful port of the real Hero Section scroll effect (augiA20Il.js):
@@ -67,6 +117,7 @@ function LancCard({ p, i }) {
 // leve subida) na segunda metade do scroll do pin, depois que as fotos já
 // se abriram.
 export default function Curtain() {
+  const LANCAMENTOS = useLancamentos();
   const curtainRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: curtainRef,

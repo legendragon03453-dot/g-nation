@@ -1,0 +1,503 @@
+/* BARRA DE FILTROS — desenhada na língua do projeto.
+
+   A primeira versão era funcional e sem alma: pills arredondados claros e
+   um dropdown branco com checkbox nativo do sistema. Num site preto de
+   joia streetwear, aquilo lia como formulário de painel administrativo
+   colado no meio da vitrine.
+
+   O que a marca já fala, e que esta barra passa a falar também:
+     - preto absoluto e o vermelho #FF0000 como único acento
+     - JetBrains Mono 800 em caixa alta, com trilho de letras aberto
+     - o duo sólido + contorno vazado (tw-solid / tw-outline) do hero
+     - geometria reta: sem cantos arredondados, fio grosso, malha
+     - blocos que CRESCEM, como a cortina da home — em vez de camadas
+       flutuando por cima do conteúdo
+
+   Ela nasce colada no hero preto: em vez de uma faixa clara separando o
+   hero da grade, a barra continua o bloco escuro e termina num fio
+   vermelho, que é a assinatura do rodapé do site. */
+
+.fv {
+  position: relative;
+  background: #0a0a0a;
+  color: #fff;
+  border-bottom: 3px solid var(--gn-red, #ff0000);
+  /* A barra JÁ nasce da largura total: o pai (.cp) não tem padding
+     lateral, igual ao hero. A primeira versão puxava margem negativa de
+     `var(--gn-gutter, 80px)` — variável que NÃO existe neste projeto,
+     então caía no fallback de 80px e a barra estourava 80px pra fora da
+     janela dos dois lados, cortando "FILTRAR POR" e a contagem.
+     O respiro interno acompanha o da grade de produtos (50px), pra que a
+     primeira palavra da barra e a borda do primeiro card fiquem na mesma
+     linha vertical. */
+  padding: 0 50px;
+}
+
+.fv__barra {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  min-height: 78px;
+  flex-wrap: wrap;
+}
+
+.fv__label {
+  display: inline-flex;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* o contorno vazado usa a variável clara: aqui o fundo é preto */
+.fv__label .tw-outline {
+  --tw-stroke: var(--tw-stroke-light);
+}
+
+.fv__grupos {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* GRUPO — retangular, fio fino, mono. O ativo acende no vermelho da
+   marca; o aberto fica branco sólido, como uma tecla pressionada. */
+.fv__grupo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 18px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.18s, border-color 0.18s, color 0.18s;
+}
+
+.fv__grupo:hover {
+  border-color: #fff;
+}
+
+.fv__grupo.is-aberto {
+  background: #fff;
+  border-color: #fff;
+  color: #0a0a0a;
+}
+
+.fv__grupo.is-ativo {
+  border-color: var(--gn-red, #ff0000);
+}
+
+.fv__grupo.is-ativo.is-aberto {
+  background: var(--gn-red, #ff0000);
+  border-color: var(--gn-red, #ff0000);
+  color: #fff;
+}
+
+.fv__n {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: var(--gn-red, #ff0000);
+  color: #fff;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.fv__grupo.is-aberto .fv__n {
+  background: #0a0a0a;
+}
+
+.fv__conta {
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+}
+
+.fv__conta strong {
+  color: #fff;
+  font-weight: 800;
+}
+
+/* GAVETA — o bloco cresce pra baixo em vez de abrir uma caixa flutuante.
+   overflow hidden porque a altura é animada de 0 até auto. */
+.fv__gaveta {
+  overflow: hidden;
+}
+
+.fv__gaveta-inner {
+  padding: 4px 0 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  margin-top: -1px;
+}
+
+.fv__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 20px;
+}
+
+/* CHIP — a opção. Mesma geometria do grupo, um degrau menor. Ligado =
+   vermelho cheio: numa vitrine preta, o vermelho é o único lugar onde o
+   olho para primeiro. */
+.fv__chip {
+  padding: 9px 15px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid transparent;
+  color: rgba(255, 255, 255, 0.82);
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background-color 0.16s, color 0.16s, border-color 0.16s;
+}
+
+.fv__chip:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #fff;
+}
+
+.fv__chip.is-on {
+  background: var(--gn-red, #ff0000);
+  border-color: var(--gn-red, #ff0000);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* APLICADOS — o que está valendo, sempre à vista, numa faixa colada no
+   fim da barra. Clicar no chip tira aquele filtro. */
+.fv__ativos {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px 0 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.fv__ativos-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin-right: 4px;
+}
+
+.fv__tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 13px;
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.35);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.16s, background-color 0.16s;
+}
+
+/* tracejado = removível. No hover ele vira vermelho e sólido: o gesto de
+   "tirar" fica explícito sem precisar de um X desenhado. */
+.fv__tag:hover {
+  border-style: solid;
+  border-color: var(--gn-red, #ff0000);
+  background: rgba(255, 0, 0, 0.12);
+}
+
+.fv__limpar {
+  margin-left: 4px;
+  background: transparent;
+  border: 0;
+  padding: 6px 2px;
+  color: var(--gn-red, #ff0000);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.fv__limpar:hover {
+  color: #fff;
+}
+
+/* ---------- ESTADO VAZIO DA VITRINE ---------- */
+.cp__empty-btn {
+  margin-top: 16px;
+  padding: 13px 26px;
+  background: #0a0a0a;
+  border: 2px solid #0a0a0a;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.18s, color 0.18s;
+}
+
+.cp__empty-btn:hover {
+  background: transparent;
+  color: #0a0a0a;
+}
+
+/* ---------- TELAS MENORES ---------- */
+@media (max-width: 900px) {
+  .fv {
+    padding: 0 24px;
+  }
+
+  .fv__barra {
+    min-height: 0;
+    padding: 18px 0;
+    gap: 14px;
+  }
+
+  .fv__label {
+    font-size: 13px;
+    width: 100%;
+  }
+
+  /* Os grupos rolam na horizontal em vez de quebrar em três linhas e
+     empurrar a vitrine pra fora da primeira tela. */
+  .fv__grupos {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+    /* sangra até a borda pra deixar claro que rola */
+    margin-right: -24px;
+    padding-right: 24px;
+  }
+
+  .fv__grupos::-webkit-scrollbar {
+    display: none;
+  }
+
+  .fv__grupo {
+    white-space: nowrap;
+    padding: 10px 15px;
+    font-size: 11px;
+  }
+
+  .fv__conta {
+    margin-left: 0;
+    font-size: 11px;
+  }
+}
+
+/* ============================================================
+   MOBILE — botão único + folha que sobe (bottom sheet)
+   ============================================================
+   A barra apertada de 4 grupos rolando de lado, com opções cortadas,
+   virou uma AÇÃO só. Toda a escolha acontece numa folha roomy. */
+.fv--mobile {
+  padding: 0 24px;
+}
+
+.fv__barra-mob {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 62px;
+}
+
+/* botão FILTRAR: retangular, fio fino, com o "hambúrguer" de filtro
+   (três traços que afinam) à esquerda — vocabulário de filtro reconhecido
+   na hora */
+.fv__abrir {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.fv__abrir.is-ativo {
+  border-color: var(--gn-red, #ff0000);
+}
+
+.fv__abrir-icone {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 16px;
+}
+
+.fv__abrir-icone span {
+  height: 1.5px;
+  background: currentColor;
+}
+.fv__abrir-icone span:nth-child(1) { width: 100%; }
+.fv__abrir-icone span:nth-child(2) { width: 66%; }
+.fv__abrir-icone span:nth-child(3) { width: 33%; }
+
+/* tags aplicadas roláveis, COM sinalização de que rolam: máscara que
+   desvanece o conteúdo na borda direita */
+.fv__ativos--mob {
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 12px 0 14px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to right, #000 82%, transparent);
+  mask-image: linear-gradient(to right, #000 82%, transparent);
+}
+
+.fv__ativos--mob::-webkit-scrollbar {
+  display: none;
+}
+
+.fv__ativos--mob .fv__tag {
+  flex: none;
+}
+
+/* backdrop escuro atrás da folha */
+.fv__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 90;
+}
+
+/* A FOLHA — sobe de baixo, ocupa a largura toda e até 85% da altura. */
+.fv__folha {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 91;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  background: #0a0a0a;
+  border-top: 3px solid var(--gn-red, #ff0000);
+}
+
+.fv__folha-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.fv__folha-titulo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.fv__folha-titulo .tw-outline {
+  --tw-stroke: var(--tw-stroke-light);
+}
+
+.fv__folha-x {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* corpo rola SÓ na vertical; cada seção tem título e chips soltos */
+.fv__folha-corpo {
+  overflow-y: auto;
+  padding: 8px 22px 20px;
+}
+
+.fv__secao {
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.fv__secao:last-child {
+  border-bottom: 0;
+}
+
+.fv__secao-titulo {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--adm-fraco, #8a8a8a);
+  margin: 0 0 14px;
+}
+
+/* os chips na folha são maiores e com mais respiro que no desktop — dedo,
+   não mouse */
+.fv__folha .fv__chip {
+  padding: 11px 16px;
+  font-size: 13.5px;
+}
+
+/* rodapé fixo com as ações */
+.fv__folha-pe {
+  display: flex;
+  gap: 12px;
+  padding: 14px 22px calc(14px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  background: #0a0a0a;
+}
+
+.fv__folha-limpar {
+  flex: none;
+  padding: 14px 20px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.fv__folha-ver {
+  flex: 1;
+  padding: 14px 20px;
+  background: var(--gn-red, #ff0000);
+  border: 1px solid var(--gn-red, #ff0000);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 12.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}

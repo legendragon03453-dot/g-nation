@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "./AuthShell";
 import { useAuth, mensagemErro } from "../AuthContext";
+import { avaliar, pareceComOsDados } from "../lib/senha";
 
 // "Criar conta" — a MESMA peça do login (AuthShell): mesmo quadro, mesmo
 // vídeo, mesma tipografia, mesmos botões. Muda só o que o formulário
@@ -40,8 +41,15 @@ export default function RegisterPage() {
       setAviso("Preencha nome, e-mail e senha para criar sua conta.");
       return;
     }
-    if (senha.trim().length < 8) {
-      setAviso("A senha precisa de pelo menos 8 caracteres.");
+    // A mesma política que o banco exige, dita aqui em português e ANTES
+    // de gastar uma ida ao servidor pra levar não.
+    const forca = avaliar(senha);
+    if (!forca.valida) {
+      setAviso(forca.primeiroProblema);
+      return;
+    }
+    if (pareceComOsDados(senha, email, nome)) {
+      setAviso("Evite usar seu nome ou e-mail na senha.");
       return;
     }
     if (!aceite) {
@@ -110,6 +118,7 @@ export default function RegisterPage() {
               placeholder="Mínimo 8 caracteres"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
+              aria-describedby="reg-senha-regras"
             />
             <button
               type="button"
@@ -120,6 +129,29 @@ export default function RegisterPage() {
               <img src="/assets/login/icon-eye-off.svg" alt="" />
             </button>
           </div>
+
+          {/* As regras aparecem quando a pessoa começa a digitar, e não
+              de cara: numa tela de cadastro, quatro exigências antes do
+              primeiro caractere parecem um interrogatório. Depois de
+              digitada, cada regra cumprida acende — assim ela vê o que
+              falta em vez de descobrir no erro do envio. */}
+          {senha.length > 0 && (
+            <ul className="auth__regras" id="reg-senha-regras">
+              {avaliar(senha).regras.map((r) => (
+                <li
+                  key={r.id}
+                  className={r.ok ? "is-ok" : undefined}
+                  /* o estado real vai no texto pra leitor de tela, não só
+                     na cor — quem não enxerga a cor precisa da mesma
+                     informação */
+                  aria-label={`${r.texto}: ${r.ok ? "cumprido" : "faltando"}`}
+                >
+                  <span className="auth__regra-marca" aria-hidden="true" />
+                  {r.texto}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <label className="auth__check">

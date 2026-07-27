@@ -1,0 +1,102 @@
+/* Sinalização de scroll horizontal — ver RoloScroll.jsx. */
+.rolo {
+  position: relative;
+}
+
+.rolo__scroll {
+  overflow-x: auto;
+}
+
+/* As sombras são overlays FIXOS na borda do contêiner (não rolam com o
+   conteúdo). Aparecem via classe, conforme a posição do scroll. Cor
+   escura porque os fundos onde isto vive (tabela do admin, faixas do
+   site) são escuros; num fundo claro, herdaria via variável. */
+.rolo::before,
+.rolo::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 44px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 2;
+}
+
+.rolo::before {
+  left: 0;
+  background: linear-gradient(
+    to right,
+    var(--rolo-sombra, rgba(0, 0, 0, 0.55)),
+    transparent
+  );
+}
+
+.rolo::after {
+  right: 0;
+  background: linear-gradient(
+    to left,
+    var(--rolo-sombra, rgba(0, 0, 0, 0.55)),
+    transparent
+  );
+}
+
+.rolo--esq::before {
+  opacity: 1;
+}
+
+.rolo--dir::after {
+  opacity: 1;
+}
+
+/* Dica "arraste →": pílula discreta no canto direito, some ao rolar. */
+.rolo__dica {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  background: rgba(255, 0, 0, 0.9);
+  color: #fff;
+  font-family: var(--font-display, sans-serif);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  pointer-events: none;
+  animation: rolo-pulso 1.8s ease-in-out infinite;
+}
+
+.rolo__dica-seta {
+  display: inline-block;
+  animation: rolo-empurra 1.3s ease-in-out infinite;
+}
+
+@keyframes rolo-pulso {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+@keyframes rolo-empurra {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rolo__dica,
+  .rolo__dica-seta {
+    animation: none;
+  }
+}
+
+/* Só faz sentido no touch: no desktop a barra de rolagem já é o sinal, e
+   o mouse não "arrasta". */
+@media (min-width: 900px) {
+  .rolo__dica {
+    display: none;
+  }
+}

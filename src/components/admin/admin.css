@@ -1,0 +1,1139 @@
+/* PAINEL ADMIN — node 27:545 do Figma ("painel-admin", 1920×1080).
+   Sidebar 320px preta, conteúdo sobre preto, vermelho da marca no item
+   ativo e no "ADMIN" da assinatura, cartões cinza-carvão.
+
+   Os tokens vêm do :root do site (--gn-red, --font-ui, --font-display) —
+   o painel é a mesma marca, não um produto separado com paleta própria. */
+.adm {
+  --adm-preto: #000;
+  --adm-carvao: #141414;
+  --adm-carvao-alto: #1c1c1c;
+  --adm-linha: rgba(255, 255, 255, 0.09);
+  --adm-fraco: #8a8a8a;
+
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  min-height: 100vh;
+  min-height: 100svh;
+  background: var(--adm-preto);
+  color: #fff;
+  font-family: var(--font-ui);
+}
+
+/* O painel é uma ferramenta de trabalho, não uma página do site: o fundo
+   radar e o resto da atmosfera da loja ficam de fora. */
+.adm--vazio {
+  grid-template-columns: 1fr;
+  place-items: center;
+  text-align: center;
+  padding: 40px;
+}
+
+.adm__negado h1 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  margin: 0 0 8px;
+}
+
+.adm__negado p {
+  color: var(--adm-fraco);
+  margin: 0 0 24px;
+}
+
+/* `background: transparent` NÃO é redundante aqui.
+   Sem essa linha, o <button> assume o fundo padrão do navegador (o cinza
+   claro do sistema) — e como o texto é branco, o botão sumia: branco no
+   branco. O <a> com a mesma classe ficava certo, então o bug só aparecia
+   na metade dos casos, o que tornava fácil culpar o componente errado.
+   Toda a paleta do painel é escura; qualquer controle daqui precisa
+   declarar o próprio fundo em vez de herdar o do sistema.
+
+   `font-family: inherit` pela mesma razão: <button> e <select> não
+   herdam a fonte do documento sozinhos. */
+.adm__btn,
+.adm__btn-fino {
+  display: inline-block;
+  padding: 11px 20px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-family: inherit;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.adm__btn:hover,
+.adm__btn-fino:hover {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ---------------- SIDEBAR ---------------- */
+.adm__side {
+  display: flex;
+  flex-direction: column;
+  padding: 40px 0;
+  border-right: 1px solid var(--adm-linha);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+}
+
+/* A marca virou a LOGO real do site (Wordmark) + a tag "ADMIN". Clicar
+   leva pra home — a saída do painel de volta pra loja. */
+.adm__marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  padding: 0 40px;
+  margin-bottom: 50px;
+}
+
+/* o Wordmark dimensiona os dois assets em `em` (g-mark 2.5em,
+   nation-mark 2.17em), preservando a proporção entre eles — então o
+   tamanho se controla pelo font-size, não por height. 11px → g-mark de
+   ~27px, na altura do antigo texto da marca. */
+.adm__marca-logo {
+  font-size: 11px;
+}
+
+.adm__marca-tag {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--gn-red);
+  /* fininho e alinhado ao topo da logo, como um selo ao lado da marca */
+  align-self: center;
+}
+
+.adm__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 24px;
+}
+
+.adm__nav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 16px;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color 0.18s, color 0.18s;
+}
+
+.adm__nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+/* O item ativo é uma barra vermelha cheia — é o elemento mais forte do
+   frame do Figma e o que ancora a leitura da sidebar. */
+.adm__nav-item.is-ativo {
+  background: var(--gn-red);
+  color: #fff;
+  font-weight: 600;
+}
+
+.adm__eu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding: 20px 28px 0;
+  border-top: 1px solid var(--adm-linha);
+}
+
+/* Inicial no lugar da foto: o Figma mostra o retrato do fundador, que é
+   um dado que a conta não tem. Inventar um avatar genérico seria pior. */
+.adm__eu-foto {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--adm-carvao-alto);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.adm__eu-txt {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.adm__eu-txt strong {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.adm__eu-txt span {
+  font-size: 11px;
+  color: var(--adm-fraco);
+}
+
+.adm__sair {
+  margin-left: auto;
+  background: none;
+  border: 0;
+  color: var(--adm-fraco);
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 6px;
+}
+
+.adm__sair:hover {
+  color: var(--gn-red);
+}
+
+/* ---------------- CONTEÚDO ---------------- */
+.adm__main {
+  min-width: 0;
+  padding: 56px 64px;
+}
+
+.adm__ola {
+  color: var(--adm-fraco);
+  font-size: 13px;
+  margin: 0 0 6px;
+}
+
+.adm__titulo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(28px, 2.4vw, 40px);
+  line-height: 1.05;
+  text-transform: uppercase;
+  margin: 0 0 40px;
+}
+
+.adm__erro {
+  background: rgba(190, 0, 0, 0.16);
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  color: #ffbdbd;
+  padding: 12px 16px;
+  font-size: 13px;
+  margin: 0 0 24px;
+}
+
+.adm__alerta {
+  background: rgba(255, 176, 0, 0.1);
+  border: 1px solid rgba(255, 176, 0, 0.35);
+  color: #ffd894;
+  padding: 12px 16px;
+  font-size: 13px;
+  margin: 0 0 32px;
+}
+
+.adm__alerta a {
+  color: inherit;
+}
+
+/* ---------------- CARTÕES ---------------- */
+/* auto-fit e não 4 colunas fixas: em tela menor eles reagrupam sozinhos
+   em 2×2 em vez de espremer quatro números ilegíveis lado a lado. */
+.adm__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.adm__card {
+  background: var(--adm-carvao);
+  padding: 26px 28px;
+}
+
+.adm__card-rotulo {
+  color: var(--adm-fraco);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 0 0 14px;
+}
+
+.adm__card-valor {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+  margin: 0 0 12px;
+}
+
+.adm__card-pe {
+  font-size: 11px;
+  color: var(--adm-fraco);
+  margin: 0;
+}
+
+.adm__delta {
+  color: #3ddc84;
+  font-weight: 700;
+}
+
+.adm__delta.is-queda {
+  color: var(--gn-red);
+}
+
+.adm__card.is-carregando {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 128px;
+}
+
+.adm__card.is-carregando span {
+  display: block;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.adm__card.is-carregando span:last-child {
+  height: 30px;
+  width: 60%;
+}
+
+/* ---------------- BLOCO / TABELA ---------------- */
+.adm__bloco-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.adm__bloco-titulo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 19px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* A tabela rola dentro do próprio contêiner: sem isso, uma linha larga
+   empurra a página inteira e cria barra horizontal no corpo. */
+.adm__tabela-rolo {
+  overflow-x: auto;
+  background: var(--adm-carvao);
+}
+
+.adm__tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 720px;
+}
+
+.adm__tabela th {
+  text-align: left;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--adm-fraco);
+  font-weight: 600;
+  padding: 16px 20px;
+  background: var(--adm-carvao-alto);
+  white-space: nowrap;
+}
+
+.adm__tabela td {
+  padding: 16px 20px;
+  border-top: 1px solid var(--adm-linha);
+  vertical-align: middle;
+}
+
+.adm__col-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.adm__col-acao {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.adm__cel-id {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.adm__cel-id a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.adm__cel-id a:hover {
+  color: var(--gn-red);
+}
+
+.adm__cel-fraca {
+  color: var(--adm-fraco);
+}
+
+.adm__cel-sub {
+  display: block;
+  font-size: 11px;
+  color: var(--adm-fraco);
+}
+
+.adm__linha {
+  cursor: pointer;
+}
+
+.adm__linha:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.adm__linha.is-aberta {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.adm__vazio-txt {
+  color: var(--adm-fraco);
+  font-size: 14px;
+  padding: 28px 0;
+  margin: 0;
+}
+
+/* ---------------- ETIQUETAS DE STATUS ---------------- */
+.adm__badge {
+  display: inline-block;
+  padding: 5px 11px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+
+.adm__badge--ok {
+  color: #3ddc84;
+  background: rgba(61, 220, 132, 0.1);
+}
+
+.adm__badge--espera {
+  color: #ffc44d;
+  background: rgba(255, 196, 77, 0.1);
+}
+
+.adm__badge--andando {
+  color: #4da3ff;
+  background: rgba(77, 163, 255, 0.1);
+}
+
+.adm__badge--ruim {
+  color: #ff5a5a;
+  background: rgba(255, 90, 90, 0.1);
+}
+
+/* ---------------- FERRAMENTAS (filtro + busca) ---------------- */
+.adm__ferramentas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.adm__filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.adm__filtro {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 15px;
+  background: var(--adm-carvao);
+  border: 1px solid transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.18s, color 0.18s;
+}
+
+.adm__filtro:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.adm__filtro.is-ativo {
+  border-color: var(--gn-red);
+  color: #fff;
+}
+
+.adm__filtro span {
+  font-size: 10px;
+  color: var(--adm-fraco);
+  font-variant-numeric: tabular-nums;
+}
+
+.adm__busca {
+  flex: 1 1 260px;
+  max-width: 340px;
+  padding: 11px 14px;
+  background: var(--adm-carvao);
+  border: 1px solid var(--adm-linha);
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.adm__busca:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.adm__acao {
+  padding: 8px 10px;
+  background: var(--adm-carvao-alto);
+  border: 1px solid var(--adm-linha);
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* ---------------- DETALHE DO PEDIDO ---------------- */
+.adm__detalhe-linha td {
+  padding: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.adm__detalhe {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 32px;
+  padding: 28px 20px;
+}
+
+.adm__detalhe h3 {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--adm-fraco);
+  margin: 0 0 12px;
+  font-weight: 600;
+}
+
+.adm__detalhe h3 + p,
+.adm__detalhe address + h3 {
+  margin-top: 0;
+}
+
+.adm__detalhe address + h3 {
+  margin-top: 20px;
+}
+
+.adm__pecas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.adm__pecas li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.adm__pecas img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  flex: none;
+  background: var(--adm-carvao-alto);
+}
+
+.adm__pecas li > span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.adm__peca-qtd {
+  margin-left: auto;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.adm__endereco {
+  font-style: normal;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+}
+
+.adm__contas {
+  margin: 0 0 12px;
+  font-size: 12.5px;
+}
+
+.adm__contas div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 5px 0;
+}
+
+.adm__contas dt,
+.adm__contas dd {
+  margin: 0;
+}
+
+.adm__contas dt {
+  color: var(--adm-fraco);
+}
+
+.adm__contas dd {
+  font-variant-numeric: tabular-nums;
+}
+
+.adm__contas-total {
+  border-top: 1px solid var(--adm-linha);
+  margin-top: 6px;
+  padding-top: 10px !important;
+  font-weight: 700;
+}
+
+/* ---------------- FORMULÁRIOS ---------------- */
+.adm__form {
+  background: var(--adm-carvao);
+  padding: 26px 28px;
+  margin-bottom: 24px;
+}
+
+.adm__form-titulo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  text-transform: uppercase;
+  margin: 0 0 18px;
+}
+
+/* auto-fit: os campos se reorganizam sozinhos conforme a largura, em vez
+   de quebrar num ponto fixo que nunca é o certo pra todas as telas. */
+.adm__form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 16px;
+}
+
+.adm__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.adm__campo--largo {
+  grid-column: span 2;
+}
+
+.adm__campo--todo {
+  grid-column: 1 / -1;
+}
+
+.adm__campo > span {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--adm-fraco);
+}
+
+.adm__campo input,
+.adm__campo select,
+.adm__campo textarea {
+  width: 100%;
+  padding: 11px 13px;
+  background: var(--adm-preto);
+  border: 1px solid var(--adm-linha);
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  resize: vertical;
+}
+
+.adm__campo input:focus,
+.adm__campo select:focus,
+.adm__campo textarea:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.adm__campo small {
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.adm__form-pe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--adm-linha);
+}
+
+.adm__form-botoes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.adm__btn--forte {
+  background: var(--gn-red);
+  border-color: var(--gn-red);
+}
+
+.adm__btn--forte:hover {
+  background: #d40000;
+  border-color: #d40000;
+}
+
+.adm__btn:disabled,
+.adm__btn-fino:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.adm__check {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12.5px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.adm__ok {
+  background: rgba(0, 130, 55, 0.16);
+  border: 1px solid rgba(61, 220, 132, 0.4);
+  color: #9df0bd;
+  padding: 12px 16px;
+  font-size: 13px;
+  margin: 0 0 24px;
+}
+
+/* ---------------- PRODUTOS ---------------- */
+.adm__prod {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.adm__prod img {
+  width: 46px;
+  height: 46px;
+  object-fit: cover;
+  flex: none;
+  background: var(--adm-carvao-alto);
+}
+
+.adm__prod > span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.adm__preco-velho {
+  color: var(--adm-fraco);
+  text-decoration: line-through;
+  font-size: 11.5px;
+}
+
+/* O estoque muda de cor porque é o número que decide se a peça pode ser
+   vendida — em zero ele precisa saltar da tabela. */
+.adm__estoque {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.adm__estoque.is-baixo {
+  color: #ffc44d;
+}
+
+.adm__estoque.is-zero {
+  color: var(--gn-red);
+}
+
+.adm__editor {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+  padding: 24px 20px;
+  align-items: start;
+}
+
+.adm__editor .adm__form {
+  margin: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.adm__variantes {
+  background: var(--adm-preto);
+  padding: 20px;
+}
+
+.adm__variantes h3 {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--adm-fraco);
+  margin: 0 0 6px;
+}
+
+.adm__variantes ul {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.adm__variantes li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12.5px;
+}
+
+.adm__variantes li span {
+  flex: 1;
+  min-width: 0;
+}
+
+.adm__variantes input {
+  width: 68px;
+  padding: 7px 9px;
+  background: var(--adm-carvao);
+  border: 1px solid var(--adm-linha);
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  text-align: right;
+}
+
+.adm__link {
+  color: #fff;
+  font-weight: 700;
+}
+
+.adm__variantes li.is-desligada {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+
+.adm__x {
+  background: none;
+  border: 0;
+  color: var(--adm-fraco);
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 5px;
+}
+
+.adm__x:hover {
+  color: var(--gn-red);
+}
+
+/* Três campos + botão numa linha só: cadastrar tamanho é repetitivo
+   (16cm, 18cm, 20cm), e quebrar isso em várias linhas transformaria uma
+   tarefa de dez segundos num formulário. */
+.adm__variante-nova {
+  display: grid;
+  grid-template-columns: 1fr 1fr 58px;
+  gap: 6px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--adm-linha);
+}
+
+.adm__variante-nova input {
+  width: 100%;
+  padding: 8px 9px;
+  background: var(--adm-carvao);
+  border: 1px solid var(--adm-linha);
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.adm__variante-nova button {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.adm__aviso-inline {
+  background: rgba(255, 176, 0, 0.1);
+  border: 1px solid rgba(255, 176, 0, 0.3);
+  color: #ffd894;
+  padding: 9px 11px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  margin: 12px 0 0;
+}
+
+/* ---------------- MÚSICA ---------------- */
+.adm__musica {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--adm-preto);
+  padding: 18px 20px;
+}
+
+.adm__musica-atual {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.adm__musica-nome {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.adm__musica-acoes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ---------------- TELA MENOR ----------------
+   O painel é de desktop, mas o dono da loja abre no celular pra ver se
+   entrou pedido. A sidebar vira uma faixa de navegação no topo em vez de
+   sumir atrás de um menu — são seis destinos, cabem rolando. */
+@media (max-width: 900px) {
+  /* minmax(0, 1fr) e NÃO 1fr: `1fr` é `minmax(auto, 1fr)`, e o `auto`
+     não encolhe abaixo do min-content dos filhos. A barra de navegação
+     tem 7 itens numa linha (nowrap); o min-content dela era ~929px, e a
+     coluna crescia pra caber isso — o painel inteiro ficava com 929px de
+     largura numa tela de 390, com os cards e a tabela vazando pra fora.
+     minmax(0,…) deixa a coluna encolher até a tela, e o que é largo
+     (barra de nav, tabelas) rola dentro do próprio contêiner. */
+  .adm {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* min-width: 0 nos dois lados do grid: sem isso, um filho de largura
+     mínima grande (a linha de nav, uma tabela de 720px) reimpõe a largura
+     no track mesmo com minmax(0,…). É o par obrigatório da correção. */
+  .adm__side,
+  .adm__main {
+    min-width: 0;
+  }
+
+  .adm__side {
+    position: static;
+    height: auto;
+    flex-direction: column;
+    padding: 20px 0 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--adm-linha);
+  }
+
+  .adm__marca {
+    padding: 0 20px;
+    margin-bottom: 18px;
+  }
+
+  .adm__nav {
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 20px 4px;
+    gap: 6px;
+  }
+
+  .adm__nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .adm__nav-item {
+    white-space: nowrap;
+    padding: 11px 14px;
+    font-size: 13px;
+  }
+
+  .adm__eu {
+    margin-top: 16px;
+    padding: 14px 20px;
+  }
+
+  .adm__main {
+    padding: 32px 20px;
+  }
+
+  /* O editor de produto larga a coluna lateral: o estoque por combinação
+     vai pra baixo do formulário em vez de espremer os dois. */
+  .adm__editor {
+    grid-template-columns: 1fr;
+  }
+
+  .adm__campo--largo,
+  .adm__campo--largo.adm__campo,
+  .adm__form-grid .adm__campo--largo {
+    grid-column: 1 / -1;
+  }
+
+  /* O EDITOR e o DETALHE do pedido vivem numa célula de tabela com
+     min-width 720 que rola de lado. O formulário nascia com 680px numa
+     tela de 375 e ficava cortado — o "cortado" do editor no celular.
+     `width` num <td> não vale (a célula segue a largura da tabela), então
+     quem é preso na viewport é o DIV interno: `sticky; left:0` mantém ele
+     na tela mesmo com a tabela rolada, e `width: calc(100vw - 40px)` dá a
+     largura da tela, não a da tabela. O formulário abre inteiro. */
+  .adm__detalhe-linha > td {
+    padding: 0;
+  }
+
+  .adm__editor,
+  .adm__detalhe {
+    position: sticky;
+    left: 0;
+    width: calc(100vw - 40px);
+    box-sizing: border-box;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 22px 18px;
+  }
+
+  /* campos empilhados: cada input ocupa a largura da tela, não 1/3 de
+     680px */
+  .adm__detalhe-linha .adm__form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* As duas vitrines da home, lado a lado no editor: quem marca uma
+   costuma querer decidir a outra na mesma olhada. */
+.adm__vitrines {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+}
+
+/* ---------------- UPLOAD DE FOTO DA PEÇA ---------------- */
+.adm__foto {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.adm__foto-preview {
+  width: 92px;
+  height: 92px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: var(--adm-preto);
+  border: 1px solid var(--adm-linha);
+  overflow: hidden;
+}
+
+.adm__foto-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.adm__foto-vazia {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--adm-fraco);
+}
+
+.adm__foto-lado {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.adm__foto-dica {
+  font-size: 11px;
+  color: var(--adm-fraco);
+}
+
+.adm__foto-erro {
+  font-size: 11.5px;
+  color: #ff8f8f;
+}
+
+/* Sombra de scroll (RoloScroll) sobre a tabela: o fundo aqui é o carvão
+   #141414, então a sombra usa essa cor pra desvanecer sem parecer um
+   retângulo preto colado. */
+.adm .rolo {
+  --rolo-sombra: rgba(20, 20, 20, 0.92);
+}
+
+/* linha de variante: nome + estoque + remover, com o ID Shopify embaixo */
+.adm__variante-linha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.adm__variante-nome {
+  flex: 1;
+  min-width: 0;
+}
+
+.adm__variantes li {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.adm__variante-shopify {
+  width: 100%;
+  padding: 7px 9px;
+  background: var(--adm-preto);
+  border: 1px dashed rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.85);
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+}
+
+.adm__variante-shopify::placeholder {
+  color: var(--adm-fraco);
+}

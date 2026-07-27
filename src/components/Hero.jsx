@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
-import { getProductBySlug } from "../data/products";
+import { useCatalog } from "../CatalogContext";
 import Wordmark from "./Wordmark";
 import "./Hero.css";
 import Ticker from "./Ticker";
+import { fotoProduto } from "../lib/img";
 
 // Hero = cortina de papel rasgado (PRESENÇA / QUE PESA) que abre e revela
 // o FILME da peça, dirigido pelo scroll (scrollytelling): o currentTime do
@@ -50,12 +51,13 @@ function useChapter(progress, tIn, tOut) {
 }
 
 function ChapterCard({ slug, align }) {
-  const p = getProductBySlug(slug);
+  const { buscarPorSlug } = useCatalog();
+  const p = buscarPorSlug(slug);
   if (!p) return null;
   return (
     <Link className={`hero__card hero__card--${align}`} to={`/produto/${p.slug}`}>
       <span className="hero__card-photo">
-        <img src={`/assets/products/${p.img}`} alt={p.title} loading="lazy" />
+        <img src={fotoProduto(p.img)} alt={p.title} loading="lazy" />
       </span>
       <span className="hero__card-cat">{p.category}</span>
       <span className="hero__card-title">{p.title}</span>

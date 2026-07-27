@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { PRODUCTS, getProductBySlug } from "../data/products";
+import { useCatalog } from "../CatalogContext";
 import Wordmark from "./Wordmark";
 import Navbar from "./Navbar";
 import { useCart } from "../CartContext";
 import "./ProductPage.css";
+import { fotoProduto } from "../lib/img";
 
 // Motion da página (framer-motion): foto entra com fade+scale suave, a
 // coluna de info revela em stagger (categoria → título → preço →
@@ -35,8 +36,9 @@ const itemVariants = {
 // Archivo Black e Open Sauce One são fontes reais do Google Fonts.
 export default function ProductPage() {
   const { slug } = useParams();
-  const product = getProductBySlug(slug);
-  const photoUrl = product ? `/assets/products/${product.img}` : null;
+  const { produtos, buscarPorSlug } = useCatalog();
+  const product = buscarPorSlug(slug);
+  const photoUrl = product ? fotoProduto(product.img) : null;
 
   const [material, setMaterial] = useState(product?.materials[0]);
   const [size, setSize] = useState(product?.sizes[0]);
@@ -58,7 +60,7 @@ export default function ProductPage() {
     );
   }
 
-  const others = PRODUCTS.filter((p) => p.slug !== product.slug).slice(0, 3);
+  const others = produtos.filter((p) => p.slug !== product.slug).slice(0, 3);
 
   return (
     <div className="pp">
@@ -199,7 +201,7 @@ export default function ProductPage() {
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.45, ease: EASE }}
                 >
-                  <img src={`/assets/products/${p.img}`} alt={p.title} />
+                  <img src={fotoProduto(p.img)} alt={p.title} />
                 </motion.div>
                 <span className="pp__others-price">{p.price}</span>
               </Link>

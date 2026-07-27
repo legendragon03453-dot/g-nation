@@ -3,6 +3,7 @@ import LogoG, { brandG } from "./LogoG";
 import Wordmark from "./Wordmark";
 import "./Works.css";
 import { RevealTitle, RevealBody } from "./Reveal";
+import { fotoProduto } from "../lib/img";
 
 // "Letra Custom" é peça sob encomenda (G-Customizadas), não tem SKU fixo
 // no catálogo — linka pra Cubana Cravejada, a mesma foto que já usa aqui.
@@ -32,7 +33,7 @@ export default function Works() {
         {CARDS.map((c) => (
           <a className="works__card" href={`/produto/${c.slug}`} key={c.title}>
             <div className="works__card-image">
-              <img src={`/assets/products/${c.img}`} alt={c.title} />
+              <img src={fotoProduto(c.img)} alt={c.title} />
             </div>
             <div className="works__card-info">
               <h4>{c.title}</h4>

@@ -259,3 +259,87 @@
     padding: 20px 16px;
   }
 }
+
+/* ---------- ÁREA DE TOQUE (auditoria do celular) ----------
+   Os links do rodapé tinham 18px de altura e ficavam encostados uns nos
+   outros: no celular, errar o alvo e cair no link de cima é o resultado
+   mais provável. O texto segue igual; o que cresce é o espaço clicável. */
+@media (max-width: 800px) {
+  .footer__links a,
+  .footer__bottom a {
+    display: inline-block;
+    padding: 11px 0;
+  }
+
+  .footer__social {
+    width: 46px;
+    height: 46px;
+  }
+}
+
+/* Rede e pagamento como CHIP DE TEXTO, não ícone.
+   Os assets originais eram o placeholder "circle-x" do Figma (o arquivo
+   de design tem quadrados vazios aqui). Chip retangular em mono caixa
+   alta é a mesma linguagem da barra de filtros da vitrine — diz o nome
+   sem depender de glifo de marca registrada. */
+.footer__social {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  height: auto;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: transparent;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: border-color 0.18s, background-color 0.18s;
+}
+
+.footer__social:hover {
+  border-color: var(--gn-red, #ff0000);
+  background: rgba(255, 0, 0, 0.1);
+}
+
+.footer__social img {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+
+.footer__social-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.footer__pay-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer__pay {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  height: auto;
+  padding: 7px 11px;
+  /* `background` e `border-radius` PRECISAM ser declarados: a regra
+     antiga (que era a moldura branca de um ícone) continua no arquivo e
+     vence por especificidade igual + ordem se estas não vierem. Sem elas
+     o chip herdava fundo branco com texto branco — invisível, o mesmo
+     erro do botão do painel. */
+  background: transparent;
+  border-radius: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.75);
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

@@ -1,13 +1,37 @@
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 // Estado da sacola. Fica num contexto porque três lugares distantes
 // precisam dele ao mesmo tempo: o ícone da navbar (contador + abrir), a
 // página de produto (adicionar) e a própria gaveta (listar/alterar).
-//
-// Sem backend ainda — a sacola vive na sessão. Quando houver conta, este
-// é o ponto único a trocar por uma chamada real, e nenhum componente que
-// usa `useCart()` precisa mudar.
 const CartContext = createContext(null);
+
+// A sacola sobrevive a recarga e a fechar o navegador. Antes ela vivia só
+// em memória: a pessoa montava o pedido, dava F5 e voltava pra vitrine com
+// a sacola vazia — sem nenhum aviso de que tinha perdido algo.
+//
+// localStorage e não sessionStorage pela mesma razão da sessão do login:
+// quem escolhe uma peça hoje à noite espera encontrá-la amanhã de manhã.
+const CHAVE = "gnation:sacola:v1";
+
+// A versão está na chave de propósito. Se o formato da linha mudar, a
+// chave muda junto e a sacola velha é ignorada em vez de quebrar a tela
+// de quem já tinha itens guardados no formato antigo.
+function lerSalvo() {
+  try {
+    const bruto = localStorage.getItem(CHAVE);
+    if (!bruto) return [];
+    const dados = JSON.parse(bruto);
+    if (!Array.isArray(dados)) return [];
+    // Só o que tem o mínimo pra virar pedido. Lixo no storage (editado à
+    // mão, sobra de versão antiga) é descartado em silêncio.
+    return dados.filter((i) => i && i.id && i.slug && i.qtd > 0);
+  } catch {
+    // storage cheio, JSON corrompido, modo privativo do Safari — nada
+    // disso pode derrubar a loja inteira. Sem sacola é melhor que tela
+    // branca.
+    return [];
+  }
+}
 
 // Cada linha da sacola é uma COMBINAÇÃO, não um produto: a mesma peça em
 // materiais ou tamanhos diferentes são linhas separadas, como numa loja
@@ -17,8 +41,21 @@ function linhaId(slug, material, tamanho) {
 }
 
 export function CartProvider({ children }) {
-  const [itens, setItens] = useState([]);
+  // função no useState (lazy): lê o storage UMA vez, na montagem, em vez
+  // de a cada render
+  const [itens, setItens] = useState(lerSalvo);
   const [aberta, setAberta] = useState(false);
+
+  // A gaveta NÃO abre sozinha ao carregar a página, mesmo com itens
+  // dentro — só quando a pessoa adiciona algo ou clica na sacola.
+  useEffect(() => {
+    try {
+      localStorage.setItem(CHAVE, JSON.stringify(itens));
+    } catch {
+      // não dá pra guardar (cota, modo privativo): a sacola segue
+      // funcionando nesta aba, só não sobrevive à recarga
+    }
+  }, [itens]);
 
   const abrir = useCallback(() => setAberta(true), []);
   const fechar = useCallback(() => setAberta(false), []);

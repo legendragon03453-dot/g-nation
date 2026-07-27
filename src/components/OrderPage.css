@@ -393,3 +393,24 @@
     font-size: 20px;
   }
 }
+
+/* Botão "Pagar agora" — só aparece quando há gateway ligado e o pedido
+   tem uma url de pagamento. Vermelho da marca, mesma voz de CTA do site. */
+.pd__pagar {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 14px 28px;
+  background: var(--gn-red, #ff0000);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.pd__pagar:hover {
+  background: #d40000;
+}

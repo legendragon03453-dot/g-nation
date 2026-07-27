@@ -295,11 +295,20 @@
   object-fit: contain;
 }
 
-/* a quantidade fica na foto, como em carrinho de loja grande */
+/* A quantidade fica DENTRO da foto, não estourando a borda dela.
+   Antes era `top:-7px; right:-7px`, pendurado pra fora — e como a lista
+   acima tem `overflow-y:auto` (pra rolar quando a sacola é grande), o
+   contêiner cortava a metade de cima da bolinha no primeiro item. Um
+   badge que só aparece inteiro do segundo item em diante é bug, não
+   estilo. Dentro da foto ele fica igual em todos e não depende de o
+   contêiner ter overflow ou não. */
 .ck__item-qtd {
   position: absolute;
-  top: -7px;
-  right: -7px;
+  top: 3px;
+  right: 3px;
+  /* anel branco: separa a bolinha preta da foto sem precisar de sombra,
+     e continua legível sobre foto escura */
+  box-shadow: 0 0 0 2px #fff;
   min-width: 19px;
   height: 19px;
   padding: 0 5px;
@@ -516,4 +525,92 @@
   .ck__total dd {
     font-size: 21px;
   }
+}
+
+/* ---------- CUPOM ----------
+   Fica dentro do resumo, encostado nas contas: é onde a pessoa olha
+   quando pensa em desconto, e não numa quarta seção do formulário. */
+.ck__cupom {
+  margin: 18px 0 4px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(10, 10, 10, 0.15);
+}
+
+.ck__cupom-linha {
+  display: flex;
+  gap: 8px;
+}
+
+.ck__cupom-linha input {
+  flex: 1;
+  min-width: 0;
+  padding: 11px 13px;
+  background: #fff;
+  border: 1px solid rgba(10, 10, 10, 0.25);
+  color: #0a0a0a;
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ck__cupom-linha input:focus {
+  outline: none;
+  border-color: #000;
+}
+
+/* O resumo do pedido tem fundo BRANCO (.ck__resumo). Este bloco tinha
+   sido escrito com cor de tema escuro — botão branco sobre branco, que
+   sumia da tela. */
+.ck__cupom-linha button {
+  padding: 11px 16px;
+  background: transparent;
+  border: 1px solid #000;
+  color: #0a0a0a;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ck__cupom-linha button:hover:not(:disabled) {
+  background: #000;
+  color: #fff;
+}
+
+.ck__cupom-linha button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ck__cupom-ok {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 13px;
+  background: rgba(0, 130, 55, 0.08);
+  border: 1px solid rgba(0, 130, 55, 0.45);
+  color: #056c30;
+  font-size: 12.5px;
+}
+
+.ck__cupom-ok button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: 11px;
+  text-decoration: underline;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.ck__cupom-erro {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #c40000;
 }

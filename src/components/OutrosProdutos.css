@@ -1,28 +1,46 @@
+/* "CONFIRA TAMBÉM" (Figma 27:176).
+
+   O CARD não está mais aqui — ele é o <PecaCard/>, compartilhado com
+   Lançamentos. Este arquivo cuida só do que é da SEÇÃO: o bloco do
+   título à esquerda e a malha de fios entre as três células.
+
+   A seção era branca com cards centralizados e foto arredondada, e
+   Lançamentos era preta com malha de fio branco. Duas linguagens pro
+   mesmo conteúdo, uma embaixo da outra. Agora as duas falam a mesma:
+   preto, fio de 2px, peça alinhada à esquerda. */
+
 .outros-produtos {
+  background: #0a0a0a;
+  color: #fff;
+  border-top: 2px solid rgb(228, 228, 231);
+  border-bottom: 2px solid rgb(228, 228, 231);
+}
+
+/* o desenho original (título à esquerda, três peças à direita) vira o
+   TOPO da seção — abaixo dele entra o trilho que rola */
+.outros-produtos__topo {
   display: grid;
   grid-template-columns: 1fr 3fr;
   align-items: stretch;
-  background: #fff;
-  color: #0a0a0a;
-  border-top: 1px solid rgba(10, 10, 10, 0.15);
-  border-bottom: 1px solid rgba(10, 10, 10, 0.15);
 }
 
 .outros-produtos__title {
   display: flex;
   align-items: center;
   padding: 60px 48px;
-  border-right: 1px solid rgba(10, 10, 10, 0.15);
+  border-right: 2px solid rgb(228, 228, 231);
 }
 
 .outros-produtos__title h2 {
-  --tw-stroke: var(--tw-stroke-dark);
+  /* contorno claro: o fundo agora é preto, então o stroke escuro do tema
+     branco sumiria */
+  --tw-stroke: var(--tw-stroke-light);
   font-family: var(--font-mono);
   font-weight: 800;
   font-size: 40px;
   line-height: 1.15;
   text-transform: uppercase;
-  color: #0a0a0a;
+  color: #fff;
 }
 
 .outros-produtos__grid {
@@ -30,104 +48,212 @@
   grid-template-columns: repeat(3, 1fr);
 }
 
-.outros-produtos__card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 40px 24px;
-  text-align: center;
-  border-left: 1px solid rgba(10, 10, 10, 0.15);
+/* fio vertical entre as células, nunca depois da última */
+.outros-produtos__card:not(:last-child) {
+  border-right: 2px solid rgb(228, 228, 231);
 }
 
-.outros-produtos__card:first-child {
-  border-left: none;
-}
-
-.outros-produtos__image {
-  width: 100%;
-  max-width: 220px;
-  aspect-ratio: 1;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #f4f4f4;
-}
-
-.outros-produtos__image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.outros-produtos__card:hover .outros-produtos__image img {
-  transform: scale(1.06);
-}
-
-.outros-produtos__card h4 {
-  font-family: var(--font-inter);
-  font-weight: 600;
-  font-size: 18px;
-  color: #0a0a0a;
-}
-
-.outros-produtos__card span {
-  font-family: var(--font-inter);
-  font-size: 15px;
-  color: rgba(10, 10, 10, 0.6);
+/* O card tem padding próprio (vem do PecaCard); a célula só respira um
+   pouco mais no eixo vertical, que é o que dá o ar de vitrine. */
+.outros-produtos__card .peca-card__link {
+  padding: 32px 20px;
 }
 
 /* O título sai da coluna lateral e vai pra cima, mas os CARDS seguem em
    3 colunas: são peças pra comparar de relance. */
 @media (max-width: 800px) {
-  .outros-produtos {
+  /* O grid é do __topo desde que a seção ganhou a segunda linha; esta
+     regra continuava mirando `.outros-produtos`, que virou só o
+     invólucro. Resultado no celular: o título seguia ocupando uma coluna
+     lateral e as três peças se espremiam no que sobrava — fotos
+     minúsculas em 390px. */
+  .outros-produtos__topo {
     grid-template-columns: 1fr;
   }
+
   .outros-produtos__title {
     border-right: none;
-    border-bottom: 1px solid rgba(10, 10, 10, 0.15);
+    border-bottom: 2px solid rgb(228, 228, 231);
     padding: 32px 24px;
   }
+
   .outros-produtos__title h2 {
     font-size: 30px;
   }
-  .outros-produtos__card {
-    padding: 28px 12px;
+
+  /* No desktop "CONFIRA" e "TAMBÉM" empilham à esquerda de propósito
+     (título vertical na coluna estreita). No mobile o título vai pra cima
+     numa faixa larga, e empilhar duas palavras curtas ali só abre um vão
+     à toa — viram uma linha só, com espaço entre elas. */
+  .outros-produtos__title h2 .tw-solid,
+  .outros-produtos__title h2 .tw-outline {
+    display: inline;
   }
-  .outros-produtos__card h4 {
-    font-size: 15px;
+
+  .outros-produtos__title h2 .tw-outline {
+    margin-left: 0.3em;
   }
-  .outros-produtos__card span {
-    font-size: 13px;
+
+  .outros-produtos__card .peca-card__link {
+    padding: 20px 12px;
   }
 }
 
-/* CELULAR — 2 colunas. Em 390px, 3 cards dariam 120px cada e a peça
-   viraria miniatura; em coluna única viravam três blocos empilhados. */
+/* CELULAR — segue em 3 colunas, como Lançamentos faz em 2. Em 390px a
+   foto 16:9 fica baixa mas continua legível, e a linha inteira some se
+   virasse coluna única. */
 @media (max-width: 640px) {
+  /* Duas colunas e não três: em 390px, três cards dão 130px cada e a joia
+     vira miniatura. A terceira peça fecha a linha sozinha, com fio em
+     cima pra malha não abrir buraco. */
   .outros-produtos__grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .outros-produtos__card {
-    padding: 20px 10px;
-    gap: 8px;
+
+  /* O 3º card era `grid-column: 1 / -1` (largura inteira). Numa altura
+     baixa isso dava uma moldura de proporção ~3.3:1, e a foto retrato do
+     Anel Cruz Royal (0.75) cortada pra preencher virava um filete
+     ampliado — o "esticado". Agora ele fica na coluna esquerda como os
+     outros, mantendo a mesma proporção de moldura de todos. A malha
+     ganha só o fio de cima. */
+  .outros-produtos__card:nth-child(3) {
+    border-top: 2px solid rgb(228, 228, 231);
   }
-  /* a 3ª peça fica sozinha na última fileira: em vez de meia-linha
-     vazia, ela ocupa a largura toda com a foto em tamanho contido */
-  .outros-produtos__card:nth-child(3):last-child {
-    grid-column: 1 / -1;
-    border-top: 1px solid rgba(10, 10, 10, 0.15);
+
+  .outros-produtos__card .peca-card__link {
+    padding: 16px 8px;
   }
-  .outros-produtos__card:nth-child(3):last-child .outros-produtos__image {
-    max-width: 150px;
+}
+
+/* ---------- SEGUNDA LINHA: TRILHO QUE ROLA ----------
+   A grade de cima mostra três peças e acaba. Este trilho existe pra quem
+   chegou ao fim da home ainda escolhendo: em vez de três opções e um
+   beco sem saída, varre o resto da curadoria rolando de lado, sem trocar
+   de página. */
+.outros-produtos__mais {
+  border-top: 2px solid rgb(228, 228, 231);
+  padding: 26px 0 30px;
+}
+
+.outros-produtos__mais-cabeca {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 50px 18px;
+}
+
+.outros-produtos__mais-rotulo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.outros-produtos__mais-rotulo strong {
+  color: var(--gn-red, #ff0000);
+  margin-left: 4px;
+}
+
+.outros-produtos__setas {
+  display: flex;
+  gap: 8px;
+}
+
+.outros-produtos__seta {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-size: 15px;
+  font-family: var(--font-display);
+  cursor: pointer;
+  transition: background-color 0.18s, border-color 0.18s, opacity 0.18s;
+}
+
+.outros-produtos__seta:hover:not(:disabled) {
+  background: var(--gn-red, #ff0000);
+  border-color: var(--gn-red, #ff0000);
+}
+
+/* fim do trilho: a seta apaga em vez de sumir, pra não pular o layout */
+.outros-produtos__seta:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.outros-produtos__trilho {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  /* sangra até as bordas: o corte de uma peça na margem é o que anuncia
+     que existe mais coisa pro lado */
+  padding: 0 50px;
+}
+
+.outros-produtos__trilho::-webkit-scrollbar {
+  display: none;
+}
+
+.outros-produtos__trilho:focus-visible {
+  outline: 2px solid var(--gn-red, #ff0000);
+  outline-offset: -2px;
+}
+
+.outros-produtos__item {
+  flex: 0 0 clamp(190px, 22vw, 280px);
+  scroll-snap-align: start;
+  border-right: 2px solid rgba(228, 228, 231, 0.35);
+}
+
+.outros-produtos__item:last-child {
+  border-right: 0;
+}
+
+.outros-produtos__item .peca-card__link {
+  padding: 22px 18px;
+}
+
+/* Progresso: numa lista que rola de lado, sem isto não há como saber que
+   existe mais coisa nem quanto falta. */
+.outros-produtos__barra {
+  height: 2px;
+  margin: 20px 50px 0;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+
+.outros-produtos__barra span {
+  display: block;
+  height: 100%;
+  background: var(--gn-red, #ff0000);
+  transform-origin: left;
+  transition: transform 0.15s linear;
+}
+
+@media (max-width: 800px) {
+  .outros-produtos__mais-cabeca {
+    padding: 0 24px 14px;
   }
-  .outros-produtos__card:nth-child(2n) {
-    border-left: 1px solid rgba(10, 10, 10, 0.15);
+
+  .outros-produtos__trilho {
+    padding: 0 24px;
   }
-  .outros-produtos__card h4 {
-    font-size: 14px;
+
+  .outros-produtos__barra {
+    margin: 16px 24px 0;
   }
-  .outros-produtos__card span {
-    font-size: 12px;
+
+  /* No celular o trilho é o gesto natural: cada peça ocupa ~70% da tela,
+     deixando a próxima aparecendo pela borda como convite pra arrastar. */
+  .outros-produtos__item {
+    flex: 0 0 clamp(150px, 62vw, 230px);
   }
 }

@@ -92,7 +92,14 @@ export function mensagemErro(erro) {
   if (m.includes("user already registered") || m.includes("already been registered"))
     return "Esse e-mail já tem conta. Tente entrar.";
   if (m.includes("password should be at least"))
-    return "A senha precisa de pelo menos 6 caracteres.";
+    return "A senha precisa de pelo menos 8 caracteres.";
+  // O Supabase recusa listando os alfabetos exigidos ("should contain at
+  // least one character of each: abcdefghijklmnopqrstuvwxyz, ABCDEF...").
+  // Ninguém que só quer comprar uma corrente merece ler isso.
+  if (m.includes("should contain at least one character of each"))
+    return "A senha precisa de letra minúscula, letra MAIÚSCULA e número.";
+  if (m.includes("password is known to be weak") || m.includes("pwned"))
+    return "Essa senha apareceu em vazamentos conhecidos. Escolha outra.";
   if (m.includes("unable to validate email") || m.includes("invalid email"))
     return "E-mail inválido.";
   if (m.includes("rate limit") || m.includes("too many"))

@@ -7,6 +7,7 @@ import { useAuth } from "../AuthContext";
 import { supabase } from "../supabase";
 import { brl, mascaraCep, mascaraTelefone } from "../lib/br";
 import "./OrderPage.css";
+import { fotoProduto } from "../lib/img";
 
 const EASE = [0.16, 1, 0.3, 1];
 
@@ -35,7 +36,9 @@ export default function OrderPage() {
   useEffect(() => {
     if (!logado) return;
     let vivo = true;
-    (async () => {
+    let timer;
+
+    async function carregar(primeira) {
       const { data: p, error } = await supabase
         .from("pedidos")
         .select("*")
@@ -46,22 +49,35 @@ export default function OrderPage() {
       // RLS já garante que ninguém lê pedido dos outros: se não for seu,
       // simplesmente não vem — daí "não encontrado" cobre os dois casos.
       if (error || !p) {
-        setEstado("nao-encontrado");
+        if (primeira) setEstado("nao-encontrado");
         return;
       }
 
-      const { data: is } = await supabase
-        .from("itens_pedido")
-        .select("*")
-        .eq("pedido_id", id);
-
-      if (!vivo) return;
+      if (primeira) {
+        const { data: is } = await supabase
+          .from("itens_pedido")
+          .select("*")
+          .eq("pedido_id", id);
+        if (!vivo) return;
+        setItens(is || []);
+      }
       setPedido(p);
-      setItens(is || []);
       setEstado("ok");
-    })();
+
+      // ENQUANTO AGUARDA PAGAMENTO, relê o pedido a cada 5s. O gateway
+      // confirma o pagamento de forma ASSÍNCRONA (webhook → banco), então
+      // a página precisa perceber sozinha quando o status vira "pago" —
+      // sem o cliente ter que recarregar. Assim que sai de "aguardando", o
+      // polling para.
+      if (p.status === "aguardando_pagamento") {
+        timer = setTimeout(() => carregar(false), 5000);
+      }
+    }
+
+    carregar(true);
     return () => {
       vivo = false;
+      clearTimeout(timer);
     };
   }, [id, logado]);
 
@@ -132,12 +148,29 @@ export default function OrderPage() {
         {pedido.status === "aguardando_pagamento" && (
           <div className="pd__proximo">
             <strong>E agora?</strong>
-            <p>
-              Seu pedido está registrado. Vamos entrar em contato pelo e-mail{" "}
-              <strong>{c.email}</strong> para combinar o pagamento por{" "}
-              <strong>{METODO[pedido.pagamento_metodo] || "PIX"}</strong>. Nada foi
-              cobrado ainda.
-            </p>
+            {pedido.pagamento_url ? (
+              // COM gateway ligado: o botão leva pro checkout do provedor.
+              // A página fica se atualizando sozinha (polling), então
+              // quando o pagamento confirmar ela vira "Pago" sem recarregar.
+              <>
+                <p>
+                  Falta só o pagamento. Clique abaixo para pagar por{" "}
+                  <strong>{METODO[pedido.pagamento_metodo] || "PIX"}</strong> — assim
+                  que confirmar, este pedido atualiza sozinho.
+                </p>
+                <a className="pd__pagar" href={pedido.pagamento_url}>
+                  Pagar agora
+                </a>
+              </>
+            ) : (
+              // SEM gateway ainda: a loja combina o pagamento por fora.
+              <p>
+                Seu pedido está registrado. Vamos entrar em contato pelo e-mail{" "}
+                <strong>{c.email}</strong> para combinar o pagamento por{" "}
+                <strong>{METODO[pedido.pagamento_metodo] || "PIX"}</strong>. Nada foi
+                cobrado ainda.
+              </p>
+            )}
           </div>
         )}
 
@@ -148,7 +181,7 @@ export default function OrderPage() {
               {itens.map((i) => (
                 <li key={i.id}>
                   <span className="pd__item-foto">
-                    <img src={`/assets/products/${i.img}`} alt="" />
+                    <img src={fotoProduto(i.img)} alt="" />
                     <span className="pd__item-qtd">{i.quantidade}</span>
                   </span>
                   <span className="pd__item-info">

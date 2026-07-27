@@ -17,8 +17,17 @@ import NotFoundPage from "./components/NotFoundPage";
 import CheckoutPage from "./components/CheckoutPage";
 import OrderPage from "./components/OrderPage";
 import CartDrawer from "./components/CartDrawer";
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminDashboard from "./components/admin/AdminDashboard";
+import AdminPedidos from "./components/admin/AdminPedidos";
+import AdminProdutos from "./components/admin/AdminProdutos";
+import AdminClientes from "./components/admin/AdminClientes";
+import AdminCupons from "./components/admin/AdminCupons";
+import AdminDepoimentos from "./components/admin/AdminDepoimentos";
+import AdminConfiguracoes from "./components/admin/AdminConfiguracoes";
 import { CartProvider } from "./CartContext";
 import { AuthProvider } from "./AuthContext";
+import { CatalogProvider } from "./CatalogContext";
 
 // Home enxuta, na ordem exata do frame HOME do Figma (27:39):
 // NAVBAR (27:40) → HERO (27:57) → CATEGORIA (27:64, as fatias da Curtain)
@@ -62,7 +71,9 @@ function CollectionPageRoute() {
 // nodes 27:400 e 27:670 do Figma) — ficam direto na rota.
 // O botão de som acompanha as páginas de conteúdo do site; numa tela de
 // entrada (login) ele só polui o canto. Único uso da rota aqui.
-const ROTAS_SEM_SOM = ["/login", "/criar-conta"];
+// O painel também entra aqui: é ferramenta de trabalho, e música tocando
+// enquanto o dono despacha pedido é ruído, não atmosfera.
+const ROTAS_SEM_SOM = ["/login", "/criar-conta", "/admin"];
 
 function SiteSound() {
   const { pathname } = useLocation();
@@ -75,6 +86,9 @@ function App() {
     // AuthProvider por fora do CartProvider: a sacola e o checkout
     // precisam saber quem está logado, nunca o contrário.
     <AuthProvider>
+    {/* Catálogo por fora da sacola: a sacola guarda peças que vieram do
+        catálogo, nunca o contrário. */}
+    <CatalogProvider>
     <CartProvider>
       <RadarBackground />
       <SiteSound />
@@ -92,6 +106,23 @@ function App() {
           <Route path="/conta" element={<AccountPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/pedido/:id" element={<OrderPage />} />
+
+          {/* PAINEL DA LOJA (Figma 27:545). Rotas aninhadas: a sidebar
+              vive no AdminLayout e cada seção tem URL própria — assim o
+              dono consegue guardar /admin/pedidos nos favoritos e o botão
+              voltar do navegador funciona entre as seções.
+              O layout barra quem não é admin; o RLS barra de novo no
+              banco, então nem forçando o estado no console vem dado. */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="pedidos" element={<AdminPedidos />} />
+            <Route path="produtos" element={<AdminProdutos />} />
+            <Route path="clientes" element={<AdminClientes />} />
+            <Route path="cupons" element={<AdminCupons />} />
+            <Route path="depoimentos" element={<AdminDepoimentos />} />
+            <Route path="configuracoes" element={<AdminConfiguracoes />} />
+          </Route>
+
           {/* Sem esta, qualquer URL errada renderizava NADA: o rewrite da
               Vercel devolve 200 pra tudo, então quem trata é o roteador. */}
           <Route path="*" element={<NotFoundPage />} />
@@ -100,6 +131,7 @@ function App() {
       {/* fora do .app-content: a gaveta cobre a página inteira */}
       <CartDrawer />
     </CartProvider>
+    </CatalogProvider>
     </AuthProvider>
   );
 }

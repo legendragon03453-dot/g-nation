@@ -1,0 +1,153 @@
+/* Visual do card de peça — a fonte ÚNICA pras duas seções da home
+   (Lançamentos, dentro da cortina, e "Confira também").
+
+   Vem do card de Lançamentos, que é o desenho aprovado: fundo preto,
+   foto em caixa 16:9 sem moldura, nome em JetBrains Mono caixa alta
+   alinhado à esquerda e preço miúdo embaixo. Quem tinha divergido era o
+   "Confira também", que ficou branco e centralizado.
+
+   O que NÃO está aqui, de propósito: a malha de bordas entre as células.
+   Ela é da grade, não do card — Lançamentos usa 3 colunas com fio branco
+   de 2px, e cada grade decide o próprio desenho de linha. */
+
+.peca-card {
+  display: flex;
+  min-width: 0;
+}
+
+.peca-card__link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  padding: 10px 16px;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Caixa em 16:9 (a mesma proporção do vídeo que ocupava esse lugar
+   antes). A ALTURA manda e a largura é derivada dela, pra foto não
+   esticar a coluna. A altura em vh tem teto em px porque esta grade vive
+   dentro do pin da cortina: passando disso, a seção não cabe na tela e o
+   pin ganha scroll interno. */
+/* A caixa da foto ocupa a LARGURA inteira do card, não uma largura
+   derivada da altura. Antes era `height + aspect-ratio 16/9 + align-self
+   center`: cada foto virava um retângulo estreito centralizado, e como as
+   fotos têm proporções diferentes (algumas são PNG de peça ~1:1, outras
+   foto de pessoa em retrato ~0.75), o `contain` deixava cada uma com uma
+   quantidade diferente de vazio em volta — na grade, umas peças enormes
+   ao lado de outras minúsculas. Agora todas as molduras têm o MESMO
+   tamanho e a mesma proporção, e a foto preenche por igual. */
+.peca-card__photo {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: min(22vh, 220px);
+  overflow: hidden;
+  /* fundo levíssimo: o pouco de vazio que sobra numa foto de proporção
+     diferente lê como moldura, não como buraco */
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.peca-card__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* contain: a peça aparece INTEIRA, centrada na moldura. `cover` foi
+     tentado antes pra igualar tamanhos, mas cortava as fotos — e nas
+     fotos de proporção retrato (as de lifestyle, ~0.75) o corte pra
+     preencher uma moldura larga virava um filete ampliado, o "esticado"
+     do Anel Cruz Royal. Com `contain` cada peça é mostrada por completo;
+     o pouco de vazio que sobra é uniformizado pelo fundo da moldura. */
+  object-fit: contain;
+  object-position: center;
+  transition: transform 0.5s ease, opacity 0.35s ease;
+}
+
+/* :active espelha o :hover pro toque no celular — o mesmo movimento da
+   foto (amplia) quando o dedo pressiona o card, já que no mobile não
+   existe hover. */
+.peca-card:hover .peca-card__img--base,
+.peca-card:active .peca-card__img--base {
+  transform: scale(1.05);
+}
+
+/* Segunda foto no hover (outro ângulo), quando a peça tem uma. O :has
+   garante que card sem segunda foto não apague a imagem base. */
+.peca-card__img--hover {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.peca-card:hover .peca-card__img--hover {
+  opacity: 1;
+}
+
+.peca-card:hover:has(.peca-card__img--hover) .peca-card__img--base {
+  opacity: 0;
+}
+
+.peca-card__title {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0;
+  /* Reserva DUAS linhas sempre. Sem isso, "Trevo Gold" (1 linha) e
+     "Pingente Cruz Cravejada" (2 linhas) davam cards de alturas
+     diferentes na mesma grade, e o preço de um não alinhava com o do
+     vizinho. Com a altura fixa, a base do card é a mesma pra todos. */
+  min-height: 2.3em;
+  line-height: 1.15;
+  line-height: 1.15;
+}
+
+.peca-card__row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.peca-card__price {
+  font-family: var(--font-nav);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* preço cheio riscado: só aparece quando a peça está em promoção */
+.peca-card__price-full {
+  font-family: var(--font-nav);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.35);
+  text-decoration: line-through;
+}
+
+@media (max-width: 900px) {
+  .peca-card__link {
+    padding: 8px 10px;
+    gap: 2px;
+  }
+
+  .peca-card__photo {
+    height: min(13vh, 130px);
+  }
+
+  .peca-card__title {
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .peca-card__price {
+    font-size: 11px;
+  }
+
+  .peca-card__price-full {
+    font-size: 10px;
+  }
+}

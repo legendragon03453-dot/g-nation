@@ -5,6 +5,7 @@ import { useCart, brl } from "../CartContext";
 import { useAuth } from "../AuthContext";
 import { brandG } from "./LogoG";
 import "./CartDrawer.css";
+import { fotoProduto } from "../lib/img";
 
 const EASE = [0.16, 1, 0.3, 1];
 
@@ -94,7 +95,7 @@ export default function CartDrawer() {
                         to={`/produto/${i.slug}`}
                         onClick={fechar}
                       >
-                        <img src={`/assets/products/${i.img}`} alt={i.title} />
+                        <img src={fotoProduto(i.img)} alt={i.title} />
                       </Link>
 
                       <div className="cart__info">

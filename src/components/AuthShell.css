@@ -293,6 +293,56 @@
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
 }
 
+/* Requisitos da senha. Duas colunas: as quatro regras são curtas e em
+   coluna única empurrariam o botão pra fora da dobra do celular. */
+.auth__regras {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 12px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.auth__regras li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.55);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+  transition: color 0.2s ease;
+}
+
+/* A marca é um ponto que se enche, não um símbolo de certo: o estado
+   aparece na forma e na cor ao mesmo tempo, e continua legível pra quem
+   não distingue verde de cinza. */
+.auth__regra-marca {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  transition: background-color 0.2s ease;
+}
+
+.auth__regras li.is-ok {
+  color: rgba(120, 230, 150, 0.95);
+}
+
+.auth__regras li.is-ok .auth__regra-marca {
+  background: currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth__regras li,
+  .auth__regra-marca {
+    transition: none;
+  }
+}
+
 /* O CAMPO é a área onde a legibilidade não se negocia: vidro escuro
    fechado (blur alto + saturação) em vez de translúcido leve, senão um
    quadro claro do vídeo passa por baixo do que a pessoa está digitando.
@@ -642,6 +692,17 @@
   .auth__check-text {
     color: #000;
     text-shadow: none;
+  }
+
+  /* Sem o vídeo o quadro fica claro: cinza-claro sobre branco sumiria, e
+     o verde precisa escurecer pra manter contraste de leitura. */
+  .auth__regras li {
+    color: rgba(0, 0, 0, 0.5);
+    text-shadow: none;
+  }
+
+  .auth__regras li.is-ok {
+    color: #0a7a3c;
   }
 
   .auth__check-box {

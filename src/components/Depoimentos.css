@@ -53,11 +53,21 @@
    de 1600px eles já quebravam em 2+2, e no celular o `max-width:100%`
    fazia cada card ocupar a linha inteira: UMA coluna. A grade resolve os
    dois: 4 numa fileira no desktop e nunca menos de 2 no celular. */
+/* flex e não grid de 4 fixas: o número de depoimentos agora vem do banco
+   (1 a 8). Com flex-wrap centralizado, 1 depoimento fica centrado, 3 ou 4
+   preenchem a linha, e 5+ quebram pra baixo — sem célula vazia em nenhum
+   caso. */
 .depo__row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 24px;
-  align-items: start;
+  align-items: stretch;
+}
+
+.depo__card {
+  flex: 1 1 240px;
+  max-width: 320px;
 }
 
 /* 27:105 — card preto (padding 40, coluna gap 24). A LARGURA agora vem
@@ -175,8 +185,25 @@
     line-height: 1.5;
   }
   .depo__name {
-    font-size: 10px;
+    font-size: 11px;
     /* na coluna estreita o nome não cabe em uma linha só */
     white-space: normal;
   }
+}
+
+/* estrela vazia (nota < 5): fica presente pra manter as cinco na linha,
+   mas apagada, sem fingir uma avaliação maior do que foi dada */
+.depo__star--vazia {
+  opacity: 0.22;
+}
+
+/* origem do cliente (cidade / @), abaixo do nome */
+.depo__origem {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.5);
 }

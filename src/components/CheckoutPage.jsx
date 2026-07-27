@@ -17,6 +17,8 @@ import {
   telefoneValido,
 } from "../lib/br";
 import "./CheckoutPage.css";
+import { fotoProduto } from "../lib/img";
+import { criarCheckoutShopify, shopifyConfigurado } from "../lib/shopify";
 
 const EASE = [0.16, 1, 0.3, 1];
 
@@ -68,6 +70,17 @@ export default function CheckoutPage() {
   const [enviando, setEnviando] = useState(false);
   const [erroGeral, setErroGeral] = useState("");
   const numeroRef = useRef(null);
+  // id do endereço salvo que preencheu o formulário. Sem guardar isto, o
+  // "upsert" da versão anterior criava um endereço NOVO a cada compra —
+  // a lista de endereços da conta crescia com cópias do mesmo lugar.
+  const [enderecoId, setEnderecoId] = useState(null);
+  // Cupom: o código digitado, e o que o SERVIDOR respondeu sobre ele. O
+  // desconto nunca é calculado aqui — a tela só mostra o que o banco
+  // disse, e é o banco que refaz a conta na hora de fechar.
+  const [cupom, setCupom] = useState("");
+  const [cupomOk, setCupomOk] = useState(null);
+  const [cupomErro, setCupomErro] = useState("");
+  const [conferindoCupom, setConferindoCupom] = useState(false);
 
   // Puxa o que já sabemos da conta pra pessoa não redigitar. É o mesmo
   // motivo de existir a tabela `perfis`.
@@ -95,6 +108,7 @@ export default function CheckoutPage() {
         .eq("padrao", true)
         .maybeSingle();
       if (vivo && endereco) {
+        setEnderecoId(endereco.id);
         setEnd({
           cep: mascaraCep(endereco.cep),
           rua: endereco.rua || "",
@@ -147,12 +161,125 @@ export default function CheckoutPage() {
     return Object.keys(e).length === 0;
   }
 
-  // COSTURA DO PAGAMENTO — o único ponto que muda quando o gateway for
-  // escolhido. Hoje devolve "pendente", que é a verdade: o pedido existe
-  // e está aguardando pagamento. Quando entrar Mercado Pago/Stripe, é
-  // aqui que se cria a preferência e se devolve a URL de redirecionamento.
+  // COSTURA DO PAGAMENTO — checkout da LOJA SHOPIFY.
+  //
+  // Monta um carrinho no Shopify com as variantes reais da loja e devolve
+  // a URL do checkout do próprio Shopify, que cobra e cria o pedido lá. Se
+  // a loja Shopify ainda não estiver configurada (sem as variáveis) ou os
+  // produtos não estiverem mapeados, devolve `url: null` e o cliente cai
+  // no fluxo "aguardando pagamento" — nada quebra nesse meio-tempo.
   async function iniciarPagamento(pedido) {
-    return { situacao: "pendente", pedidoId: pedido.id };
+    if (!shopifyConfigurado()) return { url: null };
+
+    // pega as variantes reais (com o id do Shopify) dos itens do pedido
+    const { data: linhas } = await supabase
+      .from("itens_pedido")
+      .select("quantidade, variantes ( shopify_variant_id )")
+      .eq("pedido_id", pedido.id);
+
+    const itensShopify = (linhas || []).map((l) => ({
+      shopify_variant_id: l.variantes?.shopify_variant_id,
+      quantidade: l.quantidade,
+    }));
+
+    let url = null;
+    try {
+      url = await criarCheckoutShopify({
+        itens: itensShopify,
+        pedidoId: pedido.id,
+        email: usuario.email,
+      });
+    } catch (e) {
+      // falha ao falar com o Shopify não pode perder o pedido (que já foi
+      // criado): cai no "aguardando pagamento" e a loja resolve.
+      console.error("checkout Shopify falhou:", e);
+      return { url: null };
+    }
+
+    // guarda a url no pedido pra a página do pedido mostrar "Pagar agora"
+    // e o webhook cruzar depois
+    if (url) {
+      await supabase.rpc("definir_cobranca", {
+        p_pedido_id: pedido.id,
+        p_provedor: "shopify",
+        p_ref: null,
+        p_url: url,
+      });
+    }
+    return { url };
+  }
+
+  // Traduz o que o banco recusou. A função `criar_pedido` levanta erros
+  // com nome curto (SEM_ESTOQUE:Trevo Royal) justamente pra chegarem aqui
+  // como caso tratável, e não como texto de Postgres na cara do cliente.
+  function mensagemDoBanco(err) {
+    const bruto = err?.message || "";
+    const [codigo, detalhe] = bruto.split(":").map((s) => s.trim());
+
+    switch (codigo) {
+      case "SEM_ESTOQUE":
+        return `${detalhe} acabou de esgotar no tamanho escolhido. Ajuste a sacola pra continuar.`;
+      case "PRODUTO_INDISPONIVEL":
+      case "COMBINACAO_INDISPONIVEL":
+        return `${detalhe || "Uma das peças"} saiu de linha. Remova da sacola pra fechar o pedido.`;
+      case "CUPOM_INVALIDO":
+        return "Esse cupom não existe ou não está mais valendo.";
+      case "CUPOM_EXPIRADO":
+        return "Esse cupom já expirou.";
+      case "CUPOM_ESGOTADO":
+        return "Esse cupom atingiu o limite de usos.";
+      case "CUPOM_MINIMO":
+        return `Esse cupom vale a partir de ${brl(Number(detalhe) || 0)}.`;
+      case "PRECISA_LOGIN":
+        return "Sua sessão expirou. Entre de novo pra fechar o pedido.";
+      case "ENDERECO_INCOMPLETO":
+        return "Faltou algum dado do endereço. Confira os campos acima.";
+      case "CONTATO_INCOMPLETO":
+        return "Confira nome, telefone e CPF.";
+      case "SACOLA_VAZIA":
+        return "Sua sacola está vazia.";
+      default:
+        return bruto
+          ? `Não conseguimos registrar seu pedido: ${bruto}`
+          : "Não conseguimos registrar seu pedido. Tente de novo.";
+    }
+  }
+
+  async function conferirCupom() {
+    const codigo = cupom.trim();
+    if (!codigo) return;
+    setConferindoCupom(true);
+    setCupomErro("");
+    setCupomOk(null);
+
+    const { data, error } = await supabase.rpc("validar_cupom", {
+      p_codigo: codigo,
+      p_subtotal_centavos: Math.round(subtotal * 100),
+    });
+    setConferindoCupom(false);
+
+    if (error) {
+      setCupomErro("Não foi possível conferir o cupom agora.");
+      return;
+    }
+    if (!data.valido) {
+      setCupomErro(
+        {
+          CUPOM_INVALIDO: "Esse cupom não existe ou não está valendo.",
+          CUPOM_EXPIRADO: "Esse cupom já expirou.",
+          CUPOM_ESGOTADO: "Esse cupom atingiu o limite de usos.",
+          CUPOM_MINIMO: `Esse cupom vale a partir de ${brl(data.minimo_centavos)}.`,
+        }[data.motivo] || "Cupom inválido."
+      );
+      return;
+    }
+    setCupomOk(data);
+  }
+
+  function tirarCupom() {
+    setCupom("");
+    setCupomOk(null);
+    setCupomErro("");
   }
 
   async function onSubmit(e) {
@@ -168,86 +295,97 @@ export default function CheckoutPage() {
 
     setEnviando(true);
     try {
-      const total = subtotal * 100 + FRETE_CENTAVOS;
+      const entrega = {
+        cep: soDigitos(end.cep),
+        rua: end.rua.trim(),
+        numero: end.numero.trim(),
+        complemento: end.complemento.trim() || null,
+        bairro: end.bairro.trim(),
+        cidade: end.cidade.trim(),
+        uf: end.uf.trim().toUpperCase(),
+      };
 
-      // guarda o que aprendemos, pra próxima compra ser mais curta
-      await supabase.from("perfis").upsert({
-        id: usuario.id,
-        nome: contato.nome.trim(),
-        telefone: soDigitos(contato.telefone),
-        cpf: soDigitos(contato.cpf),
-      });
-
-      await supabase.from("enderecos").upsert(
-        {
-          user_id: usuario.id,
-          cep: soDigitos(end.cep),
-          rua: end.rua.trim(),
-          numero: end.numero.trim(),
-          complemento: end.complemento.trim() || null,
-          bairro: end.bairro.trim(),
-          cidade: end.cidade.trim(),
-          uf: end.uf.trim().toUpperCase(),
-          padrao: true,
-        },
-        { onConflict: "id" }
-      );
-
-      const { data: pedido, error: erroPedido } = await supabase
-        .from("pedidos")
-        .insert({
-          user_id: usuario.id,
-          subtotal_centavos: subtotal * 100,
-          frete_centavos: FRETE_CENTAVOS,
-          total_centavos: total,
-          pagamento_metodo: pagamento,
-          // SNAPSHOT: o pedido guarda o endereço e o contato como estavam
-          // agora. Se a pessoa editar o cadastro amanhã, o pedido antigo
-          // continua contando a verdade do dia da compra.
-          entrega: {
-            cep: soDigitos(end.cep),
-            rua: end.rua.trim(),
-            numero: end.numero.trim(),
-            complemento: end.complemento.trim() || null,
-            bairro: end.bairro.trim(),
-            cidade: end.cidade.trim(),
-            uf: end.uf.trim().toUpperCase(),
-          },
-          contato: {
-            nome: contato.nome.trim(),
-            email: usuario.email,
-            telefone: soDigitos(contato.telefone),
-            cpf: soDigitos(contato.cpf),
-          },
+      // Guarda o que aprendemos, pra próxima compra ser mais curta.
+      //
+      // UPDATE e não `upsert`: o perfil sempre existe — nasce junto com a
+      // conta, pelo trigger `ao_criar_usuario`. E o upsert mandava o `id`
+      // dentro do SET do UPDATE, que o banco recusa com 403 desde que a
+      // 0004 restringiu a edição de perfil a nome/telefone/cpf. Trocar o
+      // id do próprio perfil não é coisa que o cliente deva poder fazer,
+      // então quem estava errado era a chamada, não a permissão.
+      await supabase
+        .from("perfis")
+        .update({
+          nome: contato.nome.trim(),
+          telefone: soDigitos(contato.telefone),
+          cpf: soDigitos(contato.cpf),
         })
-        .select()
-        .single();
+        .eq("id", usuario.id);
+
+      // Atualiza o endereço que já era da pessoa; só cria linha nova
+      // quando não havia nenhum salvo.
+      if (enderecoId) {
+        await supabase
+          .from("enderecos")
+          .update({ ...entrega, padrao: true })
+          .eq("id", enderecoId);
+      } else {
+        const { data: novo } = await supabase
+          .from("enderecos")
+          .insert({ ...entrega, user_id: usuario.id, padrao: true })
+          .select("id")
+          .single();
+        if (novo) setEnderecoId(novo.id);
+      }
+
+      // O PEDIDO NASCE NO SERVIDOR.
+      //
+      // Antes esta função inseria em `pedidos` e `itens_pedido` mandando
+      // subtotal, total e preço unitário calculados AQUI — no navegador.
+      // Qualquer pessoa logada abria o console e gravava um pedido de R$
+      // 0,01, ou já com status "pago". Agora o front manda só INTENÇÃO
+      // (o que quer comprar, quanto de cada) e quem lê o preço, aplica
+      // cupom, calcula frete, confere estoque e fecha a conta é o banco.
+      //
+      // O total mostrado na tela é, portanto, uma PREVISÃO. Se ele
+      // divergir do que o servidor calcular, quem vale é o servidor — e é
+      // por isso que a página do pedido lê os valores de volta do banco
+      // em vez de reaproveitar o que estava na tela.
+      const { data: pedido, error: erroPedido } = await supabase.rpc("criar_pedido", {
+        p_itens: itens.map((i) => ({
+          slug: i.slug,
+          material: i.material || null,
+          tamanho: i.tamanho || null,
+          qtd: i.qtd,
+        })),
+        p_entrega: entrega,
+        p_contato: {
+          nome: contato.nome.trim(),
+          telefone: soDigitos(contato.telefone),
+          cpf: soDigitos(contato.cpf),
+        },
+        p_pagamento: pagamento,
+        // manda o código, não o desconto: quem calcula de novo (e decide
+        // se ainda vale) é o servidor
+        p_cupom: cupomOk?.codigo || null,
+      });
 
       if (erroPedido) throw erroPedido;
 
-      const linhas = itens.map((i) => ({
-        pedido_id: pedido.id,
-        produto_slug: i.slug,
-        titulo: i.title,
-        material: i.material || null,
-        tamanho: i.tamanho || null,
-        img: i.img,
-        preco_unit_centavos: i.priceValue * 100,
-        quantidade: i.qtd,
-      }));
-      const { error: erroItens } = await supabase.from("itens_pedido").insert(linhas);
-      if (erroItens) throw erroItens;
-
-      await iniciarPagamento(pedido);
-
       limpar();
+
+      // Cria a cobrança no provedor (quando houver). Se devolver uma URL,
+      // o cliente vai PAGAR nela (checkout do Mercado Pago / Shopify /
+      // Stripe). Sem provedor ainda, cai na página do pedido no estado
+      // "aguardando pagamento".
+      const { url } = await iniciarPagamento(pedido);
+      if (url) {
+        window.location.href = url;
+        return;
+      }
       navigate(`/pedido/${pedido.id}`, { replace: true });
     } catch (err) {
-      setErroGeral(
-        err?.message
-          ? `Não conseguimos registrar seu pedido: ${err.message}`
-          : "Não conseguimos registrar seu pedido. Tente de novo."
-      );
+      setErroGeral(mensagemDoBanco(err));
       setEnviando(false);
     }
   }
@@ -280,7 +418,10 @@ export default function CheckoutPage() {
     );
   }
 
-  const totalCentavos = subtotal * 100 + FRETE_CENTAVOS;
+  // Previsão do total pra tela. A palavra final é do servidor, que refaz
+  // esta conta em `criar_pedido` com o preço lido do catálogo.
+  const totalCentavos =
+    Math.round(subtotal * 100) - (cupomOk?.desconto_centavos || 0) + FRETE_CENTAVOS;
 
   return (
     <div className="ck">
@@ -501,7 +642,7 @@ export default function CheckoutPage() {
               {itens.map((i) => (
                 <li key={i.id}>
                   <span className="ck__item-foto">
-                    <img src={`/assets/products/${i.img}`} alt="" />
+                    <img src={fotoProduto(i.img)} alt="" />
                     <span className="ck__item-qtd">{i.qtd}</span>
                   </span>
                   <span className="ck__item-info">
@@ -515,11 +656,62 @@ export default function CheckoutPage() {
               ))}
             </ul>
 
+            {/* Cupom fica no resumo, colado no total: é ali que a pessoa
+                olha quando pensa em desconto. */}
+            <div className="ck__cupom">
+              {cupomOk ? (
+                <div className="ck__cupom-ok">
+                  <span>
+                    <strong>{cupomOk.codigo}</strong> aplicado
+                  </span>
+                  <button type="button" onClick={tirarCupom}>
+                    remover
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="ck__cupom-linha">
+                    <input
+                      type="text"
+                      placeholder="Cupom de desconto"
+                      value={cupom}
+                      onChange={(e) => setCupom(e.target.value.toUpperCase())}
+                      onKeyDown={(e) => {
+                        // Enter aqui não pode enviar o formulário inteiro:
+                        // a pessoa está conferindo o cupom, não fechando
+                        // o pedido.
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          conferirCupom();
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={conferirCupom}
+                      disabled={conferindoCupom || !cupom.trim()}
+                    >
+                      {conferindoCupom ? "…" : "Aplicar"}
+                    </button>
+                  </div>
+                  {cupomErro && <p className="ck__cupom-erro">{cupomErro}</p>}
+                </>
+              )}
+            </div>
+
             <dl className="ck__contas">
               <div>
                 <dt>Subtotal</dt>
                 <dd>{brl(subtotal * 100)}</dd>
               </div>
+              {cupomOk && (
+                <div>
+                  <dt>Desconto</dt>
+                  <dd className="ck__gratis">
+                    -{brl(cupomOk.desconto_centavos)}
+                  </dd>
+                </div>
+              )}
               <div>
                 <dt>Frete</dt>
                 <dd className="ck__gratis">

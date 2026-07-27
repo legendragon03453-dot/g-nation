@@ -117,19 +117,16 @@
    exato do template em vez das hairlines pretas que eu tinha usado antes. */
 /* Grade fechada como quadrado (pedido): borda 2px em TODA a volta +
    as linhas internas (cruz) via border dos cards. */
+/* O VISUAL do card vive em PecaCard.css (compartilhado com a seção
+   "Confira também"). Aqui fica só a MALHA: a grade e os fios entre as
+   células. Antes o card era estilizado aqui, e por isso as duas seções
+   da home divergiram. */
 .curtain__lanc-grid {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0;
   border: 2px solid rgb(228, 228, 231);
-}
-
-.curtain__lanc-card {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 10px 16px;
 }
 
 /* linha vertical interna: só entre colunas (não na última de cada linha) */
@@ -142,85 +139,7 @@
   border-top: 2px solid rgb(228, 228, 231);
 }
 
-/* Caixa em 16:9 real (conferido via ffprobe: o vídeo é 1280x720, 16:9
-   exato) — altura vem do mesmo orçamento em vh de antes (min(20vh,210px),
-   já provado que cabe no pin sem scroll interno), a LARGURA é derivada
-   dessa altura via aspect-ratio (não mais width:100% esticando a coluna).
-   Com a caixa na mesma proporção do vídeo, ele preenche 100% sem sobrar
-   tarja preta nem cortar nada. align-self:center porque o flex-column do
-   card por padrão esticaria a largura (align-items:stretch) — aqui a
-   caixa tem largura própria, então precisa se centralizar na coluna.
-   Sem background próprio (era #0a0a0a antes) — a foto é PNG com fundo
-   transparente, então sem uma cor de "sub-card" atrás ela se funde direto
-   com o preto real do card, sem parecer uma miniatura emoldurada dentro
-   do card. Vale pro vídeo também (mesma caixa, mesmo tratamento). */
-.curtain__lanc-photo {
-  position: relative;
-  /* conferido via ffprobe: a foto real é 1290x1257 (praticamente 1:1) —
-     caixa quadrada em vez de 16:9 (herdado de quando tinha vídeo) elimina
-     o pillarbox vazio dos lados e deixa a peça visivelmente maior dentro
-     do mesmo orçamento de altura. Reduzida de 26vh pra caber o grid de
-     6 peças (3x2) no pin encurtado pela navbar de 155px. */
-  height: min(21vh, 250px);
-  aspect-ratio: 1 / 1;
-  max-width: 100%;
-  align-self: center;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.curtain__lanc-photo-img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.curtain__lanc-card:hover .curtain__lanc-photo-img--base {
-  transform: scale(1.05);
-}
-
-/* Preview no hover: crossfade pra uma segunda foto do produto (outro
-   ângulo/detalhe) em vez de vídeo — o vídeo com pele/roupa/fundo quebrava
-   o clima preto/minimalista da vitrine. Só troca se o card tiver
-   `hoverImg`; sem isso a foto base só recebe o zoom leve de sempre
-   (:has() garante que cards sem segunda foto não apaguem a imagem base). */
-.curtain__lanc-photo-img--hover {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.curtain__lanc-card:hover .curtain__lanc-photo-img--hover {
-  opacity: 1;
-}
-
-.curtain__lanc-card:hover:has(.curtain__lanc-photo-img--hover) .curtain__lanc-photo-img--base {
-  opacity: 0;
-}
-
-/* título do card: JetBrains Mono bold uppercase, branco */
-.curtain__lanc-card h4 {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 17px;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  color: #fff;
-}
-
-/* "categoria" do original vira preço aqui — mesmo peso visual: pequeno,
-   mono, uppercase, cinza apagado (idêntico ao card-info da seção Works) */
-.curtain__lanc-price {
-  font-family: var(--font-nav);
-  font-size: 13px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
-}
+.curtain__lanc-card:hover 
 
 /* Botão "Secondary" do Framer (mesma peça do ieD7TFXTb.js já usada nas
    tags G-Shop/G-Customizadas do Categoria): ghost, transparente em
@@ -282,10 +201,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 0;
   }
-  .curtain__lanc-card {
-    padding: 8px 10px;
-    gap: 2px;
-  }
+  
   /* fio vertical: agora entre as 2 colunas */
   .curtain__lanc-card:not(:nth-child(3n)) {
     border-right: none;
@@ -300,16 +216,9 @@
   .curtain__lanc-card:nth-child(n + 3) {
     border-top: 2px solid rgb(228, 228, 231);
   }
-  .curtain__lanc-photo {
-    height: min(13vh, 130px);
-  }
-  .curtain__lanc-card h4 {
-    font-size: 13px;
-    line-height: 1.2;
-  }
-  .curtain__lanc-price {
-    font-size: 11px;
-  }
+  
+  
+  
 }
 
 /* Estas tags são a "CATEGORIA" do site (Figma node 27:64: dois painéis de
@@ -393,4 +302,20 @@
     padding: 0 24px;
     font-size: 15px;
   }
+}
+
+/* O botão "Ver mais" quebrava a seta pra linha de baixo no celular: o
+   texto e o ícone eram dois blocos independentes sem regra de linha, e em
+   390px não cabiam lado a lado. Vira flex que não quebra. */
+.curtain__lanc-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.curtain__lanc-more-icon {
+  flex: none;
+  width: 14px;
+  height: auto;
 }

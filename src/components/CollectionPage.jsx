@@ -1,11 +1,13 @@
-import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { getCollection } from "../data/products";
+import { useCatalog } from "../CatalogContext";
 import LogoG, { brandG } from "./LogoG";
 import Wordmark from "./Wordmark";
 import Navbar from "./Navbar";
+import FiltrosVitrine, { aplicarFiltros, faixasDe } from "./FiltrosVitrine";
 import "./CollectionPage.css";
+import { fotoProduto } from "../lib/img";
 
 // quantas peças por página da vitrine (grade 3 colunas → 2 fileiras)
 const PAGE_SIZE = 6;
@@ -29,8 +31,55 @@ const EASE = [0.16, 1, 0.3, 1];
 
 export default function CollectionPage() {
   const { slug } = useParams();
-  const collection = getCollection(slug);
+  const { buscarColecao } = useCatalog();
+  const collection = buscarColecao(slug);
   const [page, setPage] = useState(1);
+  const [params, setParams] = useSearchParams();
+
+  // O TERMO DE BUSCA VEM DA URL (?q=), porque é a lupa da navbar que o
+  // manda pra cá. Manter na URL também deixa o resultado compartilhável e
+  // faz o botão voltar do navegador funcionar entre buscas.
+  const termo = params.get("q") || "";
+
+  // O termo NÃO é guardado em estado — ele vive só na URL, e o estado
+  // deriva dela. A primeira versão guardava nos dois lugares e eles
+  // brigavam: ao abrir /colecao/g-shop?q=cruz, o estado nascia vazio, o
+  // efeito de sincronia via "estado vazio + URL cheia" e apagava o ?q=
+  // antes que o outro efeito pudesse copiar o valor. Resultado: a busca
+  // se limpava sozinha ao carregar. Uma fonte de verdade só, e o
+  // problema deixa de existir.
+  const [selecao, setSelecao] = useState({
+    materiais: [],
+    tamanhos: [],
+    faixa: null,
+    ordem: "relevancia",
+  });
+
+  const filtros = useMemo(() => ({ ...selecao, termo }), [selecao, termo]);
+
+  // Aceita tanto objeto quanto função (como o setState normal), e cuida
+  // do termo na URL quando o pedido é limpar tudo.
+  function setFiltros(novo) {
+    const valor = typeof novo === "function" ? novo(filtros) : novo;
+    const { termo: novoTermo, ...resto } = valor;
+    setSelecao(resto);
+    if (!novoTermo && termo) {
+      const p = new URLSearchParams(params);
+      p.delete("q");
+      setParams(p, { replace: true });
+    }
+  }
+
+  // Trocar de filtro volta pra primeira página: continuar na página 3 de
+  // um resultado que agora tem 4 peças mostraria a vitrine vazia.
+  useEffect(() => {
+    setPage(1);
+  }, [filtros, slug]);
+
+  const visiveis = useMemo(
+    () => (collection ? aplicarFiltros(collection.products, filtros) : []),
+    [collection, filtros]
+  );
 
   if (!collection) {
     return (
@@ -44,9 +93,9 @@ export default function CollectionPage() {
   // Paginação REAL (antes os botões 2/3/4 eram fixos e não faziam nada):
   // fatia os produtos por página e só mostra os botões de páginas que
   // realmente existem. Coleções pequenas ficam com 1 página (sem botões).
-  const totalPages = Math.max(1, Math.ceil(collection.products.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(visiveis.length / PAGE_SIZE));
   const current = Math.min(page, totalPages);
-  const pageProducts = collection.products.slice(
+  const pageProducts = visiveis.slice(
     (current - 1) * PAGE_SIZE,
     current * PAGE_SIZE
   );
@@ -69,42 +118,43 @@ export default function CollectionPage() {
         </div>
       </header>
 
-      <motion.div
-        className="cp__filters"
-        initial="hidden"
-        animate="visible"
-        variants={{ visible: { transition: { staggerChildren: 0.07, delayChildren: 0.5 } } }}
-      >
-        <motion.span
-          className="cp__filters-label"
-          variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } }}
-        >
-          Filtrar por:
-        </motion.span>
-        {["Material", "Preço", "Tamanho"].map((f) => (
-          <motion.button
-            type="button"
-            className="cp__filter-pill"
-            key={f}
-            variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } }}
-            whileHover={{ scale: 1.05, backgroundColor: "#000", color: "#fff" }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {f}
-          </motion.button>
-        ))}
-        <motion.span
-          className="cp__filters-count"
-          variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
-        >
-          Mostrando {pageProducts.length} de {collection.products.length} peças
-        </motion.span>
-      </motion.div>
+      <FiltrosVitrine
+        produtos={collection.products}
+        filtros={filtros}
+        setFiltros={setFiltros}
+        mostrando={pageProducts.length}
+        total={collection.products.length}
+      />
 
-      {collection.products.length === 0 ? (
+      {visiveis.length === 0 ? (
         <div className="cp__empty">
-          <p>Nenhuma peça nessa coleção ainda.</p>
-          <Link to="/colecao/g-shop">Ver todas as peças</Link>
+          {collection.products.length === 0 ? (
+            <>
+              <p>Nenhuma peça nessa coleção ainda.</p>
+              <Link to="/colecao/g-shop">Ver todas as peças</Link>
+            </>
+          ) : (
+            <>
+              {/* Filtro sem resultado NÃO é o mesmo que coleção vazia: aqui
+                  existem peças, só nenhuma bate com a combinação escolhida.
+                  Dizer "nenhuma peça nessa coleção" faria a pessoa achar que
+                  a loja está vazia e ir embora. */}
+              <p>
+                {filtros.termo
+                  ? `Nada encontrado para "${filtros.termo}".`
+                  : "Nenhuma peça com essa combinação de filtros."}
+              </p>
+              <button
+                type="button"
+                className="cp__empty-btn"
+                onClick={() =>
+                  setFiltros({ materiais: [], tamanhos: [], faixa: null, ordem: "relevancia", termo: "" })
+                }
+              >
+                Limpar filtros
+              </button>
+            </>
+          )}
         </div>
       ) : (
         <div className="cp__grid" key={current}>
@@ -113,18 +163,33 @@ export default function CollectionPage() {
               key={p.slug}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.25 }}
+              /* amount 0.25 exigia um quarto do card dentro da tela pra
+                 revelar — e os cards da primeira fileira, que já nascem
+                 na dobra, nunca disparavam o observer: a vitrine abria
+                 com opacity 0, seis produtos invisíveis e um buraco
+                 branco no lugar da grade. amount 0 revela assim que
+                 qualquer pixel entra, inclusive quem já está na tela. */
+              viewport={{ once: true, amount: 0 }}
               transition={{ duration: 0.6, delay: (i % 3) * 0.12, ease: EASE }}
             >
-              <motion.div whileHover={{ y: -8 }} transition={{ type: "spring", stiffness: 300, damping: 22 }}>
+              {/* whileTap espelha o whileHover pro celular: no toque, o
+                  card faz o MESMO movimento que faz no hover do desktop
+                  (sobe e a foto amplia). No mobile não existe hover, então
+                  o "as caixas se mexem" só acontece se ligar no tap. */}
+              <motion.div
+                whileHover={{ y: -8 }}
+                whileTap={{ y: -8 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+              >
                 <Link className="cp__card" to={`/produto/${p.slug}`}>
                   <p className="cp__card-title">{p.title}</p>
                   <motion.div
                     className="cp__card-photo"
                     whileHover={{ scale: 1.06 }}
+                    whileTap={{ scale: 1.06 }}
                     transition={{ duration: 0.5, ease: EASE }}
                   >
-                    <img src={`/assets/products/${p.img}`} alt={p.title} />
+                    <img src={fotoProduto(p.img)} alt={p.title} />
                   </motion.div>
                   <span className="cp__card-price">{p.price}</span>
                 </Link>

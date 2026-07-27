@@ -44,16 +44,37 @@
 
 /* 27:41 — "G" tipográfico colossal (no Figma: 3173px de largura,
    vermelho translúcido) vazando pra fora da barra como textura. */
+/* TEXTURA DA BARRA — node 27:41 do Figma.
+
+   O que estava errado desde o início: o desenho é a letra "G" na fonte
+   MONSTERA (a tipografia rasgada da marca, com respingo e traço quebrado)
+   ampliada a 2758px, em rgba(255,0,0,0.2). O que o site tinha era um "G"
+   em JetBrains Mono — fonte de código, traço reto e geométrico — com
+   170px, encolhido no canto esquerdo.
+
+   Não era um problema de tamanho: eram duas formas diferentes. Na
+   MONSTERA ampliada a esse ponto, o que cabe na altura da barra não é
+   "uma letra pequena", são FRAGMENTOS dos traços atravessando a largura
+   inteira em diagonal — a textura que dá a atmosfera de pichação. Com a
+   fonte geométrica, o mesmo recorte virava um retângulo chapado atrás do
+   primeiro link.
+
+   Como o projeto não carrega a MONSTERA (nenhuma fonte local), a textura
+   vem do PNG exportado do próprio arquivo do Figma, com alfa real: os
+   traços em vermelho translúcido e o resto transparente. Isso reproduz o
+   desenho exato sem depender de licenciar/instalar a fonte, e sem que uma
+   substituta aproximada volte a mudar a forma.
+
+   `background-size: 100% auto` mantém os riscos nas mesmas posições
+   horizontais do Figma e deixa a altura sangrar — que é justamente o que
+   o recorte da barra faz no arquivo original. */
 .navbar__g {
   position: absolute;
-  left: -40px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-family: var(--font-mono);
-  font-weight: 800;
-  font-size: 300px;
-  line-height: 1;
-  color: rgba(255, 0, 0, 0.2);
+  inset: 0;
+  background-image: url(/assets/brand/navbar-textura-g.png);
+  background-size: 100% auto;
+  background-position: center;
+  background-repeat: no-repeat;
   pointer-events: none;
   user-select: none;
 }
@@ -209,9 +230,6 @@
   .navbar {
     padding: 0 20px;
   }
-  .navbar__g {
-    font-size: 240px;
-  }
   .navbar__links {
     gap: 14px;
   }
@@ -234,42 +252,57 @@
    ícones: em 390px eles atropelavam os ícones e cobriam a logo central
    (medido). Viram um painel que desce, e a barra fica com o essencial:
    menu à esquerda, marca no meio, sacola/conta/busca à direita. */
-@media (max-width: 860px) {
+/* 960px e não mais 860: este ponto foi calibrado quando o menu tinha TRÊS
+   itens. Com a entrada de "CATEGORIAS" a lista ficou mais larga e passou a
+   encostar no logo central (que é absoluto, no meio da barra) já em 900px —
+   medido: 8px de sobreposição, texto por baixo do logo. O menu passa a
+   recolher antes de chegar lá. */
+@media (max-width: 960px) {
   .navbar {
     padding: 0 16px;
   }
 
+  /* No celular a textura é a mesma imagem: só aproxima (cover) pra que os
+     riscos continuem visíveis numa barra estreita, em vez de a largura
+     inteira caber e virar um fiapo. */
   .navbar__g {
-    font-size: 180px;
-    left: -20px;
+    background-size: auto 190%;
   }
 
   .navbar__burger {
     display: flex;
   }
 
-  /* painel de navegação: desce por baixo da barra */
+  /* PAINEL DE NAVEGAÇÃO — soberano: toma a tela inteira abaixo da barra.
+     Antes era uma caixa de 60vh com scroll interno; ao abrir "CATEGORIAS"
+     dentro dela, o acordeão empurrava o conteúdo e a caixa rolava por
+     dentro — rolar DENTRO da navbar, o que não faz sentido. Agora o menu
+     preenche do fim da barra até o rodapé da tela (fixed), fundo sólido,
+     com espaço de sobra pras categorias expandirem sem scroll nenhum no
+     caso comum. */
   .navbar__links {
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: var(--gn-navbar-h, 90px);
     left: 0;
     right: 0;
-    z-index: 2;
+    bottom: 0;
+    z-index: 45;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
     background: #080808;
     border-top: 1px solid rgba(255, 255, 255, 0.12);
-    /* fechado: sem altura e sem clique */
-    max-height: 0;
-    overflow: hidden;
+    /* fechado: fora da tela, deslizando de cima */
+    transform: translateY(-8px);
+    opacity: 0;
     pointer-events: none;
-    transition: max-height 0.32s ease;
+    overflow-y: auto;
+    transition: opacity 0.28s ease, transform 0.28s ease;
   }
 
   .is-menu-aberto .navbar__links {
-    max-height: 60vh;
-    overflow-y: auto;
+    transform: translateY(0);
+    opacity: 1;
     pointer-events: auto;
   }
 
@@ -277,6 +310,45 @@
     padding: 16px 20px;
     font-size: 14px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* CATEGORIAS no celular = ACORDEÃO. O painel deixa de flutuar (absolute)
+     e vira parte da coluna: abre empurrando os itens de baixo. O botão
+     ocupa a linha inteira como os outros links, com a setinha à direita. */
+  .navbar__drop {
+    display: block;
+  }
+
+  .navbar__drop-btn {
+    width: 100%;
+    justify-content: space-between;
+    padding: 16px 20px;
+    font-size: 14px;
+    letter-spacing: 0.01em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .navbar__drop-seta {
+    font-size: 11px;
+  }
+
+  .navbar__drop-menu {
+    position: static;
+    transform: none;
+    min-width: 0;
+    border: 0;
+    /* recuo e fundo mais escuro pra ler como sub-nível do acordeão */
+    background: #050505;
+  }
+
+  .navbar__drop-inner {
+    padding: 0;
+  }
+
+  .navbar__drop-menu a {
+    padding: 14px 20px 14px 34px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   .navbar__logo {
@@ -303,5 +375,232 @@
   .navbar__icon {
     width: 19px;
     height: 19px;
+  }
+}
+
+/* ---------- CATEGORIAS (menu suspenso) ----------
+   As quatro categorias existiam como página mas não como caminho: só se
+   chegava nelas digitando a URL. */
+.navbar__drop {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* `color: inherit` pegava o preto do documento, não o branco dos links
+   ao lado: o item "CATEGORIAS" nascia preto sobre a navbar preta. <button>
+   não herda cor de texto como um <a> herda. */
+.navbar__drop-btn {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: #fff;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.navbar__drop-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.navbar__drop.is-aberta .navbar__drop-btn {
+  color: var(--gn-red);
+}
+
+.navbar__drop-seta {
+  display: inline-block;
+  font-size: 9px;
+  line-height: 1;
+  transform-origin: center;
+}
+
+/* PONTE DE HOVER: o painel encosta no botão (top:100%) e o respiro que
+   parece um vão é PADDING dentro do próprio painel — assim a seta do
+   mouse cruza do botão pro menu sem sair da área de hover, e o menu não
+   fecha no meio do caminho. Era esse vão de `margin-top` que fazia o menu
+   sumir. */
+.navbar__drop-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 210px;
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  z-index: 60;
+  overflow: hidden;
+}
+
+.navbar__drop-inner {
+  padding: 8px 0;
+}
+
+.navbar__drop-menu a {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 12px 20px;
+  color: rgba(255, 255, 255, 0.82);
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+  transition: color 0.16s, padding 0.2s ease;
+}
+
+/* traço vermelho que cresce da esquerda no hover — a marca "entrando" no
+   item, em vez de um simples fundo cinza */
+.navbar__drop-traco {
+  width: 0;
+  height: 1.5px;
+  margin-right: 0;
+  background: var(--gn-red);
+  transition: width 0.22s ease, margin-right 0.22s ease;
+}
+
+.navbar__drop-menu a:hover {
+  color: #fff;
+}
+
+.navbar__drop-menu a:hover .navbar__drop-traco {
+  width: 16px;
+  margin-right: 10px;
+}
+
+/* ---------- BUSCA ----------
+   A lupa era um link pra vitrine. Agora abre um campo que cresce à
+   esquerda do ícone, sem empurrar os outros ícones pra fora da barra. */
+.navbar__busca {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.navbar__busca input {
+  width: clamp(140px, 22vw, 240px);
+  height: 38px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  outline: none;
+}
+
+.navbar__busca input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.navbar__busca input:focus {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* No celular a barra não tem espaço pro campo aberto ao lado dos ícones:
+   ele ocupa a linha inteira, abaixo. */
+@media (max-width: 720px) {
+  .navbar__busca.is-aberta {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: 100%;
+    margin-top: 8px;
+    justify-content: stretch;
+  }
+
+  .navbar__busca.is-aberta input {
+    width: 100%;
+  }
+
+  .navbar__drop-menu {
+    left: 0;
+    transform: none;
+  }
+}
+
+/* ---------- A MARCA "G" DENTRO DOS LINKS ----------
+   A arte do G foi desenhada pra DISPLAY (32px+): ela tem 2,5em de altura
+   porque só ~73% do arquivo é o corpo da letra — o resto é respingo em
+   cima e pingo escorrendo embaixo. Essa escala é certa num título, e
+   errada aqui.
+
+   Na navbar o texto tem 16px (linha de 18,4px) e o G vinha com 40px: o
+   dobro da linha, ocupando 44% da altura da barra inteira. O link "G-SHOP"
+   ficava com 40px de caixa contra 18,4px do "CONTATO" ao lado — dois itens
+   do mesmo menu com alturas que nem se pareciam.
+
+   1,5em resolve pela medida, não pelo olho: 24px de arquivo × 0,73 = 17,5px
+   de corpo visível, contra 18,4px da linha de texto. A marca passa a ter a
+   mesma altura das letras ao lado, que é o que faz "G-SHOP" ler como uma
+   palavra só em vez de um logo grudado numa palavra. */
+.navbar__links .logo-g {
+  height: 1.5em;
+  /* o respingo do G não precisa empurrar o texto vizinho */
+  margin-right: 0.02em;
+}
+
+/* Os links passam a ter todos a mesma caixa, alinhados pelo centro do
+   texto e não pela altura da imagem. */
+.navbar__links a,
+.navbar__drop-btn {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+/* ---------- FAIXA INTERMEDIÁRIA ----------
+   Com a entrada de "CATEGORIAS" o menu ganhou um quarto item, e entre
+   ~900px e ~1150px a lista chegava a encostar no logo central (que é
+   absoluto, no meio da barra). Antes de deixar texto por baixo de logo,
+   o menu se aperta: o vão entre itens diminui e a tipografia cede um
+   ponto. Abaixo de 900px o menu já vira o recolhido de celular. */
+@media (max-width: 1150px) {
+  .navbar__links {
+    gap: 22px;
+  }
+
+  .navbar__links a,
+  .navbar__drop-btn {
+    font-size: 14px;
+  }
+}
+
+/* ---------- ÁREA DE TOQUE (auditoria do celular) ----------
+   Medido em 390px: os três ícones da barra (sacola, conta, busca) tinham
+   19×19px de área clicável, e o menu 30×30. A polpa do dedo cobre cerca
+   de 45px — nesse tamanho o toque erra ou pega o ícone vizinho, que aqui
+   estão a 12px um do outro.
+
+   A arte NÃO muda de tamanho: quem cresce é a área de toque, por padding.
+   O desenho da barra continua idêntico ao Figma. */
+@media (max-width: 960px) {
+  .navbar__icon-btn {
+    padding: 12px;
+    margin: -12px;
+  }
+
+  /* o contador da sacola acompanha o novo padding, senão desgruda do
+     ícone e flutua no meio do nada */
+  .navbar__badge {
+    top: 6px;
+    right: 4px;
+  }
+
+  .navbar__burger {
+    width: 44px;
+    height: 44px;
+    margin-left: -8px;
+  }
+
+  /* itens do menu recolhido: linha de 18px vira alvo de 48px */
+  .navbar__links a,
+  .navbar__drop-btn {
+    padding: 15px 0;
+  }
+
+  .navbar__icons {
+    gap: 20px;
   }
 }
