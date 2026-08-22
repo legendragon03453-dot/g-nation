@@ -67,10 +67,12 @@
   transition: border-color 0.2s, background-color 0.2s;
 }
 
-.adm__btn:hover,
-.adm__btn-fino:hover {
-  border-color: #fff;
-  background: rgba(255, 255, 255, 0.06);
+@media (hover: hover) {
+  .adm__btn:hover,
+  .adm__btn-fino:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.06);
+  }
 }
 
 /* ---------------- SIDEBAR ---------------- */
@@ -132,9 +134,11 @@
   transition: background-color 0.18s, color 0.18s;
 }
 
-.adm__nav-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: #fff;
+@media (hover: hover) {
+  .adm__nav-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
 }
 
 /* O item ativo é uma barra vermelha cheia — é o elemento mais forte do
@@ -198,8 +202,10 @@
   padding: 6px;
 }
 
-.adm__sair:hover {
-  color: var(--gn-red);
+@media (hover: hover) {
+  .adm__sair:hover {
+    color: var(--gn-red);
+  }
 }
 
 /* ---------------- CONTEÚDO ---------------- */
@@ -378,8 +384,10 @@
   text-decoration: none;
 }
 
-.adm__cel-id a:hover {
-  color: var(--gn-red);
+@media (hover: hover) {
+  .adm__cel-id a:hover {
+    color: var(--gn-red);
+  }
 }
 
 .adm__cel-fraca {
@@ -396,8 +404,10 @@
   cursor: pointer;
 }
 
-.adm__linha:hover {
-  background: rgba(255, 255, 255, 0.03);
+@media (hover: hover) {
+  .adm__linha:hover {
+    background: rgba(255, 255, 255, 0.03);
+  }
 }
 
 .adm__linha.is-aberta {
@@ -473,9 +483,11 @@
   transition: border-color 0.18s, color 0.18s;
 }
 
-.adm__filtro:hover {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.25);
+@media (hover: hover) {
+  .adm__filtro:hover {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.25);
+  }
 }
 
 .adm__filtro.is-ativo {
@@ -497,7 +509,8 @@
   border: 1px solid var(--adm-linha);
   color: #fff;
   font-family: inherit;
-  font-size: 13px;
+  /* o dono também despacha pedido pelo celular: 13px dava zoom do iOS */
+  font-size: 16px;
 }
 
 .adm__busca:focus {
@@ -715,9 +728,11 @@
   border-color: var(--gn-red);
 }
 
-.adm__btn--forte:hover {
-  background: #d40000;
-  border-color: #d40000;
+@media (hover: hover) {
+  .adm__btn--forte:hover {
+    background: #d40000;
+    border-color: #d40000;
+  }
 }
 
 .adm__btn:disabled,
@@ -865,8 +880,10 @@
   padding: 2px 5px;
 }
 
-.adm__x:hover {
-  color: var(--gn-red);
+@media (hover: hover) {
+  .adm__x:hover {
+    color: var(--gn-red);
+  }
 }
 
 /* Três campos + botão numa linha só: cadastrar tamanho é repetitivo
@@ -1136,4 +1153,21 @@
 
 .adm__variante-shopify::placeholder {
   color: var(--adm-fraco);
+}
+
+/* ---------- CAMPO EM APARELHO DE TOQUE ----------
+   Os 13px dos campos são o desenho do painel no desktop e continuam.
+   Num aparelho de toque, porém, campo abaixo de 16px faz o iOS dar zoom
+   ao focar, e a partir daí o painel abre torto com a pessoa pinçando de
+   volta. O dono despacha pedido pelo celular, então ali o piso sobe.
+   A guarda é por PONTEIRO e não por largura: quem dá zoom é quem toca,
+   em qualquer tamanho de tela. */
+@media (pointer: coarse) {
+  .adm__campo input,
+  .adm__campo select,
+  .adm__campo textarea,
+  .adm__variantes input,
+  .adm__variante-nova input {
+    font-size: 16px;
+  }
 }

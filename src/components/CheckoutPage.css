@@ -121,7 +121,10 @@
   border: 1px solid #000;
   background: #fff;
   font-family: var(--font-ui);
-  font-size: 15px;
+  /* O piso de 16px sobe pra regra BASE. Ele estava só dentro do bloco de
+     640px, e quem abre o checkout num tablet em pé (768) ou num celular
+     em paisagem continuava com 15px e com o zoom do iOS ao focar. */
+  font-size: 16px;
   color: #000;
   outline: none;
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
@@ -174,9 +177,10 @@
   cursor: pointer;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
-
-.ck__pgto-op:hover {
-  border-color: #000;
+@media (hover: hover) {
+  .ck__pgto-op:hover {
+    border-color: #000;
+  }
 }
 
 .ck__pgto-op.is-ativo {
@@ -435,9 +439,10 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
-
-.ck__cta:hover {
-  background: #d40000;
+@media (hover: hover) {
+  .ck__cta:hover {
+    background: #d40000;
+  }
 }
 
 .ck__cta:disabled {
@@ -520,7 +525,6 @@
   }
   .ck__campo input {
     height: 46px;
-    font-size: 16px; /* < 16px faz o iOS dar zoom ao focar o campo */
   }
   .ck__total dd {
     font-size: 21px;
@@ -575,10 +579,11 @@
   cursor: pointer;
   white-space: nowrap;
 }
-
-.ck__cupom-linha button:hover:not(:disabled) {
-  background: #000;
-  color: #fff;
+@media (hover: hover) {
+  .ck__cupom-linha button:hover:not(:disabled) {
+    background: #000;
+    color: #fff;
+  }
 }
 
 .ck__cupom-linha button:disabled {

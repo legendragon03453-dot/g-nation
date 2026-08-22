@@ -82,9 +82,10 @@
   cursor: pointer;
   transition: background-color 0.18s, border-color 0.18s, color 0.18s;
 }
-
-.fv__grupo:hover {
-  border-color: #fff;
+@media (hover: hover) {
+  .fv__grupo:hover {
+    border-color: #fff;
+  }
 }
 
 .fv__grupo.is-aberto {
@@ -166,10 +167,11 @@
   cursor: pointer;
   transition: background-color 0.16s, color 0.16s, border-color 0.16s;
 }
-
-.fv__chip:hover {
-  border-color: rgba(255, 255, 255, 0.45);
-  color: #fff;
+@media (hover: hover) {
+  .fv__chip:hover {
+    border-color: rgba(255, 255, 255, 0.45);
+    color: #fff;
+  }
 }
 
 .fv__chip.is-on {
@@ -214,10 +216,12 @@
 
 /* tracejado = removível. No hover ele vira vermelho e sólido: o gesto de
    "tirar" fica explícito sem precisar de um X desenhado. */
-.fv__tag:hover {
-  border-style: solid;
-  border-color: var(--gn-red, #ff0000);
-  background: rgba(255, 0, 0, 0.12);
+@media (hover: hover) {
+  .fv__tag:hover {
+    border-style: solid;
+    border-color: var(--gn-red, #ff0000);
+    background: rgba(255, 0, 0, 0.12);
+  }
 }
 
 .fv__limpar {
@@ -233,9 +237,10 @@
   text-underline-offset: 3px;
   cursor: pointer;
 }
-
-.fv__limpar:hover {
-  color: #fff;
+@media (hover: hover) {
+  .fv__limpar:hover {
+    color: #fff;
+  }
 }
 
 /* ---------- ESTADO VAZIO DA VITRINE ---------- */
@@ -253,10 +258,11 @@
   cursor: pointer;
   transition: background-color 0.18s, color 0.18s;
 }
-
-.cp__empty-btn:hover {
-  background: transparent;
-  color: #0a0a0a;
+@media (hover: hover) {
+  .cp__empty-btn:hover {
+    background: transparent;
+    color: #0a0a0a;
+  }
 }
 
 /* ---------- TELAS MENORES ---------- */

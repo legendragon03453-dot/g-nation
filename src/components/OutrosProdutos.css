@@ -110,13 +110,32 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  /* O fio vertical da regra base é "toda célula menos a última", que
+     está certo para UMA fileira de três. Em duas colunas ele desenhava
+     um fio de 2px na borda direita do card 2, ou seja, exatamente em
+     x=390 numa tela de 390: lido na tela, o card da direita parecia
+     CORTADO pela borda do aparelho. Aqui o fio fica só na coluna da
+     esquerda, que é onde existe vizinho à direita. */
+  .outros-produtos__card:not(:last-child) {
+    border-right: none;
+  }
+
+  .outros-produtos__card:nth-child(odd) {
+    border-right: 2px solid rgb(228, 228, 231);
+  }
+
   /* O 3º card era `grid-column: 1 / -1` (largura inteira). Numa altura
      baixa isso dava uma moldura de proporção ~3.3:1, e a foto retrato do
      Anel Cruz Royal (0.75) cortada pra preencher virava um filete
      ampliado — o "esticado". Agora ele fica na coluna esquerda como os
-     outros, mantendo a mesma proporção de moldura de todos. A malha
-     ganha só o fio de cima. */
-  .outros-produtos__card:nth-child(3) {
+     outros, mantendo a mesma proporção de moldura de todos.
+
+     A malha da segunda fileira: fio em cima nos dois cards (3 e 4). A
+     regra antiga mirava só o 3º porque o celular mostrava três peças e a
+     célula ao lado ficava vazia — agora são quatro (ver NA_GRADE_CELULAR
+     no OutrosProdutos.jsx) e o fio precisa atravessar a fileira inteira,
+     senão a moldura fica com meia linha. */
+  .outros-produtos__card:nth-child(n + 3) {
     border-top: 2px solid rgb(228, 228, 231);
   }
 
@@ -175,10 +194,11 @@
   cursor: pointer;
   transition: background-color 0.18s, border-color 0.18s, opacity 0.18s;
 }
-
-.outros-produtos__seta:hover:not(:disabled) {
-  background: var(--gn-red, #ff0000);
-  border-color: var(--gn-red, #ff0000);
+@media (hover: hover) {
+  .outros-produtos__seta:hover:not(:disabled) {
+    background: var(--gn-red, #ff0000);
+    border-color: var(--gn-red, #ff0000);
+  }
 }
 
 /* fim do trilho: a seta apaga em vez de sumir, pra não pular o layout */
@@ -255,5 +275,16 @@
      deixando a próxima aparecendo pela borda como convite pra arrastar. */
   .outros-produtos__item {
     flex: 0 0 clamp(150px, 62vw, 230px);
+  }
+}
+
+/* ---------- ÁREA DE TOQUE DO TRILHO ----------
+   As setas davam 40x40 (medido em 390x844). São o controle do trilho de
+   curadoria, e no celular quem não acerta a seta fica sem saber que há
+   mais peça do lado. A arte da seta segue igual. */
+@media (pointer: coarse) {
+  .outros-produtos__seta {
+    width: 44px;
+    height: 44px;
   }
 }

@@ -139,7 +139,19 @@
   border-top: 2px solid rgb(228, 228, 231);
 }
 
-.curtain__lanc-card:hover 
+/* Havia aqui um `.curtain__lanc-card:hover` SEM BLOCO, sobra de uma
+   edição abandonada. Não era enfeite: um seletor sem chaves não é
+   descartado pelo navegador, ele se junta ao seletor seguinte. O que o
+   CSS dizia de verdade era
+
+     .curtain__lanc-card:hover .curtain__lanc-more { ... }
+
+   e como o "Ver mais" não vive dentro de card nenhum, a regra INTEIRA do
+   botão (borda, raio 22, fundo, cor, caixa alta, tracking) nunca valia,
+   com ou sem hover. O que sobrava dele eram as duas regras soltas mais
+   abaixo, então o CTA da seção de Lançamentos aparecia como texto puro,
+   sem a pílula ghost que o desenho pede. Conferido por print em 390x844
+   antes e depois. */
 
 /* Botão "Secondary" do Framer (mesma peça do ieD7TFXTb.js já usada nas
    tags G-Shop/G-Customizadas do Categoria): ghost, transparente em
@@ -216,9 +228,6 @@
   .curtain__lanc-card:nth-child(n + 3) {
     border-top: 2px solid rgb(228, 228, 231);
   }
-  
-  
-  
 }
 
 /* Estas tags são a "CATEGORIA" do site (Figma node 27:64: dois painéis de
@@ -281,10 +290,29 @@
 @media (max-width: 900px) {
   .curtain {
     height: 1500px;
+    /* A CATEGORIA PARA DE SUBIR POR CIMA DO FILME NO CELULAR.
+       O `-80vh` faz a Categoria escorregar sobre o hero ainda pinado, e
+       no desktop o filme está num quadro 16:9 recuado: a folha sobe pelo
+       vão em volta e o gesto se lê. No celular o filme é full-bleed
+       (ver Hero.css, bloco de 860px), então a mesma folha sobe POR CIMA
+       da cena e corta a tela ao meio, com duas fotos sem relação uma
+       encostada na outra.
+       E não é só feio: o capítulo 3 monta card e CTA no rodapé do palco
+       (bottom 6vh). Medido em 390x844, a borda da Categoria alcança o
+       CTA em y=3933 e o card em y≈4130, enquanto o capítulo só termina
+       em y≈4645. Ou seja, por uns 600px de rolagem a peça "Trevo Gold" e
+       o "VER PEÇAS" ficavam VISÍVEIS e MORTOS ao mesmo tempo, cobertos
+       por uma folha que ninguém vê chegar.
+       Sem o negativo, o filme termina e só então a Categoria entra. */
+    margin-top: 0;
   }
   .curtain__pin {
     top: 90px;
+    /* mesma régua do palco do hero: `vh` conta a tela com a barra do
+       navegador recolhida, e a categoria fecha em UMA tela — com `vh` o
+       CTA de baixo termina atrás da barra enquanto ela está à mostra */
     height: calc(100vh - 90px);
+    height: calc(100dvh - 90px);
   }
   .curtain__slices {
     flex-direction: column;

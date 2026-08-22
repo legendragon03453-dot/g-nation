@@ -18,8 +18,10 @@
   transition: transform 0.5s ease;
 }
 
-.image-grid:hover img {
-  transform: scale(1.04);
+@media (hover: hover) {
+  .image-grid:hover img {
+    transform: scale(1.04);
+  }
 }
 
 .image-grid__cta {
@@ -45,8 +47,10 @@
   transition: opacity 0.3s ease;
 }
 
-.image-grid:hover .image-grid__cta {
-  opacity: 1;
+@media (hover: hover) {
+  .image-grid:hover .image-grid__cta {
+    opacity: 1;
+  }
 }
 
 /* São DUAS fotos: continuam lado a lado no celular. Empilhar transformava

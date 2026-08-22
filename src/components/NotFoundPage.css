@@ -80,8 +80,10 @@
   border: none;
 }
 
-.e404__cta:hover {
-  background: #d40000;
+@media (hover: hover) {
+  .e404__cta:hover {
+    background: #d40000;
+  }
 }
 
 .e404__ghost {
@@ -90,9 +92,11 @@
   color: #fff;
 }
 
-.e404__ghost:hover {
-  background: #fff;
-  color: #0a0a0a;
+@media (hover: hover) {
+  .e404__ghost:hover {
+    background: #fff;
+    color: #0a0a0a;
+  }
 }
 
 @media (max-width: 640px) {

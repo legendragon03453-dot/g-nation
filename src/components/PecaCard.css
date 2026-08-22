@@ -81,12 +81,16 @@
   pointer-events: none;
 }
 
-.peca-card:hover .peca-card__img--hover {
-  opacity: 1;
+@media (hover: hover) {
+  .peca-card:hover .peca-card__img--hover {
+    opacity: 1;
+  }
 }
 
-.peca-card:hover:has(.peca-card__img--hover) .peca-card__img--base {
-  opacity: 0;
+@media (hover: hover) {
+  .peca-card:hover:has(.peca-card__img--hover) .peca-card__img--base {
+    opacity: 0;
+  }
 }
 
 .peca-card__title {

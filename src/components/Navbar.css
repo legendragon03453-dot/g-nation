@@ -98,9 +98,10 @@
   white-space: nowrap;
   transition: opacity 0.2s ease;
 }
-
-.navbar__links a:hover {
-  opacity: 0.6;
+@media (hover: hover) {
+  .navbar__links a:hover {
+    opacity: 0.6;
+  }
 }
 
 /* seção em que se está: vermelho da marca. Vem da rota, não escrito à
@@ -151,9 +152,10 @@
   cursor: pointer;
   transition: opacity 0.2s ease;
 }
-
-.navbar__icon-btn:hover {
-  opacity: 0.6;
+@media (hover: hover) {
+  .navbar__icon-btn:hover {
+    opacity: 0.6;
+  }
 }
 
 /* sessão de pé: o ícone de conta acende no vermelho da marca */
@@ -459,14 +461,16 @@
   background: var(--gn-red);
   transition: width 0.22s ease, margin-right 0.22s ease;
 }
-
-.navbar__drop-menu a:hover {
-  color: #fff;
+@media (hover: hover) {
+  .navbar__drop-menu a:hover {
+    color: #fff;
+  }
 }
-
-.navbar__drop-menu a:hover .navbar__drop-traco {
-  width: 16px;
-  margin-right: 10px;
+@media (hover: hover) {
+  .navbar__drop-menu a:hover .navbar__drop-traco {
+    width: 16px;
+    margin-right: 10px;
+  }
 }
 
 /* ---------- BUSCA ----------
@@ -486,7 +490,9 @@
   border: 1px solid rgba(255, 255, 255, 0.25);
   color: #fff;
   font-family: var(--font-ui);
-  font-size: 13px;
+  /* a busca vive na barra de TODA página: com 13px, tocar na lupa dava
+     zoom do iOS na página inteira, no meio da navegação */
+  font-size: 16px;
   outline: none;
 }
 
@@ -602,5 +608,41 @@
 
   .navbar__icons {
     gap: 20px;
+  }
+}
+
+/* ---------- ÁREA DE TOQUE DA BARRA ----------
+   Medido em 390x844: os três ícones davam 43x43 e a marca 40x40, todos
+   abaixo dos 44px que um dedo precisa. O DESENHO não muda (o ícone
+   continua com o mesmo tamanho); o que cresce é a caixa que recebe o
+   toque. Guarda por PONTEIRO e não por largura: quem erra o alvo é quem
+   toca, e no desktop o mouse acerta 43px sem esforço. */
+@media (pointer: coarse) {
+  .navbar__icon-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .navbar__logo {
+    min-width: 44px;
+    justify-content: center;
+  }
+
+  /* No aparelho pequeno a marca desenha 40px de altura (bloco de 400px)
+     e a caixa clicável ia junto. Aqui a CAIXA vai a 44 e o desenho fica
+     nos 40: a marca não muda de tamanho, o alvo é que cresce. */
+  @media (max-width: 400px) {
+    .navbar__logo {
+      height: 44px;
+    }
+
+    .navbar__logo img {
+      height: 40px;
+    }
+  }
+
+  .navbar__burger {
+    min-width: 44px;
+    min-height: 44px;
   }
 }

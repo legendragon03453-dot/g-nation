@@ -111,3 +111,73 @@ p {
   color: transparent;
   -webkit-text-stroke: 1.5px var(--tw-stroke, var(--tw-stroke-light));
 }
+
+/* ---------- O RETORNO DO DEDO ----------
+   As 53 regras de `:hover` do site passaram a viver dentro de
+   `@media (hover: hover)`, porque em tela de toque não existe "sair de
+   cima": o navegador aplica o `:hover` no toque e SEGURA o estado até o
+   dedo cair em outro lugar, então o botão ficava aceso com cara de
+   quebrado depois do clique.
+
+   Só que tirar o hover sem pôr nada no lugar deixaria o toque sem
+   retorno nenhum, que é pior. Este é o retorno: a peça cede debaixo do
+   dedo e volta. Vale para toda peça clicável do site de uma vez, em vez
+   de uma regra por componente que alguém esquece de escrever na
+   próxima.
+
+   A guarda é `hover: none`, ou seja, PONTEIRO e não largura: quem não
+   tem estado de "em cima" é quem não tem ponteiro, e isso independe do
+   tamanho da tela (tablet sem mouse entra, celular deitado entra, e o
+   desktop fica de fora).
+
+   O `-webkit-tap-highlight-color` sai porque o único retorno que o dedo
+   receberia sem ele é o retângulo azul padrão do Chrome, que ignora o
+   raio da borda e pinta por cima do desenho da peça. Ele só pode sair
+   junto com um substituto, que é a regra abaixo. */
+a,
+button,
+[role="button"],
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: none) {
+  a:active,
+  button:not(:disabled):active,
+  [role="button"]:active {
+    opacity: 0.72;
+    transition: opacity 90ms ease;
+  }
+
+  /* Botão de verdade também CEDE. A escala fica nas peças com moldura
+     (pílula, chip, CTA) e não em link de texto solto nem em linha de
+     lista de largura cheia: linha larga encolhendo 3% arrasta o texto
+     pra dentro e lê como falha de layout, não como resposta. */
+  .hero__cta:active,
+  .curtain__tag-cta:active,
+  .curtain__lanc-more:active,
+  .pp__btn:active,
+  .pp__chip:active,
+  .fv__abrir:active,
+  .fv__chip:active,
+  .auth__submit:active,
+  .auth__secondary:active,
+  .ck__cta:active,
+  .cart__cta:active,
+  .cart__ghost:active,
+  .conta__cta:active,
+  .conta__ghost:active,
+  .e404__cta:active,
+  .e404__ghost:active,
+  .pd__cta:active,
+  .pd__ghost:active,
+  .adm__btn:active,
+  .adm__btn-fino:active,
+  .image-grid__cta:active,
+  .outros-produtos__seta:active {
+    transform: scale(0.97);
+    transition: transform 110ms ease, opacity 90ms ease;
+  }
+}

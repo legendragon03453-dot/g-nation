@@ -124,7 +124,16 @@ export default function Navbar({ variant = "overlay" }) {
         <span />
       </button>
 
-      <div className="navbar__links">
+      {/* Gaveta FECHADA continua no Tab. No celular ela é um painel fixo
+          de tela cheia que some com `opacity: 0` + `pointer-events: none`
+          (ver Navbar.css): o dedo não alcança, mas o teclado sim, e o
+          leitor de tela anuncia os cinco links de um menu que está
+          fechado. Medido em 390x844: os quatro links e o botão de
+          categorias respondiam a `tabIndex >= 0` com a gaveta fechada.
+          `inert` tira a árvore inteira do foco e da acessibilidade de uma
+          vez, e é a única coisa que resolve os dois juntos. No desktop
+          ehMobileNav é falso e a barra nunca fica inerte. */}
+      <div className="navbar__links" inert={ehMobileNav && !menuAberto}>
         <Link
           to="/colecao/g-shop"
           className={ehAtual("/colecao/g-shop") ? "is-atual" : undefined}

@@ -86,9 +86,10 @@
   justify-content: center;
   transition: opacity 0.2s ease;
 }
-
-.footer__social:hover {
-  opacity: 0.7;
+@media (hover: hover) {
+  .footer__social:hover {
+    opacity: 0.7;
+  }
 }
 
 /* os ícones do Figma vêm com stroke currentColor (branco por padrão);
@@ -122,9 +123,10 @@
   white-space: nowrap;
   transition: opacity 0.2s ease;
 }
-
-.footer__links a:hover {
-  opacity: 0.6;
+@media (hover: hover) {
+  .footer__links a:hover {
+    opacity: 0.6;
+  }
 }
 
 .footer__info {
@@ -268,14 +270,12 @@
   .footer__links a,
   .footer__bottom a {
     display: inline-block;
-    padding: 11px 0;
-  }
-
-  .footer__social {
-    width: 46px;
-    height: 46px;
+    /* 11px dava 40px de altura, ainda abaixo dos 44 do dedo (medido em
+       390x844); 13 fecha a conta com o texto de 18px */
+    padding: 13px 0;
   }
 }
+
 
 /* Rede e pagamento como CHIP DE TEXTO, não ícone.
    Os assets originais eram o placeholder "circle-x" do Figma (o arquivo
@@ -299,10 +299,11 @@
   text-transform: uppercase;
   transition: border-color 0.18s, background-color 0.18s;
 }
-
-.footer__social:hover {
-  border-color: var(--gn-red, #ff0000);
-  background: rgba(255, 0, 0, 0.1);
+@media (hover: hover) {
+  .footer__social:hover {
+    border-color: var(--gn-red, #ff0000);
+    background: rgba(255, 0, 0, 0.1);
+  }
 }
 
 .footer__social img {
@@ -342,4 +343,21 @@
   font-size: 10.5px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+/* ---------- ÁREA DE TOQUE DOS CHIPS DO RODAPÉ ----------
+   O `width/height: 46px` que existia lá em cima, no bloco de 800px, era
+   LETRA MORTA: a regra base do `.footer__social` vem depois no arquivo,
+   com a mesma especificidade, e devolvia `width: auto; height: auto`.
+   Media query não muda especificidade, só a ordem decide. Resultado
+   medido em 390x844: chips de 122x37, com a correção escrita e sem
+   efeito nenhum desde que os ícones viraram chip de texto.
+
+   Por isso esta regra mora no FIM do arquivo, que é o único lugar onde
+   nada mais a sobrescreve, e cresce o recuo em vez de cravar altura. */
+@media (pointer: coarse) {
+  .footer__social {
+    /* 13 dava 43px de altura, 1px abaixo do alvo; 14 fecha em 45 */
+    padding: 14px;
+  }
 }

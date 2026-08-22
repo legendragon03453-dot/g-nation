@@ -28,3 +28,7 @@ dist-ssr
 # segredos
 .env.local
 .db-password.tmp
+
+# ferramentas locais e provas de QA
+.claude/
+varredura.json

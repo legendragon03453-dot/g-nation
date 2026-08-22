@@ -21,7 +21,16 @@
 .hero__pin {
   position: sticky;
   top: 0;
+  /* O PALCO E O FILME NA MESMA RÉGUA. O palco estava em `vh` e o filme
+     dentro dele em `dvh` (ver .hero__screen no bloco de 860px). No
+     desktop os dois valem o mesmo e ninguém vê; no celular `vh` conta a
+     tela COM a barra do navegador recolhida e `dvh` conta a tela como
+     ela está agora, então enquanto a barra aparece o palco fica mais
+     alto que o filme: sobra uma faixa preta embaixo, e o card do
+     capítulo, ancorado em `bottom: 6vh`, cai atrás da barra.
+     `dvh` nos dois: a cena inteira acompanha o que está visível. */
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -81,6 +90,10 @@
   z-index: 2;
   pointer-events: none;
 }
+/* O wrapper continua transparente ao toque (`inset: 0` cobriria a tela
+   inteira) e o link do capítulo é quem recebe. Quem tira o capítulo
+   apagado do caminho do dedo e do Tab é o `visibility` que o Hero.jsx
+   liga à mesma rampa da opacidade — o porquê está lá, no useChapter. */
 .hero__chapter a {
   pointer-events: auto;
 }
@@ -423,11 +436,16 @@
     font-size: calc(100vw / 7.6);
     white-space: normal;
   }
+  /* 6vh (50px em 844) punha o card e o CTA debaixo do botão de som, que
+     é fixo no canto e ocupa os últimos 58px da tela: medido em 390x844,
+     o botão cobria o canto direito do "VER PEÇAS" do capítulo 3 e o
+     "VER PEÇA" do card do capítulo 1. O piso de 74px tira a pilha de
+     baixo dele, e o svh mantém o ritmo em aparelho alto. */
   .hero__chapter--brilho .hero__card--right {
     right: 5vw;
     left: 5vw;
     top: auto;
-    bottom: 6vh;
+    bottom: max(74px, 8svh);
     transform: none;
   }
   .hero__chapter--encara .hero__word--center {
@@ -453,7 +471,7 @@
     left: 5vw;
     right: 5vw;
     top: auto;
-    bottom: 6vh;
+    bottom: max(74px, 8svh);
     transform: none;
     align-items: stretch;
     gap: 12px;
@@ -510,5 +528,16 @@
   }
   .hero__card-title {
     font-size: 17px;
+  }
+}
+
+/* ---------- ÁREA DE TOQUE DA CAPA ----------
+   Medido em 390x844: os dois "VER PEÇAS" (o da capa e o do capítulo 3)
+   davam 41px de altura. São os dois únicos caminhos da capa para a
+   vitrine, e ficam sobre um filme em movimento, onde errar o alvo é
+   ainda mais fácil. O corpo do texto não muda. */
+@media (pointer: coarse) {
+  .hero__cta {
+    min-height: 44px;
   }
 }

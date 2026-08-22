@@ -3,6 +3,7 @@ import "./OutrosProdutos.css";
 import { RevealTitle } from "./Reveal";
 import { useCatalog } from "../CatalogContext";
 import PecaCard from "./PecaCard";
+import { useLarguraAte } from "../lib/useLarguraAte";
 
 // "CONFIRA TAMBÉM" — node 27:176 do Figma.
 //
@@ -24,10 +25,28 @@ import PecaCard from "./PecaCard";
 // (e não o mesmo `destaque` de Lançamentos): as duas seções dividem a
 // mesma home, e um campo só faria a peça marcada aparecer duas vezes na
 // mesma rolagem.
-const NA_GRADE = 3;
+// QUANTAS PEÇAS A GRADE COMPORTA — e por quê.
+//
+// Depende do LAYOUT, e o layout muda com a tela:
+//   desktop → 3 colunas, 1 fileira = 3 peças
+//   celular → 2 colunas, 2 fileiras = 4 peças
+//
+// Com 3 peças fixas numa grade de 2 colunas (o que valia até aqui), a
+// terceira ficava sozinha na fileira de baixo e ao lado dela sobrava um
+// retângulo VAZIO com o fio da malha desenhado em volta: lido na tela,
+// parece card que não carregou. Medido em 390x844: grade de 2x195px com
+// a célula da direita da segunda fileira em branco.
+//
+// É a mesma regra que a faixa de Lançamentos já segue (ver Curtain.jsx):
+// sempre múltiplo do número de colunas. O 640 é o mesmo ponto em que o
+// CSS troca as colunas, e os dois têm que continuar iguais.
+const NA_GRADE_DESKTOP = 3;
+const NA_GRADE_CELULAR = 4;
 
 export default function OutrosProdutos() {
   const { produtos, confiras } = useCatalog();
+  const ehCelular = useLarguraAte(640);
+  const naGradeCabem = ehCelular ? NA_GRADE_CELULAR : NA_GRADE_DESKTOP;
   const trilho = useRef(null);
   const [posicao, setPosicao] = useState(0);
 
@@ -39,12 +58,12 @@ export default function OutrosProdutos() {
     vistos.has(p.slug) ? false : vistos.add(p.slug)
   );
 
-  const naGrade = fila.slice(0, NA_GRADE);
-  const noTrilho = fila.slice(NA_GRADE);
+  const naGrade = fila.slice(0, naGradeCabem);
+  const noTrilho = fila.slice(naGradeCabem);
 
-  // Catálogo pequeno demais pra fechar a linha de três: melhor não
-  // mostrar a seção do que mostrar uma malha com buraco.
-  if (naGrade.length < NA_GRADE) return null;
+  // Catálogo pequeno demais pra fechar a fileira: melhor não mostrar a
+  // seção do que mostrar uma malha com buraco.
+  if (naGrade.length < naGradeCabem) return null;
 
   function rolar(direcao) {
     const el = trilho.current;

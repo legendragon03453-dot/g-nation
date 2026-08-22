@@ -195,8 +195,10 @@
   transition: opacity 0.2s ease;
 }
 
-.pp__btn:hover {
-  opacity: 0.85;
+@media (hover: hover) {
+  .pp__btn:hover {
+    opacity: 0.85;
+  }
 }
 
 /* Ação principal: vermelho da marca com texto BRANCO. No Figma o texto
@@ -526,16 +528,34 @@
   .pp__others-price {
     font-size: 15px;
   }
-  /* mesma grade de 2 colunas do resto do site */
+  /* mesma grade de 2 colunas do resto do site.
+     `minmax(0, 1fr)` e NÃO `1fr`: `1fr` é `minmax(auto, 1fr)`, e o `auto`
+     não deixa a coluna encolher abaixo do min-content dos filhos. Aqui o
+     filho largo é o lockup da marca (o h4 de 48px, que dá 316px de
+     desenho), então a coluna crescia pra caber ele e o rodapé inteiro
+     estourava a tela: medido em 320x568, a caixa da marca ia de x=16 a
+     x=339 numa tela de 320. Não aparecia como rolagem lateral porque o
+     `overflow-x: clip` do body engolia — aparecia como texto cortado. */
   .pp__footer-main {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     padding: 48px 24px 36px;
     gap: 32px 24px;
   }
   .pp__footer-brand {
     width: 100%;
     grid-column: 1 / -1;
+    min-width: 0;
+  }
+  /* e o lockup encolhe junto: 48px é medida de rodapé de 1920. O rodapé
+     da home já fazia isso (36px em 1100, 28 em 640) e este, que é outro
+     componente, tinha ficado para trás. */
+  .pp__footer-brand h4 {
+    font-size: 34px;
+  }
+  .pp__footer-links,
+  .pp__footer-contact {
+    min-width: 0;
   }
   .pp__footer-bottom {
     flex-direction: column;
@@ -586,5 +606,36 @@
   .pp__footer-main {
     padding: 40px 16px 28px;
     gap: 28px 18px;
+  }
+  .pp__footer-brand h4 {
+    font-size: 26px;
+  }
+}
+
+/* ---------- ÁREA DE TOQUE DA PÁGINA DE PEÇA ----------
+   Medido em 320x568: os chips de material davam 37px de altura, os de
+   tamanho 40 (52 no bloco de celular), o "GUIA DE TAMANHOS" 14 e os
+   links do rodapé 18. Escolher material e tamanho é o caminho inteiro da
+   compra nesta página, e é onde o dedo mais erra.
+
+   O desenho não muda: mesmo corpo de texto, mesma borda. O que cresce é
+   a caixa. Guarda por ponteiro, pra não engordar o desktop. */
+@media (pointer: coarse) {
+  .pp__chip {
+    min-height: 44px;
+  }
+
+  .pp__chip--size {
+    height: 44px;
+  }
+
+  .pp__size-guide {
+    padding: 15px 0;
+  }
+
+  .pp__footer-links a,
+  .pp__footer-bottom a {
+    display: inline-block;
+    padding: 13px 0;
   }
 }

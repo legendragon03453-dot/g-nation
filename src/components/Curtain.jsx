@@ -133,8 +133,24 @@ export default function Curtain() {
   // total (3400→2000) e redistribuído o timing pra sobrar só um respiro
   // curto antes de abrir e um "dwell" curto depois de revelado, em vez de
   // uma trava longa parada no meio do scroll.
-  const leftX = useTransform(scrollYProgress, [0.09, 0.32], [0, -1000]);
-  const rightX = useTransform(scrollYProgress, [0.09, 0.32], [0, 1000]);
+  // AS PORTAS ABREM NO EIXO EM QUE ELAS ESTÃO.
+  //
+  // O efeito é o do template: dois painéis de foto que se afastam como
+  // portas. No desktop eles ficam LADO A LADO e por isso saem em x, ±1000.
+  // No celular o CSS empilha os dois (flex-direction: column, ver o bloco
+  // de 900px), e o x continuava valendo: os painéis, agora deitados um
+  // sobre o outro, escorregavam para os lados e saíam de cena deixando a
+  // tela preta com duas tiras de foto grudadas nas bordas — medido em
+  // 390x844, uma tela inteira quase vazia no meio da transição, antes de
+  // os Lançamentos entrarem.
+  //
+  // Empilhado, a porta abre para CIMA e para BAIXO. É o mesmo gesto, no
+  // eixo em que as peças realmente estão, e não um efeito substituto.
+  const ehMobileCena = useEhMobile();
+  const saiA = useTransform(scrollYProgress, [0.09, 0.32], [0, -1000]);
+  const saiB = useTransform(scrollYProgress, [0.09, 0.32], [0, 1000]);
+  const abreA = ehMobileCena ? { y: saiA } : { x: saiA };
+  const abreB = ehMobileCena ? { y: saiB } : { x: saiB };
 
   // O fade contínuo via useTransform (opacity) não estava atualizando neste
   // projeto (framer-motion 12 + React 19) — o valor ficava travado no
@@ -145,16 +161,23 @@ export default function Curtain() {
   // Reveal em 0.24, antes das fotos terminarem de sair (0.32) — janela de
   // sobreposição de 0.08 (160px) pra transição CSS de 0.6s completar sem
   // vão preto no meio.
+  // O 0.24 foi calibrado pra abertura HORIZONTAL: no desktop o vão entre
+  // as portas é uma faixa vertical estreita, e uns quadros de preto ali
+  // não pesam. Empilhado, o vão é uma faixa que atravessa a tela inteira,
+  // e o mesmo atraso deixava uma tela quase toda preta enquanto as portas
+  // se afastavam (visto em 390x844, y=5650). No celular o conteúdo entra
+  // logo depois de as portas começarem a andar (0.09), de modo que o que
+  // aparece no vão seja a seção, não o fundo.
   const [lancRevealed, setLancRevealed] = useState(false);
   useMotionValueEvent(scrollYProgress, "change", (v) => {
-    setLancRevealed(v >= 0.24);
+    setLancRevealed(v >= (ehMobileCena ? 0.13 : 0.24));
   });
 
   return (
     <section className="curtain" id="lancamentos" ref={curtainRef}>
       <div className="curtain__pin">
         <div className="curtain__slices">
-          <motion.div className="curtain__slice" style={{ x: leftX }}>
+          <motion.div className="curtain__slice" style={abreA}>
             <ImageCrossfade images={LEFT_IMAGES} className="curtain__slice-inner" />
             <motion.div
               className="curtain__tag curtain__tag--left"
@@ -177,7 +200,7 @@ export default function Curtain() {
             </motion.div>
           </motion.div>
 
-          <motion.div className="curtain__slice" style={{ x: rightX }}>
+          <motion.div className="curtain__slice" style={abreB}>
             <ImageCrossfade images={RIGHT_IMAGES} className="curtain__slice-inner" />
             <motion.div
               className="curtain__tag curtain__tag--right"

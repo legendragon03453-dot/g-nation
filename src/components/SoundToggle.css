@@ -19,15 +19,19 @@
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
   transition: border-color 0.25s ease, transform 0.2s ease;
 }
-.sound-toggle:hover {
-  border-color: #fff;
-  transform: scale(1.05);
+@media (hover: hover) {
+  .sound-toggle:hover {
+    border-color: #fff;
+    transform: scale(1.05);
+  }
 }
 .sound-toggle--on {
   border-color: #ff0000;
 }
-.sound-toggle--on:hover {
-  border-color: #ff4d4d;
+@media (hover: hover) {
+  .sound-toggle--on:hover {
+    border-color: #ff4d4d;
+  }
 }
 
 .sound-toggle__label {

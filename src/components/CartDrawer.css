@@ -88,9 +88,11 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.cart__close:hover {
-  background: #fff;
-  color: #0a0a0a;
+@media (hover: hover) {
+  .cart__close:hover {
+    background: #fff;
+    color: #0a0a0a;
+  }
 }
 
 /* a lista é a única parte que rola — cabeçalho e total ficam fixos */
@@ -187,9 +189,11 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.cart__qty button:hover {
-  background: #fff;
-  color: #0a0a0a;
+@media (hover: hover) {
+  .cart__qty button:hover {
+    background: #fff;
+    color: #0a0a0a;
+  }
 }
 
 .cart__qty span {
@@ -225,8 +229,10 @@
   transition: color 0.2s ease;
 }
 
-.cart__remove:hover {
-  color: var(--gn-red, #ff0000);
+@media (hover: hover) {
+  .cart__remove:hover {
+    color: var(--gn-red, #ff0000);
+  }
 }
 
 /* estado vazio: diz o que fazer e leva pra lá, em vez de só informar */
@@ -305,8 +311,10 @@
   transition: background-color 0.2s ease;
 }
 
-.cart__cta:hover {
-  background: #d40000;
+@media (hover: hover) {
+  .cart__cta:hover {
+    background: #d40000;
+  }
 }
 
 .cart__ghost {
@@ -328,9 +336,11 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.cart__ghost:hover {
-  background: #fff;
-  color: #0a0a0a;
+@media (hover: hover) {
+  .cart__ghost:hover {
+    background: #fff;
+    color: #0a0a0a;
+  }
 }
 
 @media (max-width: 520px) {

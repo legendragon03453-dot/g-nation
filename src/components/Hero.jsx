@@ -47,7 +47,24 @@ function useChapter(progress, tIn, tOut) {
     if (p > pOut - fade) return -36 * ((p - (pOut - fade)) / fade);
     return 0;
   });
-  return { opacity, y };
+  // O capítulo SAI DE CENA de verdade quando a rampa zera, e não só fica
+  // transparente. Dois defeitos medidos vinham de ele continuar lá:
+  //
+  // 1. TOQUE. No celular os três capítulos empilham card e CTA no mesmo
+  //    retângulo do rodapé (left/right 5vw, bottom 6vh). Como o CSS dava
+  //    `pointer-events: auto` a todo link de capítulo, o do capítulo 3,
+  //    último do DOM, ficava por cima recebendo o toque mesmo apagado:
+  //    entre y=1199 e y=2000 em 390x844, tocar no card "Trevo Royal" (a
+  //    peça do filme naquele momento) caía no "Trevo Gold" invisível.
+  // 2. TECLADO. Opacidade zero não tira nada da ordem do Tab, e aqui
+  //    focar não adianta: quem revela o capítulo é a posição de rolagem,
+  //    não o foco. O teclado entrava em links que ninguém vê.
+  //
+  // `visibility` resolve os dois com um mecanismo só: tira do alcance do
+  // dedo, do Tab e da árvore de acessibilidade. Vai pelo mesmo caminho da
+  // opacidade (forma de função sobre o progresso) pra nunca divergir dela.
+  const visibility = useTransform(opacity, (v) => (v > 0.05 ? "visible" : "hidden"));
+  return { opacity, y, visibility };
 }
 
 function ChapterCard({ slug, align }) {
@@ -109,6 +126,10 @@ export default function Hero() {
   const paperOp = useTransform(scrollYProgress, (p) =>
     p <= 0.066 ? 1 : p >= 0.086 ? 0 : (0.086 - p) / 0.02
   );
+  // A capa sai de cena junto com o papel, pela mesma razão dos capítulos:
+  // enquanto ela só ficasse transparente, o CTA "VER PEÇAS" continuaria
+  // por cima do filme para o dedo e dentro da ordem do Tab para o teclado.
+  const paperVis = useTransform(paperOp, (v) => (v > 0.05 ? "visible" : "hidden"));
   // Saída do título em VH, não em %. Em % o deslocamento é relativo à
   // altura do próprio bloco: no desktop -320% limpava a tela, mas no
   // celular o bloco é baixo (fonte menor) e 320% dele não chegava a
@@ -252,7 +273,7 @@ export default function Hero() {
           {/* CAPÍTULO 1 — close do bracelet: a peça do filme à venda */}
           <motion.div
             className="hero__chapter hero__chapter--brilho"
-            style={{ opacity: chBrilho.opacity, y: chBrilho.y }}
+            style={{ opacity: chBrilho.opacity, y: chBrilho.y, visibility: chBrilho.visibility }}
           >
             <h2 className="hero__word hero__word--left">
               <span className="hero__word-solid">BRILHO</span>
@@ -264,7 +285,7 @@ export default function Hero() {
           {/* CAPÍTULO 2 — close nos olhos */}
           <motion.div
             className="hero__chapter hero__chapter--encara"
-            style={{ opacity: chEncara.opacity, y: chEncara.y }}
+            style={{ opacity: chEncara.opacity, y: chEncara.y, visibility: chEncara.visibility }}
           >
             <h2 className="hero__word hero__word--center">
               <span className="hero__word-outline">PRA QUEM</span>
@@ -275,7 +296,7 @@ export default function Hero() {
           {/* CAPÍTULO 3 — plano final: peso no peito + peça gold + CTA */}
           <motion.div
             className="hero__chapter hero__chapter--peso"
-            style={{ opacity: chPeso.opacity, y: chPeso.y }}
+            style={{ opacity: chPeso.opacity, y: chPeso.y, visibility: chPeso.visibility }}
           >
             <h2 className="hero__word hero__word--right">
               <span className="hero__word-solid">PESO</span>
@@ -314,7 +335,7 @@ export default function Hero() {
             qualquer motivo o deslocamento não limpar a tela (aparelho
             muito baixo, barra do navegador aparecendo), ele some com a
             cortina em vez de ficar preso sobre o filme. */}
-        <motion.div className="hero__stack" style={{ opacity: paperOp }}>
+        <motion.div className="hero__stack" style={{ opacity: paperOp, visibility: paperVis }}>
           <motion.div className="hero__stack-half" style={{ y: topY }}>
             <p className="hero__eyebrow">
               Marca de joias e acessórios de streetwear premium

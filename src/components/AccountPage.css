@@ -80,8 +80,10 @@
   transition: color 0.2s ease, background-color 0.2s ease;
 }
 
-.conta__aba:hover {
-  color: #000;
+@media (hover: hover) {
+  .conta__aba:hover {
+    color: #000;
+  }
 }
 
 .conta__aba.is-ativa {
@@ -138,9 +140,11 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.conta__pedido:hover {
-  background: #000;
-  color: #fff;
+@media (hover: hover) {
+  .conta__pedido:hover {
+    background: #000;
+    color: #fff;
+  }
 }
 
 .conta__pedido-num {
@@ -227,7 +231,8 @@
   border: 1px solid #000;
   background: #fff;
   font-family: var(--font-ui);
-  font-size: 15px;
+  /* piso de 16px: abaixo disso o iOS dá zoom ao focar (ver AuthShell) */
+  font-size: 16px;
   color: #000;
   outline: none;
   min-width: 0;
@@ -373,9 +378,11 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.conta__ghost:hover {
-  background: #000;
-  color: #fff;
+@media (hover: hover) {
+  .conta__ghost:hover {
+    background: #000;
+    color: #fff;
+  }
 }
 
 /* botão de salvar do formulário de dados — mesma voz do site */
@@ -398,8 +405,10 @@
   transition: background-color 0.2s ease;
 }
 
-.conta__cta:hover {
-  background: #d40000;
+@media (hover: hover) {
+  .conta__cta:hover {
+    background: #d40000;
+  }
 }
 
 .conta__cta:disabled {
@@ -422,8 +431,10 @@
   transition: background-color 0.2s ease;
 }
 
-.conta__sair:hover {
-  background: #d40000;
+@media (hover: hover) {
+  .conta__sair:hover {
+    background: #d40000;
+  }
 }
 
 @media (max-width: 1100px) {

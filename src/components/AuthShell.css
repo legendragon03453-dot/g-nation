@@ -168,8 +168,10 @@
   transition: opacity 0.2s ease;
 }
 
-.auth__back:hover {
-  opacity: 0.55;
+@media (hover: hover) {
+  .auth__back:hover {
+    opacity: 0.55;
+  }
 }
 
 .auth__back img {
@@ -361,8 +363,10 @@
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.auth__input-wrap:hover {
-  border-color: rgba(255, 255, 255, 0.75);
+@media (hover: hover) {
+  .auth__input-wrap:hover {
+    border-color: rgba(255, 255, 255, 0.75);
+  }
 }
 
 /* foco: fecha mais o vidro e acende a borda no vermelho da marca — quem
@@ -381,7 +385,11 @@
   background: transparent;
   font-family: var(--font-ui);
   font-weight: 400;
-  font-size: 14px;
+  /* 16px é o piso, não estética: abaixo disso o Safari do iPhone DÁ ZOOM
+     ao focar o campo e a tela de entrada abre torta, com a pessoa tendo
+     que pinçar de volta pra enxergar o botão. Estava 14px aqui e no
+     criar-conta (5 campos medidos); o checkout já respeitava o piso. */
+  font-size: 16px;
   color: #fff;
 }
 
@@ -415,8 +423,10 @@
   transition: opacity 0.2s ease;
 }
 
-.auth__eye:hover {
-  opacity: 1;
+@media (hover: hover) {
+  .auth__eye:hover {
+    opacity: 1;
+  }
 }
 
 /* o ícone exportado do Figma é preto; dentro do campo escuro precisa ser
@@ -480,8 +490,10 @@
   transition: background-color 0.2s ease;
 }
 
-.auth__submit:hover {
-  background: #d40000;
+@media (hover: hover) {
+  .auth__submit:hover {
+    background: #d40000;
+  }
 }
 
 .auth__submit-block {
@@ -506,8 +518,10 @@
   transition: color 0.2s ease;
 }
 
-.auth__forgot:hover {
-  color: #fff;
+@media (hover: hover) {
+  .auth__forgot:hover {
+    color: #fff;
+  }
 }
 
 /* 27:390 — separador "OU". Respiro extra em volta: é a fresta mais
@@ -637,9 +651,11 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.auth__secondary:hover {
-  background: #fff;
-  color: #0a0a0a;
+@media (hover: hover) {
+  .auth__secondary:hover {
+    background: #fff;
+    color: #0a0a0a;
+  }
 }
 
 /* Navegador sem backdrop-filter: sem o blur, o vidro dos campos passaria
@@ -761,5 +777,33 @@
   }
   .auth__wordmark {
     font-size: 20px;
+  }
+}
+
+/* ---------- ÁREA DE TOQUE DA TELA DE ENTRADA ----------
+   Medido em 320x568: o olho de ver a senha era 18x18, o "Voltar" 83x18 e
+   o "Esqueci minha senha" 115x14. São os três controles de uma tela que
+   a pessoa usa com uma mão só, todos abaixo dos 44px do dedo.
+
+   O desenho não muda: o ícone continua com 18px e o texto com o mesmo
+   corpo. O que cresce é a caixa que recebe o toque, e por isso o olho
+   ganha margem negativa igual ao recuo, pra não empurrar a borda do
+   campo pra dentro. Guarda por ponteiro: no desktop o mouse acerta. */
+@media (pointer: coarse) {
+  .auth__eye {
+    width: 44px;
+    height: 44px;
+    margin: -13px -13px -13px 0;
+  }
+
+  .auth__back {
+    padding: 13px 0;
+    /* o recuo sobe a caixa; o topo desce pra manter o desenho no lugar */
+    top: 35px;
+  }
+
+  .auth__forgot {
+    padding: 15px 12px;
+    margin-top: 0;
   }
 }
